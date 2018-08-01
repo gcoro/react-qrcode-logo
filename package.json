@@ -1,0 +1,41 @@
+{
+  "name": "react-qrcode-logo",
+  "version": "1.0.0",
+  "description": "React component to generate a QR Code customizable with logo and more properties",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gcoro/react-qrcode-logo.git"
+  },
+  "keywords": [
+    "react",
+    "typescript",
+    "qrcode",
+    "custom",
+    "logo",
+    "opacity",
+    "padding"
+  ],
+  "author": "Giulia Corò, Franco Berton",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gcoro/react-qrcode-logo/issues"
+  },
+  "homepage": "https://github.com/gcoro/react-qrcode-logo#readme",
+  "devDependencies": {
+    "@types/react": "^16.4.7",
+    "@types/react-dom": "^16.0.6",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "typescript": "^3.0.1"
+  },
+  "dependencies": {
+    "lodash.isequal": "^4.5.0",
+    "qr.js": "0.0.0"
+  }
+}
