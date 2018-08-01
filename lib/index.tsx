@@ -31,7 +31,7 @@ export class QRCode extends React.Component<IProps, {}> {
     public static defaultProps: IProps = {
         value: 'https://reactjs.org/',
         size: 150,
-        padding: 40,
+        padding: 10,
         bgColor: '#FFFFFF',
         fgColor: '#000000',
         logoOpacity: 1
