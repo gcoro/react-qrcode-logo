@@ -101,6 +101,7 @@ var QRCode = /** @class */ (function (_super) {
     };
     QRCode.prototype.render = function () {
         return React.createElement('canvas', {
+            id: 'react-qrcode-logo',
             height: this.props.size,
             width: this.props.size,
             style: Object.assign({

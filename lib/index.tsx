@@ -99,8 +99,8 @@ export class QRCode extends React.Component<IProps, {}> {
         canvas.height = canvas.width = this.props.size * scale;
         ctx.scale(scale, scale);
 
-        cells.forEach((row: any, rdx: any) => {
-            row.forEach((cell: any, cdx: any) => {
+        cells.forEach((row: number[], rdx: number) => {
+            row.forEach((cell: number, cdx: number) => {
                 ctx.fillStyle = cell ? this.props.fgColor : this.props.bgColor;
                 const w = (Math.ceil((cdx + 1) * tileW) - Math.floor(cdx * tileW));
                 const h = (Math.ceil((rdx + 1) * tileH) - Math.floor(rdx * tileH));
@@ -128,9 +128,10 @@ export class QRCode extends React.Component<IProps, {}> {
 
     render() {
         return React.createElement('canvas', {
+            id: 'react-qrcode-logo',
             height: this.props.size,
             width: this.props.size,
-            style: (Object as any).assign({
+            style: Object.assign({
                 height: this.props.size + 'px', width: this.props.size + 'px',
                 padding: (100 * this.props.padding) / this.props.size + '%', background: this.props.bgColor
             }, this.props.style),
@@ -138,3 +139,4 @@ export class QRCode extends React.Component<IProps, {}> {
         });
     }
 }
+
