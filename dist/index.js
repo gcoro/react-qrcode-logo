@@ -15,8 +15,15 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var ReactDOM = require("react-dom");
-var qr = require("qr.js");
+var QRCodeImpl = require("qr.js/lib/QRCode");
 var isEqual = require("lodash.isequal");
+var ErrorCorrectionLevel;
+(function (ErrorCorrectionLevel) {
+    ErrorCorrectionLevel[ErrorCorrectionLevel["L"] = 1] = "L";
+    ErrorCorrectionLevel[ErrorCorrectionLevel["M"] = 0] = "M";
+    ErrorCorrectionLevel[ErrorCorrectionLevel["Q"] = 3] = "Q";
+    ErrorCorrectionLevel[ErrorCorrectionLevel["H"] = 2] = "H";
+})(ErrorCorrectionLevel || (ErrorCorrectionLevel = {}));
 var QRCode = /** @class */ (function (_super) {
     __extends(QRCode, _super);
     function QRCode(props) {
@@ -24,18 +31,9 @@ var QRCode = /** @class */ (function (_super) {
         _this.canvas = React.createRef();
         return _this;
     }
-    QRCode.getBackingStorePixelRatio = function (ctx) {
-        return (ctx.webkitBackingStorePixelRatio ||
-            ctx.mozBackingStorePixelRatio ||
-            ctx.msBackingStorePixelRatio ||
-            ctx.oBackingStorePixelRatio ||
-            ctx.backingStorePixelRatio ||
-            1);
-    };
     QRCode.utf16to8 = function (str) {
-        var out, i, len, c;
-        out = '';
-        len = str.length;
+        var out = '', i, c;
+        var len = str.length;
         for (i = 0; i < len; i++) {
             c = str.charCodeAt(i);
             if ((c >= 0x0001) && (c <= 0x007F)) {
@@ -64,39 +62,41 @@ var QRCode = /** @class */ (function (_super) {
     };
     QRCode.prototype.update = function () {
         var _this = this;
-        var value = QRCode.utf16to8(this.props.value);
-        var qrcode = qr(value);
+        var _a = this.props, value = _a.value, size = _a.size, ecLevel = _a.ecLevel, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoWidth = _a.logoWidth, logoHeight = _a.logoHeight, logoOpacity = _a.logoOpacity;
+        var qrcode = new QRCodeImpl(-1, ErrorCorrectionLevel[ecLevel]);
+        qrcode.addData(QRCode.utf16to8(value));
+        qrcode.make();
         var canvas = ReactDOM.findDOMNode(this.canvas.current);
         var ctx = canvas.getContext('2d');
         var cells = qrcode.modules;
-        var tileW = this.props.size / cells.length;
-        var tileH = this.props.size / cells.length;
-        var scale = (window.devicePixelRatio || 1) / QRCode.getBackingStorePixelRatio(ctx);
-        canvas.height = canvas.width = this.props.size * scale;
+        var tileW = size / cells.length;
+        var tileH = size / cells.length;
+        var scale = (window.devicePixelRatio || 1);
+        canvas.height = canvas.width = size * scale;
         ctx.scale(scale, scale);
         cells.forEach(function (row, rdx) {
             row.forEach(function (cell, cdx) {
-                ctx.fillStyle = cell ? _this.props.fgColor : _this.props.bgColor;
+                ctx.fillStyle = cell ? fgColor : bgColor;
                 var w = (Math.ceil((cdx + 1) * tileW) - Math.floor(cdx * tileW));
                 var h = (Math.ceil((rdx + 1) * tileH) - Math.floor(rdx * tileH));
                 ctx.fillRect(Math.round(cdx * tileW), Math.round(rdx * tileH), w, h);
             }, _this);
         }, this);
-        if (this.props.logoImage) {
+        if (logoImage) {
             var image_1 = new Image();
             image_1.onload = function () {
-                var dwidth = _this.props.logoWidth || _this.props.size * 0.2;
-                var dheight = _this.props.logoHeight || dwidth;
-                var dx = (_this.props.size - dwidth) / 2;
-                var dy = (_this.props.size - dheight) / 2;
+                var dwidth = logoWidth || size * 0.2;
+                var dheight = logoHeight || dwidth;
+                var dx = (size - dwidth) / 2;
+                var dy = (size - dheight) / 2;
                 image_1.width = dwidth;
                 image_1.height = dheight;
                 ctx.save();
-                ctx.globalAlpha = _this.props.logoOpacity;
+                ctx.globalAlpha = logoOpacity;
                 ctx.drawImage(image_1, dx, dy, dwidth, dheight);
                 ctx.restore();
             };
-            image_1.src = this.props.logoImage;
+            image_1.src = logoImage;
         }
     };
     QRCode.prototype.render = function () {
@@ -114,6 +114,7 @@ var QRCode = /** @class */ (function (_super) {
     QRCode.defaultProps = {
         value: 'https://reactjs.org/',
         size: 150,
+        ecLevel: 'M',
         padding: 10,
         bgColor: '#FFFFFF',
         fgColor: '#000000',

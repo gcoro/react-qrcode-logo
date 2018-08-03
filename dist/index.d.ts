@@ -1,7 +1,14 @@
 import * as React from 'react';
+declare enum ErrorCorrectionLevel {
+    'L' = 1,
+    'M' = 0,
+    'Q' = 3,
+    'H' = 2
+}
 export interface IProps {
     value?: string;
     size?: number;
+    ecLevel?: keyof typeof ErrorCorrectionLevel;
     padding?: number;
     bgColor?: string;
     fgColor?: string;
@@ -11,17 +18,9 @@ export interface IProps {
     logoOpacity?: number;
     style?: Object;
 }
-export interface CanvasRendereringContext2D {
-    webkitBackingStorePixelRatio: number;
-    mozBackingStorePixelRatio: number;
-    msBackingStorePixelRatio: number;
-    oBackingStorePixelRatio: number;
-    backingStorePixelRatio: number;
-}
 export declare class QRCode extends React.Component<IProps, {}> {
     private canvas;
     static defaultProps: IProps;
-    static getBackingStorePixelRatio(ctx: CanvasRendereringContext2D): number;
     static utf16to8(str: string): string;
     constructor(props: IProps);
     shouldComponentUpdate(nextProps: IProps): boolean;
@@ -38,6 +37,7 @@ export declare class QRCode extends React.Component<IProps, {}> {
             padding: string;
             background: string;
         } & Object;
-        ref: React.RefObject<HTMLInputElement>;
-    }, HTMLInputElement>;
+        ref: React.RefObject<HTMLCanvasElement>;
+    }, HTMLCanvasElement>;
 }
+export {};
