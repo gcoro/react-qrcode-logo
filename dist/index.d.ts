@@ -7,8 +7,8 @@ declare enum ErrorCorrectionLevel {
 }
 export interface IProps {
     value?: string;
-    size?: number;
     ecLevel?: keyof typeof ErrorCorrectionLevel;
+    size?: number;
     padding?: number;
     bgColor?: string;
     fgColor?: string;

@@ -12,8 +12,8 @@ enum ErrorCorrectionLevel {
 
 export interface IProps {
     value?: string;
-    size?: number;
     ecLevel?: keyof typeof ErrorCorrectionLevel;
+    size?: number;
     padding?: number;
     bgColor?: string;
     fgColor?: string;
@@ -30,8 +30,8 @@ export class QRCode extends React.Component<IProps, {}> {
 
     public static defaultProps: IProps = {
         value: 'https://reactjs.org/',
-        size: 150,
         ecLevel: 'M',
+        size: 150,
         padding: 10,
         bgColor: '#FFFFFF',
         fgColor: '#000000',
@@ -76,7 +76,7 @@ export class QRCode extends React.Component<IProps, {}> {
     }
 
     update() {
-        const { value, size, ecLevel, bgColor, fgColor, logoImage, logoWidth, logoHeight, logoOpacity } = this.props;
+        const { value, ecLevel, size, bgColor, fgColor, logoImage, logoWidth, logoHeight, logoOpacity } = this.props;
 
         const qrcode = new QRCodeImpl(-1, ErrorCorrectionLevel[ecLevel]);
         qrcode.addData(QRCode.utf16to8(value));

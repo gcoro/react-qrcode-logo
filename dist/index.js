@@ -62,7 +62,7 @@ var QRCode = /** @class */ (function (_super) {
     };
     QRCode.prototype.update = function () {
         var _this = this;
-        var _a = this.props, value = _a.value, size = _a.size, ecLevel = _a.ecLevel, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoWidth = _a.logoWidth, logoHeight = _a.logoHeight, logoOpacity = _a.logoOpacity;
+        var _a = this.props, value = _a.value, ecLevel = _a.ecLevel, size = _a.size, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoWidth = _a.logoWidth, logoHeight = _a.logoHeight, logoOpacity = _a.logoOpacity;
         var qrcode = new QRCodeImpl(-1, ErrorCorrectionLevel[ecLevel]);
         qrcode.addData(QRCode.utf16to8(value));
         qrcode.make();
@@ -113,8 +113,8 @@ var QRCode = /** @class */ (function (_super) {
     };
     QRCode.defaultProps = {
         value: 'https://reactjs.org/',
-        size: 150,
         ecLevel: 'M',
+        size: 150,
         padding: 10,
         bgColor: '#FFFFFF',
         fgColor: '#000000',
