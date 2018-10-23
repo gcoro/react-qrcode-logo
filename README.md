@@ -18,7 +18,7 @@ React.render(
 );
 ```
 
-## Avaiable Props
+## Available Props
 | Prop        | Type                                  | Default value        | Description    |
 | ------------|---------------------------------------| ---------------------|-----|
 | `value`       | `string`                                | `https://reactjs.org/` | The value encoded in the QR Code. When the QR is decoded, this value will be returned |
