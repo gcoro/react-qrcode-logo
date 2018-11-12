@@ -1,18 +1,11 @@
+import * as isEqual from 'lodash.isequal';
+import * as qrcode from 'qrcode-generator';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import * as QRCodeImpl from 'qr.js/lib/QRCode';
-import * as isEqual from 'lodash.isequal';
-
-enum ErrorCorrectionLevel {
-    'L' = 1,
-    'M' = 0,
-    'Q' = 3,
-    'H' = 2
-}
 
 export interface IProps {
     value?: string;
-    ecLevel?: keyof typeof ErrorCorrectionLevel;
+    ecLevel?: 'L' | 'M' | 'Q' | 'H';
     size?: number;
     padding?: number;
     bgColor?: string;
@@ -21,7 +14,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
-    style?: Object;
+    style?: object;
 }
 
 export class QRCode extends React.Component<IProps, {}> {
@@ -78,28 +71,27 @@ export class QRCode extends React.Component<IProps, {}> {
     update() {
         const { value, ecLevel, size, bgColor, fgColor, logoImage, logoWidth, logoHeight, logoOpacity } = this.props;
 
-        const qrcode = new QRCodeImpl(-1, ErrorCorrectionLevel[ecLevel]);
-        qrcode.addData(QRCode.utf16to8(value));
-        qrcode.make();
+        const myqrcode = qrcode(0, ecLevel);
+        myqrcode.addData(QRCode.utf16to8(value));
+        myqrcode.make();
 
         const canvas: HTMLCanvasElement = ReactDOM.findDOMNode(this.canvas.current) as HTMLCanvasElement;
 
         const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
-        const cells = qrcode.modules;
-        const tileW = size / cells.length;
-        const tileH = size / cells.length;
+        const tileW = size / myqrcode.getModuleCount();
+        const tileH = size / myqrcode.getModuleCount();
         const scale = (window.devicePixelRatio || 1);
         canvas.height = canvas.width = size * scale;
         ctx.scale(scale, scale);
 
-        cells.forEach((row: number[], rdx: number) => {
-            row.forEach((cell: number, cdx: number) => {
-                ctx.fillStyle = cell ? fgColor : bgColor;
-                const w = (Math.ceil((cdx + 1) * tileW) - Math.floor(cdx * tileW));
-                const h = (Math.ceil((rdx + 1) * tileH) - Math.floor(rdx * tileH));
-                ctx.fillRect(Math.round(cdx * tileW), Math.round(rdx * tileH), w, h);
-            }, this);
-        }, this);
+        for (let i = 0; i < (myqrcode.getModuleCount()); i++) {
+            for (let j = 0; j < (myqrcode.getModuleCount()); j++) {
+                ctx.fillStyle = myqrcode.isDark(i, j) ? fgColor : bgColor;
+                const w = (Math.ceil((j + 1) * tileW) - Math.floor(j * tileW));
+                const h = (Math.ceil((i + 1) * tileH) - Math.floor(i * tileH));
+                ctx.fillRect(Math.round(j * tileW), Math.round(i * tileH), w, h);
+            }
+        }
 
         if (logoImage) {
             const image = new Image();
@@ -124,13 +116,14 @@ export class QRCode extends React.Component<IProps, {}> {
             id: 'react-qrcode-logo',
             height: this.props.size,
             width: this.props.size,
-            style: Object.assign({
-                height: this.props.size + 'px', width: this.props.size + 'px',
-                padding: (100 * this.props.padding) / this.props.size + '%', background: this.props.bgColor
-            }, this.props.style),
+            style: {
+                height: this.props.size + 'px',
+                width: this.props.size + 'px',
+                padding: (100 * this.props.padding) / this.props.size + '%',
+                background: this.props.bgColor,
+                ...this.props.style
+            },
             ref: this.canvas
         });
     }
 }
-
-

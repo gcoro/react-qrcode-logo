@@ -12,18 +12,22 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var isEqual = require("lodash.isequal");
+var qrcode = require("qrcode-generator");
 var React = require("react");
 var ReactDOM = require("react-dom");
-var QRCodeImpl = require("qr.js/lib/QRCode");
-var isEqual = require("lodash.isequal");
-var ErrorCorrectionLevel;
-(function (ErrorCorrectionLevel) {
-    ErrorCorrectionLevel[ErrorCorrectionLevel["L"] = 1] = "L";
-    ErrorCorrectionLevel[ErrorCorrectionLevel["M"] = 0] = "M";
-    ErrorCorrectionLevel[ErrorCorrectionLevel["Q"] = 3] = "Q";
-    ErrorCorrectionLevel[ErrorCorrectionLevel["H"] = 2] = "H";
-})(ErrorCorrectionLevel || (ErrorCorrectionLevel = {}));
 var QRCode = /** @class */ (function (_super) {
     __extends(QRCode, _super);
     function QRCode(props) {
@@ -61,27 +65,25 @@ var QRCode = /** @class */ (function (_super) {
         this.update();
     };
     QRCode.prototype.update = function () {
-        var _this = this;
         var _a = this.props, value = _a.value, ecLevel = _a.ecLevel, size = _a.size, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoWidth = _a.logoWidth, logoHeight = _a.logoHeight, logoOpacity = _a.logoOpacity;
-        var qrcode = new QRCodeImpl(-1, ErrorCorrectionLevel[ecLevel]);
-        qrcode.addData(QRCode.utf16to8(value));
-        qrcode.make();
+        var myqrcode = qrcode(0, ecLevel);
+        myqrcode.addData(QRCode.utf16to8(value));
+        myqrcode.make();
         var canvas = ReactDOM.findDOMNode(this.canvas.current);
         var ctx = canvas.getContext('2d');
-        var cells = qrcode.modules;
-        var tileW = size / cells.length;
-        var tileH = size / cells.length;
+        var tileW = size / myqrcode.getModuleCount();
+        var tileH = size / myqrcode.getModuleCount();
         var scale = (window.devicePixelRatio || 1);
         canvas.height = canvas.width = size * scale;
         ctx.scale(scale, scale);
-        cells.forEach(function (row, rdx) {
-            row.forEach(function (cell, cdx) {
-                ctx.fillStyle = cell ? fgColor : bgColor;
-                var w = (Math.ceil((cdx + 1) * tileW) - Math.floor(cdx * tileW));
-                var h = (Math.ceil((rdx + 1) * tileH) - Math.floor(rdx * tileH));
-                ctx.fillRect(Math.round(cdx * tileW), Math.round(rdx * tileH), w, h);
-            }, _this);
-        }, this);
+        for (var i = 0; i < (myqrcode.getModuleCount()); i++) {
+            for (var j = 0; j < (myqrcode.getModuleCount()); j++) {
+                ctx.fillStyle = myqrcode.isDark(i, j) ? fgColor : bgColor;
+                var w = (Math.ceil((j + 1) * tileW) - Math.floor(j * tileW));
+                var h = (Math.ceil((i + 1) * tileH) - Math.floor(i * tileH));
+                ctx.fillRect(Math.round(j * tileW), Math.round(i * tileH), w, h);
+            }
+        }
         if (logoImage) {
             var image_1 = new Image();
             image_1.onload = function () {
@@ -104,10 +106,7 @@ var QRCode = /** @class */ (function (_super) {
             id: 'react-qrcode-logo',
             height: this.props.size,
             width: this.props.size,
-            style: Object.assign({
-                height: this.props.size + 'px', width: this.props.size + 'px',
-                padding: (100 * this.props.padding) / this.props.size + '%', background: this.props.bgColor
-            }, this.props.style),
+            style: __assign({ height: this.props.size + 'px', width: this.props.size + 'px', padding: (100 * this.props.padding) / this.props.size + '%', background: this.props.bgColor }, this.props.style),
             ref: this.canvas
         });
     };

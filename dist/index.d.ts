@@ -1,13 +1,7 @@
 import * as React from 'react';
-declare enum ErrorCorrectionLevel {
-    'L' = 1,
-    'M' = 0,
-    'Q' = 3,
-    'H' = 2
-}
 export interface IProps {
     value?: string;
-    ecLevel?: keyof typeof ErrorCorrectionLevel;
+    ecLevel?: 'L' | 'M' | 'Q' | 'H';
     size?: number;
     padding?: number;
     bgColor?: string;
@@ -16,7 +10,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
-    style?: Object;
+    style?: object;
 }
 export declare class QRCode extends React.Component<IProps, {}> {
     private canvas;
@@ -36,8 +30,7 @@ export declare class QRCode extends React.Component<IProps, {}> {
             width: string;
             padding: string;
             background: string;
-        } & Object;
+        };
         ref: React.RefObject<HTMLCanvasElement>;
     }, HTMLCanvasElement>;
 }
-export {};

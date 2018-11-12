@@ -1,6 +1,6 @@
 {
   "name": "react-qrcode-logo",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "React component to generate a QR Code customizable with logo and more properties",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -36,6 +36,6 @@
   },
   "dependencies": {
     "lodash.isequal": "^4.5.0",
-    "qr.js": "0.0.0"
+    "qrcode-generator": "^1.4.1"
   }
 }
