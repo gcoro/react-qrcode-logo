@@ -5,7 +5,7 @@ var __extends = (this && this.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    }
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -86,7 +86,7 @@ var QRCode = /** @class */ (function (_super) {
         }
         if (logoImage) {
             var image_1 = new Image();
-            image_1.setAttribute("crossOrigin",'Anonymous')
+            image_1.crossOrigin = 'Anonymous';
             image_1.onload = function () {
                 var dwidth = logoWidth || size * 0.2;
                 var dheight = logoHeight || dwidth;

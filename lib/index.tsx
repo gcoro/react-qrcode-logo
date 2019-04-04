@@ -95,6 +95,7 @@ export class QRCode extends React.Component<IProps, {}> {
 
         if (logoImage) {
             const image = new Image();
+            image.crossOrigin = 'Anonymous';
             image.onload = () => {
                 const dwidth = logoWidth || size * 0.2;
                 const dheight = logoHeight || dwidth;
