@@ -86,6 +86,7 @@ var QRCode = /** @class */ (function (_super) {
         }
         if (logoImage) {
             var image_1 = new Image();
+            image_1.setAttribute("crossOrigin",'Anonymous')
             image_1.onload = function () {
                 var dwidth = logoWidth || size * 0.2;
                 var dheight = logoHeight || dwidth;
