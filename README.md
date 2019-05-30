@@ -23,6 +23,7 @@ React.render(
 | ------------|---------------------------------------| ---------------------|-----|
 | `value`       | `string`                                | `https://reactjs.org/` | The value encoded in the QR Code. When the QR is decoded, this value will be returned |
 | `ecLevel`        | `string`                 |   `M`              | The error correction level of the QR Code. It can be either of 'L', 'M', 'Q', 'H' |
+| `enableCORS`         | `boolean`                 |   `false`              | Enable crossorigin attribute |
 | `size`        | `number` (in pixels)                    |   `150`                | The size of the canvas. Note that in this size is included both the QR Code size itself and the padding aound it |
 | `padding`     | `number` (in pixels)                    |   `10`                 | The padding around the QR Code. This will be the same color of the QR Code bgColor |
 | `bgColor`     | `string` (css color)                    | `#FFFFFF`              | Background color |
