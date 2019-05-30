@@ -2,7 +2,7 @@ import * as React from 'react';
 export interface IProps {
     value?: string;
     ecLevel?: 'L' | 'M' | 'Q' | 'H';
-    enCORS?: boolean;
+    enableCORS?: boolean;
     size?: number;
     padding?: number;
     bgColor?: string;

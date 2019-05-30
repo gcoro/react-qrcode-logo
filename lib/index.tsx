@@ -6,7 +6,7 @@ import * as ReactDOM from 'react-dom';
 export interface IProps {
     value?: string;
     ecLevel?: 'L' | 'M' | 'Q' | 'H';
-    enCORS?: boolean;
+    enableCORS?: boolean;
     size?: number;
     padding?: number;
     bgColor?: string;
@@ -25,7 +25,7 @@ export class QRCode extends React.Component<IProps, {}> {
     public static defaultProps: IProps = {
         value: 'https://reactjs.org/',
         ecLevel: 'M',
-        enCORS: false,
+        enableCORS: false,
         size: 150,
         padding: 10,
         bgColor: '#FFFFFF',
@@ -71,7 +71,7 @@ export class QRCode extends React.Component<IProps, {}> {
     }
 
     update() {
-        const { value, ecLevel, enCORS, size, bgColor, fgColor, logoImage, logoWidth, logoHeight, logoOpacity } = this.props;
+        const { value, ecLevel, enableCORS, size, bgColor, fgColor, logoImage, logoWidth, logoHeight, logoOpacity } = this.props;
 
         const myqrcode = qrcode(0, ecLevel);
         myqrcode.addData(QRCode.utf16to8(value));
@@ -97,7 +97,7 @@ export class QRCode extends React.Component<IProps, {}> {
 
         if (logoImage) {
             const image = new Image();
-            if (enCORS) {
+            if (enableCORS) {
                 image.crossOrigin = 'Anonymous';
             }
             image.onload = () => {
