@@ -1,8 +1,11 @@
 # Changelog
 
 ## Unreleased
+###Features
+Added new optional prop `padding`, to specify a circular pattern for the QR Code parts.
+
 ###Fixes
-Changed how padding is applied to the QR, from a percentage value to a pixel one.
+Fixed padding that was applied in percentage, and leaded to incorrect values sometimes.
 
 ## [v2.1.0]
 ###Features

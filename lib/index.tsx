@@ -15,6 +15,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
+    pattern?: 'square' | 'circle';
     style?: object;
 }
 
@@ -30,7 +31,8 @@ export class QRCode extends React.Component<IProps, {}> {
         padding: 10,
         bgColor: '#FFFFFF',
         fgColor: '#000000',
-        logoOpacity: 1
+        logoOpacity: 1,
+        pattern: 'square'
     };
 
     public static utf16to8(str: string): string {
@@ -71,7 +73,7 @@ export class QRCode extends React.Component<IProps, {}> {
     }
 
     update() {
-        const { value, ecLevel, enableCORS, size, bgColor, fgColor, logoImage, logoWidth, logoHeight, logoOpacity } = this.props;
+        const { value, ecLevel, enableCORS, size, bgColor, fgColor, logoImage, logoWidth, logoHeight, logoOpacity, pattern } = this.props;
 
         const qrCode = qrcode(0, ecLevel);
         qrCode.addData(QRCode.utf16to8(value));
@@ -86,12 +88,38 @@ export class QRCode extends React.Component<IProps, {}> {
         canvas.height = canvas.width = size * scale;
         ctx.scale(scale, scale);
 
-        for (let i = 0; i < (qrCode.getModuleCount()); i++) {
-            for (let j = 0; j < (qrCode.getModuleCount()); j++) {
-                ctx.fillStyle = qrCode.isDark(i, j) ? fgColor : bgColor;
-                const w = (Math.ceil((j + 1) * tileW) - Math.floor(j * tileW));
-                const h = (Math.ceil((i + 1) * tileH) - Math.floor(i * tileH));
-                ctx.fillRect(Math.round(j * tileW), Math.round(i * tileH), w, h);
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, size, size);
+
+        if (pattern === 'circle') {
+            ctx.fillStyle = fgColor;
+            for (let i = 0; i < (qrCode.getModuleCount()); i++) {
+                for (let j = 0; j < (qrCode.getModuleCount()); j++) {
+                    if (qrCode.isDark(i, j)) {
+                        const r = (Math.ceil((j + 1) * tileW) - Math.floor(j * tileW)) / 2;
+                        ctx.beginPath();
+                        ctx.arc(
+                            Math.round(j * tileW) + r,
+                            Math.round(i * tileH) + r,
+                            (r / 100) * 95,
+                            0,
+                            2 * Math.PI,
+                            false);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                }
+            }
+        } else {
+            for (let i = 0; i < (qrCode.getModuleCount()); i++) {
+                for (let j = 0; j < (qrCode.getModuleCount()); j++) {
+                    if (qrCode.isDark(i, j)) {
+                        ctx.fillStyle = fgColor;
+                        const w = (Math.ceil((j + 1) * tileW) - Math.floor(j * tileW));
+                        const h = (Math.ceil((i + 1) * tileH) - Math.floor(i * tileH));
+                        ctx.fillRect(Math.round(j * tileW), Math.round(i * tileH), w, h);
+                    }
+                }
             }
         }
 

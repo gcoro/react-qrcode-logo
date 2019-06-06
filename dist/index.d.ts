@@ -11,6 +11,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
+    pattern?: 'square' | 'circle';
     style?: object;
 }
 export declare class QRCode extends React.Component<IProps, {}> {
