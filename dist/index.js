@@ -109,7 +109,7 @@ var QRCode = /** @class */ (function (_super) {
             id: 'react-qrcode-logo',
             height: this.props.size,
             width: this.props.size,
-            style: __assign({ height: this.props.size + 'px', width: this.props.size + 'px', padding: (100 * this.props.padding) / this.props.size + '%', background: this.props.bgColor }, this.props.style),
+            style: __assign({ height: this.props.size + 'px', width: this.props.size + 'px', padding: this.props.padding + 'px', background: this.props.bgColor }, this.props.style),
             ref: this.canvas
         });
     };

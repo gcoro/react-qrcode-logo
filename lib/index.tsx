@@ -124,7 +124,7 @@ export class QRCode extends React.Component<IProps, {}> {
             style: {
                 height: this.props.size + 'px',
                 width: this.props.size + 'px',
-                padding: (100 * this.props.padding) / this.props.size + '%',
+                padding: this.props.padding + 'px',
                 background: this.props.bgColor,
                 ...this.props.style
             },
