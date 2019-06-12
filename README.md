@@ -21,10 +21,10 @@ React.render(
 ## Available Props
 | Prop        | Type                                  | Default value        | Description    |
 | ------------|---------------------------------------| ---------------------|-----|
-| `value`       | `string`                                | `https://reactjs.org/` | The value encoded in the QR Code. When the QR is decoded, this value will be returned |
+| `value`       | `string`                                | `https://reactjs.org/` | The value encoded in the QR Code. When the QR Code is decoded, this value will be returned |
 | `ecLevel`        | `L` &#124; `M` &#124; `Q` &#124; `H`              |   `M`              | The error correction level of the QR Code |
 | `enableCORS`         | `boolean`                 |   `false`              | Enable crossorigin attribute |
-| `size`        | `number` (in pixels)                    |   `150`                | The size of the canvas |
+| `size`        | `number` (in pixels)                    |   `150`                | The size of the QR Code |
 | `quietZone`     | `number` (in pixels)                    |   `10`                 | The size of the quiet zone around the QR Code. This will have the same color as QR Code bgColor |
 | `bgColor`     | `string` (css color)                    | `#FFFFFF`              | Background color |
 | `fgColor`     | `string` (css color)                    | `#000000`              | Foreground color |
