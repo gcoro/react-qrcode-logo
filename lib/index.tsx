@@ -8,7 +8,7 @@ export interface IProps {
     ecLevel?: 'L' | 'M' | 'Q' | 'H';
     enableCORS?: boolean;
     size?: number;
-    padding?: number;
+    quietZone?: number;
     bgColor?: string;
     fgColor?: string;
     logoImage?: string;
@@ -28,7 +28,7 @@ export class QRCode extends React.Component<IProps, {}> {
         ecLevel: 'M',
         enableCORS: false,
         size: 150,
-        padding: 10,
+        quietZone: 10,
         bgColor: '#FFFFFF',
         fgColor: '#000000',
         logoOpacity: 1,
@@ -177,7 +177,7 @@ export class QRCode extends React.Component<IProps, {}> {
             style: {
                 height: this.props.size + 'px',
                 width: this.props.size + 'px',
-                padding: this.props.padding + 'px',
+                padding: this.props.quietZone + 'px',
                 background: this.props.bgColor,
                 ...this.props.style
             },

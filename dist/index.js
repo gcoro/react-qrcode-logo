@@ -104,7 +104,7 @@ var QRCode = /** @class */ (function (_super) {
                 for (var col = 0; col < length; col++) {
                     if (qrCode.isDark(row, col)) {
                         ctx.beginPath();
-                        ctx.arc(Math.round(col * cellSize) + radius, Math.round(row * cellSize) + radius, (radius / 100) * 80, 0, 2 * Math.PI, false);
+                        ctx.arc(Math.round(col * cellSize) + radius, Math.round(row * cellSize) + radius, (radius / 100) * 75, 0, 2 * Math.PI, false);
                         ctx.closePath();
                         ctx.fill();
                     }
@@ -151,7 +151,7 @@ var QRCode = /** @class */ (function (_super) {
             id: 'react-qrcode-logo',
             height: this.props.size,
             width: this.props.size,
-            style: __assign({ height: this.props.size + 'px', width: this.props.size + 'px', padding: this.props.padding + 'px', background: this.props.bgColor }, this.props.style),
+            style: __assign({ height: this.props.size + 'px', width: this.props.size + 'px', padding: this.props.quietZone + 'px', background: this.props.bgColor }, this.props.style),
             ref: this.canvas
         });
     };
@@ -160,7 +160,7 @@ var QRCode = /** @class */ (function (_super) {
         ecLevel: 'M',
         enableCORS: false,
         size: 150,
-        padding: 10,
+        quietZone: 10,
         bgColor: '#FFFFFF',
         fgColor: '#000000',
         logoOpacity: 1,

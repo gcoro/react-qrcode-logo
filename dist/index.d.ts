@@ -4,7 +4,7 @@ export interface IProps {
     ecLevel?: 'L' | 'M' | 'Q' | 'H';
     enableCORS?: boolean;
     size?: number;
-    padding?: number;
+    quietZone?: number;
     bgColor?: string;
     fgColor?: string;
     logoImage?: string;
