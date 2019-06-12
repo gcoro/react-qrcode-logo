@@ -1,5 +1,5 @@
 import * as isEqual from 'lodash.isequal';
-import * as qrcode from 'qrcode-generator';
+import * as qrGenerator from 'qrcode-generator';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
@@ -15,7 +15,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
-    pattern?: 'square' | 'circle';
+    qrStyle?: 'squares' | 'dots';
     style?: object;
 }
 
@@ -32,10 +32,10 @@ export class QRCode extends React.Component<IProps, {}> {
         bgColor: '#FFFFFF',
         fgColor: '#000000',
         logoOpacity: 1,
-        pattern: 'square'
+        qrStyle: 'squares'
     };
 
-    public static utf16to8(str: string): string {
+    private static utf16to8(str: string): string {
         let out: string = '', i: number, c: number;
         const len: number = str.length;
         for (i = 0; i < len; i++) {
@@ -53,6 +53,27 @@ export class QRCode extends React.Component<IProps, {}> {
         }
         return out;
     }
+
+    private drawPositioningPattern(row, col, length, ctx) {
+        const cellSize = this.props.size / length;
+        for (let r = -1; r <= 7; r += 1) {
+            if (!(row + r <= -1 || length <= row + r)) {
+                for (let c = -1; c <= 7; c += 1) {
+                    if (!(col + c <= -1 || length <= col + c) &&
+                        (0 <= r && r <= 6 && (c == 0 || c == 6)) ||
+                        (0 <= c && c <= 6 && (r == 0 || r == 6)) ||
+                        (2 <= r && r <= 4 && 2 <= c && c <= 4)) {
+
+                        const w = (Math.ceil(((row + r) + 1) * cellSize) - Math.floor((row + r) * cellSize));
+                        const h = (Math.ceil(((col + c) + 1) * cellSize) - Math.floor((col + c) * cellSize));
+
+                        ctx.fillStyle = this.props.fgColor;
+                        ctx.fillRect(Math.round((row + r) * cellSize), Math.round((col + c) * cellSize), w, h);
+                    }
+                }
+            }
+        }
+    };
 
     constructor(props: IProps) {
         super(props);
@@ -73,17 +94,17 @@ export class QRCode extends React.Component<IProps, {}> {
     }
 
     update() {
-        const { value, ecLevel, enableCORS, size, bgColor, fgColor, logoImage, logoWidth, logoHeight, logoOpacity, pattern } = this.props;
+        const { value, ecLevel, enableCORS, size, bgColor, fgColor, logoImage, logoWidth, logoHeight, logoOpacity, qrStyle } = this.props;
 
-        const qrCode = qrcode(0, ecLevel);
+        const qrCode = qrGenerator(0, ecLevel);
         qrCode.addData(QRCode.utf16to8(value));
         qrCode.make();
 
         const canvas: HTMLCanvasElement = ReactDOM.findDOMNode(this.canvas.current) as HTMLCanvasElement;
-
         const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
-        const tileW = size / qrCode.getModuleCount();
-        const tileH = size / qrCode.getModuleCount();
+
+        const length = qrCode.getModuleCount();
+        const cellSize = size / length;
         const scale = (window.devicePixelRatio || 1);
         canvas.height = canvas.width = size * scale;
         ctx.scale(scale, scale);
@@ -91,17 +112,17 @@ export class QRCode extends React.Component<IProps, {}> {
         ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, size, size);
 
-        if (pattern === 'circle') {
+        if (qrStyle === 'dots') {
             ctx.fillStyle = fgColor;
-            for (let i = 0; i < (qrCode.getModuleCount()); i++) {
-                for (let j = 0; j < (qrCode.getModuleCount()); j++) {
-                    if (qrCode.isDark(i, j)) {
-                        const r = (Math.ceil((j + 1) * tileW) - Math.floor(j * tileW)) / 2;
+            const radius = cellSize / 2;
+            for (let row = 0; row < length; row++) {
+                for (let col = 0; col < length; col++) {
+                    if (qrCode.isDark(row, col)) {
                         ctx.beginPath();
                         ctx.arc(
-                            Math.round(j * tileW) + r,
-                            Math.round(i * tileH) + r,
-                            (r / 100) * 95,
+                            Math.round(col * cellSize) + radius,
+                            Math.round(row * cellSize) + radius,
+                            (radius / 100) * 75,
                             0,
                             2 * Math.PI,
                             false);
@@ -110,14 +131,18 @@ export class QRCode extends React.Component<IProps, {}> {
                     }
                 }
             }
+
+            this.drawPositioningPattern(0, 0, length, ctx);
+            this.drawPositioningPattern(length - 7, 0, length, ctx);
+            this.drawPositioningPattern(0, length - 7, length, ctx);
         } else {
-            for (let i = 0; i < (qrCode.getModuleCount()); i++) {
-                for (let j = 0; j < (qrCode.getModuleCount()); j++) {
-                    if (qrCode.isDark(i, j)) {
+            for (let row = 0; row < length; row++) {
+                for (let col = 0; col < length; col++) {
+                    if (qrCode.isDark(row, col)) {
                         ctx.fillStyle = fgColor;
-                        const w = (Math.ceil((j + 1) * tileW) - Math.floor(j * tileW));
-                        const h = (Math.ceil((i + 1) * tileH) - Math.floor(i * tileH));
-                        ctx.fillRect(Math.round(j * tileW), Math.round(i * tileH), w, h);
+                        const w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
+                        const h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
+                        ctx.fillRect(Math.round(col * cellSize), Math.round(row * cellSize), w, h);
                     }
                 }
             }

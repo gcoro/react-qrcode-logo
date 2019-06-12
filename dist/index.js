@@ -25,7 +25,7 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var isEqual = require("lodash.isequal");
-var qrcode = require("qrcode-generator");
+var qrGenerator = require("qrcode-generator");
 var React = require("react");
 var ReactDOM = require("react-dom");
 var QRCode = /** @class */ (function (_super) {
@@ -55,6 +55,25 @@ var QRCode = /** @class */ (function (_super) {
         }
         return out;
     };
+    QRCode.prototype.drawPositioningPattern = function (row, col, length, ctx) {
+        var cellSize = this.props.size / length;
+        for (var r = -1; r <= 7; r += 1) {
+            if (!(row + r <= -1 || length <= row + r)) {
+                for (var c = -1; c <= 7; c += 1) {
+                    if (!(col + c <= -1 || length <= col + c) &&
+                        (0 <= r && r <= 6 && (c == 0 || c == 6)) ||
+                        (0 <= c && c <= 6 && (r == 0 || r == 6)) ||
+                        (2 <= r && r <= 4 && 2 <= c && c <= 4)) {
+                        var w = (Math.ceil(((row + r) + 1) * cellSize) - Math.floor((row + r) * cellSize));
+                        var h = (Math.ceil(((col + c) + 1) * cellSize) - Math.floor((col + c) * cellSize));
+                        ctx.fillStyle = this.props.fgColor;
+                        ctx.fillRect(Math.round((row + r) * cellSize), Math.round((col + c) * cellSize), w, h);
+                    }
+                }
+            }
+        }
+    };
+    ;
     QRCode.prototype.shouldComponentUpdate = function (nextProps) {
         return !isEqual(this.props, nextProps);
     };
@@ -65,41 +84,44 @@ var QRCode = /** @class */ (function (_super) {
         this.update();
     };
     QRCode.prototype.update = function () {
-        var _a = this.props, value = _a.value, ecLevel = _a.ecLevel, enableCORS = _a.enableCORS, size = _a.size, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoWidth = _a.logoWidth, logoHeight = _a.logoHeight, logoOpacity = _a.logoOpacity, pattern = _a.pattern;
-        var qrCode = qrcode(0, ecLevel);
+        var _a = this.props, value = _a.value, ecLevel = _a.ecLevel, enableCORS = _a.enableCORS, size = _a.size, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoWidth = _a.logoWidth, logoHeight = _a.logoHeight, logoOpacity = _a.logoOpacity, qrStyle = _a.qrStyle;
+        var qrCode = qrGenerator(0, ecLevel);
         qrCode.addData(QRCode.utf16to8(value));
         qrCode.make();
         var canvas = ReactDOM.findDOMNode(this.canvas.current);
         var ctx = canvas.getContext('2d');
-        var tileW = size / qrCode.getModuleCount();
-        var tileH = size / qrCode.getModuleCount();
+        var length = qrCode.getModuleCount();
+        var cellSize = size / length;
         var scale = (window.devicePixelRatio || 1);
         canvas.height = canvas.width = size * scale;
         ctx.scale(scale, scale);
         ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, size, size);
-        if (pattern === 'circle') {
+        if (qrStyle === 'dots') {
             ctx.fillStyle = fgColor;
-            for (var i = 0; i < (qrCode.getModuleCount()); i++) {
-                for (var j = 0; j < (qrCode.getModuleCount()); j++) {
-                    if (qrCode.isDark(i, j)) {
-                        var r = (Math.ceil((j + 1) * tileW) - Math.floor(j * tileW)) / 2;
+            var radius = cellSize / 2;
+            for (var row = 0; row < length; row++) {
+                for (var col = 0; col < length; col++) {
+                    if (qrCode.isDark(row, col)) {
                         ctx.beginPath();
-                        ctx.arc(Math.round(j * tileW) + r, Math.round(i * tileH) + r, (r / 100) * 95, 0, 2 * Math.PI, false);
+                        ctx.arc(Math.round(col * cellSize) + radius, Math.round(row * cellSize) + radius, (radius / 100) * 80, 0, 2 * Math.PI, false);
                         ctx.closePath();
                         ctx.fill();
                     }
                 }
             }
+            this.drawPositioningPattern(0, 0, length, ctx);
+            this.drawPositioningPattern(length - 7, 0, length, ctx);
+            this.drawPositioningPattern(0, length - 7, length, ctx);
         }
         else {
-            for (var i = 0; i < (qrCode.getModuleCount()); i++) {
-                for (var j = 0; j < (qrCode.getModuleCount()); j++) {
-                    if (qrCode.isDark(i, j)) {
+            for (var row = 0; row < length; row++) {
+                for (var col = 0; col < length; col++) {
+                    if (qrCode.isDark(row, col)) {
                         ctx.fillStyle = fgColor;
-                        var w = (Math.ceil((j + 1) * tileW) - Math.floor(j * tileW));
-                        var h = (Math.ceil((i + 1) * tileH) - Math.floor(i * tileH));
-                        ctx.fillRect(Math.round(j * tileW), Math.round(i * tileH), w, h);
+                        var w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
+                        var h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
+                        ctx.fillRect(Math.round(col * cellSize), Math.round(row * cellSize), w, h);
                     }
                 }
             }
@@ -142,7 +164,7 @@ var QRCode = /** @class */ (function (_super) {
         bgColor: '#FFFFFF',
         fgColor: '#000000',
         logoOpacity: 1,
-        pattern: 'square'
+        qrStyle: 'squares'
     };
     return QRCode;
 }(React.Component));

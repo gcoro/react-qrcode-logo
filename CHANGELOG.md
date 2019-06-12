@@ -2,7 +2,7 @@
 
 ## Unreleased
 ###Features
-Added new optional prop `padding`, to specify a circular pattern for the QR Code parts.
+Added new optional prop `qrStyle` ('squares' | 'dots'), to specify a different pattern for the QR Code main part.
 
 ###Fixes
 Fixed padding that was applied in percentage, and leaded to incorrect values sometimes.

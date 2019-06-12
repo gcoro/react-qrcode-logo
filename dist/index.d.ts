@@ -11,13 +11,14 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
-    pattern?: 'square' | 'circle';
+    qrStyle?: 'squares' | 'dots';
     style?: object;
 }
 export declare class QRCode extends React.Component<IProps, {}> {
     private canvas;
     static defaultProps: IProps;
-    static utf16to8(str: string): string;
+    private static utf16to8;
+    private drawPositioningPattern;
     constructor(props: IProps);
     shouldComponentUpdate(nextProps: IProps): boolean;
     componentDidMount(): void;
