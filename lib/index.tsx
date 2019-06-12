@@ -56,9 +56,9 @@ export class QRCode extends React.Component<IProps, {}> {
 
     private drawPositioningPattern(row, col, length, ctx) {
         const cellSize = this.props.size / length;
-        for (let r = -1; r <= 7; r += 1) {
+        for (let r = -1; r <= 7; r++) {
             if (!(row + r <= -1 || length <= row + r)) {
-                for (let c = -1; c <= 7; c += 1) {
+                for (let c = -1; c <= 7; c++) {
                     if (!(col + c <= -1 || length <= col + c) &&
                         (0 <= r && r <= 6 && (c == 0 || c == 6)) ||
                         (0 <= c && c <= 6 && (r == 0 || r == 6)) ||
@@ -178,8 +178,7 @@ export class QRCode extends React.Component<IProps, {}> {
                 height: this.props.size + 'px',
                 width: this.props.size + 'px',
                 padding: this.props.quietZone + 'px',
-                background: this.props.bgColor,
-                ...this.props.style
+                background: this.props.bgColor
             },
             ref: this.canvas
         });

@@ -12,17 +12,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var isEqual = require("lodash.isequal");
 var qrGenerator = require("qrcode-generator");
@@ -57,9 +46,9 @@ var QRCode = /** @class */ (function (_super) {
     };
     QRCode.prototype.drawPositioningPattern = function (row, col, length, ctx) {
         var cellSize = this.props.size / length;
-        for (var r = -1; r <= 7; r += 1) {
+        for (var r = -1; r <= 7; r++) {
             if (!(row + r <= -1 || length <= row + r)) {
-                for (var c = -1; c <= 7; c += 1) {
+                for (var c = -1; c <= 7; c++) {
                     if (!(col + c <= -1 || length <= col + c) &&
                         (0 <= r && r <= 6 && (c == 0 || c == 6)) ||
                         (0 <= c && c <= 6 && (r == 0 || r == 6)) ||
@@ -151,7 +140,12 @@ var QRCode = /** @class */ (function (_super) {
             id: 'react-qrcode-logo',
             height: this.props.size,
             width: this.props.size,
-            style: __assign({ height: this.props.size + 'px', width: this.props.size + 'px', padding: this.props.quietZone + 'px', background: this.props.bgColor }, this.props.style),
+            style: {
+                height: this.props.size + 'px',
+                width: this.props.size + 'px',
+                padding: this.props.quietZone + 'px',
+                background: this.props.bgColor
+            },
             ref: this.canvas
         });
     };
