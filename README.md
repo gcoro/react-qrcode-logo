@@ -1,5 +1,5 @@
 # react-qrcode-logo
-Typescript React component to generate a customizable QR Code. Inspired by [cssivision/qrcode-react](https://github.com/cssivision/qrcode-react) and [zpao/qrcode.react](https://github.com/zpao/qrcode.react).
+Typescript React component to generate a customizable QR Code.
 
 ## Installation
 
@@ -18,7 +18,7 @@ React.render(
 );
 ```
 
-## Available Props
+## Props
 | Prop        | Type                                  | Default value        | Description    |
 | ------------|---------------------------------------| ---------------------|-----|
 | `value`       | `string`                                | `https://reactjs.org/` | The value encoded in the QR Code. When the QR Code is decoded, this value will be returned |
@@ -33,3 +33,9 @@ React.render(
 | `logoHeight`  | `number` (in pixels)                    | `logoWidth`                     | Logo image height |
 | `logoOpacity` | `number` (css opacity 0 <= x <= 1)      | `1`                    | Logo opacity. This allows you to modify the transparency of your logo, so that it won't compromise the readability of the QR Code |
 | `qrStyle` | `squares` &#124; `dots` | `squares`  | Style of the QR Code modules |
+
+## Credits 
+This package was inspired by [cssivision/qrcode-react](https://github.com/cssivision/qrcode-react) and [zpao/qrcode.react](https://github.com/zpao/qrcode.react). Also looked up some parts from [kazuhikoarase/qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) (which this package depends on). 
+
+## Contributing
+PR's are welcome. Thanks to everyone who contributed :)
