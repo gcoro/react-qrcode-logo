@@ -4,19 +4,21 @@ export interface IProps {
     ecLevel?: 'L' | 'M' | 'Q' | 'H';
     enableCORS?: boolean;
     size?: number;
-    padding?: number;
+    quietZone?: number;
     bgColor?: string;
     fgColor?: string;
     logoImage?: string;
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
+    qrStyle?: 'squares' | 'dots';
     style?: object;
 }
 export declare class QRCode extends React.Component<IProps, {}> {
     private canvas;
     static defaultProps: IProps;
-    static utf16to8(str: string): string;
+    private static utf16to8;
+    private drawPositioningPattern;
     constructor(props: IProps);
     shouldComponentUpdate(nextProps: IProps): boolean;
     componentDidMount(): void;

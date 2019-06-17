@@ -1,5 +1,5 @@
 import * as isEqual from 'lodash.isequal';
-import * as qrcode from 'qrcode-generator';
+import * as qrGenerator from 'qrcode-generator';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
@@ -8,13 +8,14 @@ export interface IProps {
     ecLevel?: 'L' | 'M' | 'Q' | 'H';
     enableCORS?: boolean;
     size?: number;
-    padding?: number;
+    quietZone?: number;
     bgColor?: string;
     fgColor?: string;
     logoImage?: string;
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
+    qrStyle?: 'squares' | 'dots';
     style?: object;
 }
 
@@ -27,13 +28,14 @@ export class QRCode extends React.Component<IProps, {}> {
         ecLevel: 'M',
         enableCORS: false,
         size: 150,
-        padding: 10,
+        quietZone: 10,
         bgColor: '#FFFFFF',
         fgColor: '#000000',
-        logoOpacity: 1
+        logoOpacity: 1,
+        qrStyle: 'squares'
     };
 
-    public static utf16to8(str: string): string {
+    private static utf16to8(str: string): string {
         let out: string = '', i: number, c: number;
         const len: number = str.length;
         for (i = 0; i < len; i++) {
@@ -51,6 +53,27 @@ export class QRCode extends React.Component<IProps, {}> {
         }
         return out;
     }
+
+    private drawPositioningPattern(row, col, length, ctx) {
+        const cellSize = this.props.size / length;
+        for (let r = -1; r <= 7; r++) {
+            if (!(row + r <= -1 || length <= row + r)) {
+                for (let c = -1; c <= 7; c++) {
+                    if (!(col + c <= -1 || length <= col + c) &&
+                        (0 <= r && r <= 6 && (c == 0 || c == 6)) ||
+                        (0 <= c && c <= 6 && (r == 0 || r == 6)) ||
+                        (2 <= r && r <= 4 && 2 <= c && c <= 4)) {
+
+                        const w = (Math.ceil(((row + r) + 1) * cellSize) - Math.floor((row + r) * cellSize));
+                        const h = (Math.ceil(((col + c) + 1) * cellSize) - Math.floor((col + c) * cellSize));
+
+                        ctx.fillStyle = this.props.fgColor;
+                        ctx.fillRect(Math.round((row + r) * cellSize), Math.round((col + c) * cellSize), w, h);
+                    }
+                }
+            }
+        }
+    };
 
     constructor(props: IProps) {
         super(props);
@@ -71,27 +94,57 @@ export class QRCode extends React.Component<IProps, {}> {
     }
 
     update() {
-        const { value, ecLevel, enableCORS, size, bgColor, fgColor, logoImage, logoWidth, logoHeight, logoOpacity } = this.props;
+        const { value, ecLevel, enableCORS, size, bgColor, fgColor, logoImage, logoWidth, logoHeight, logoOpacity, qrStyle } = this.props;
 
-        const myqrcode = qrcode(0, ecLevel);
-        myqrcode.addData(QRCode.utf16to8(value));
-        myqrcode.make();
+        const qrCode = qrGenerator(0, ecLevel);
+        qrCode.addData(QRCode.utf16to8(value));
+        qrCode.make();
 
         const canvas: HTMLCanvasElement = ReactDOM.findDOMNode(this.canvas.current) as HTMLCanvasElement;
-
         const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
-        const tileW = size / myqrcode.getModuleCount();
-        const tileH = size / myqrcode.getModuleCount();
+
+        const length = qrCode.getModuleCount();
+        const cellSize = size / length;
         const scale = (window.devicePixelRatio || 1);
         canvas.height = canvas.width = size * scale;
         ctx.scale(scale, scale);
 
-        for (let i = 0; i < (myqrcode.getModuleCount()); i++) {
-            for (let j = 0; j < (myqrcode.getModuleCount()); j++) {
-                ctx.fillStyle = myqrcode.isDark(i, j) ? fgColor : bgColor;
-                const w = (Math.ceil((j + 1) * tileW) - Math.floor(j * tileW));
-                const h = (Math.ceil((i + 1) * tileH) - Math.floor(i * tileH));
-                ctx.fillRect(Math.round(j * tileW), Math.round(i * tileH), w, h);
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, size, size);
+
+        if (qrStyle === 'dots') {
+            ctx.fillStyle = fgColor;
+            const radius = cellSize / 2;
+            for (let row = 0; row < length; row++) {
+                for (let col = 0; col < length; col++) {
+                    if (qrCode.isDark(row, col)) {
+                        ctx.beginPath();
+                        ctx.arc(
+                            Math.round(col * cellSize) + radius,
+                            Math.round(row * cellSize) + radius,
+                            (radius / 100) * 75,
+                            0,
+                            2 * Math.PI,
+                            false);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                }
+            }
+
+            this.drawPositioningPattern(0, 0, length, ctx);
+            this.drawPositioningPattern(length - 7, 0, length, ctx);
+            this.drawPositioningPattern(0, length - 7, length, ctx);
+        } else {
+            for (let row = 0; row < length; row++) {
+                for (let col = 0; col < length; col++) {
+                    if (qrCode.isDark(row, col)) {
+                        ctx.fillStyle = fgColor;
+                        const w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
+                        const h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
+                        ctx.fillRect(Math.round(col * cellSize), Math.round(row * cellSize), w, h);
+                    }
+                }
             }
         }
 
@@ -124,9 +177,8 @@ export class QRCode extends React.Component<IProps, {}> {
             style: {
                 height: this.props.size + 'px',
                 width: this.props.size + 'px',
-                padding: (100 * this.props.padding) / this.props.size + '%',
-                background: this.props.bgColor,
-                ...this.props.style
+                padding: this.props.quietZone + 'px',
+                background: this.props.bgColor
             },
             ref: this.canvas
         });
