@@ -3,12 +3,12 @@ Typescript React component to generate a customizable QR Code.
 
 ## Installation
 
-```
+```bash
 npm install --save react-qrcode-logo
 ```
 ## Usage 
 
-```
+```javascript
 import * as React from 'react';
 import { QRCode } from 'react-qrcode-logo';
 
