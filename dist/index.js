@@ -130,7 +130,7 @@ var QRCode = /** @class */ (function (_super) {
                 image_1.height = dheight;
                 ctx.save();
                 ctx.globalAlpha = logoOpacity;
-                ctx.drawImage(image_1, dx, dy, dwidth, dheight);
+                ctx.drawImage(image_1, dx + offset, dy + offset, dwidth, dheight);
                 ctx.restore();
             };
             image_1.src = logoImage;

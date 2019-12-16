@@ -176,7 +176,7 @@ export class QRCode extends React.Component<IProps, {}> {
                 image.height = dheight;
                 ctx.save();
                 ctx.globalAlpha = logoOpacity;
-                ctx.drawImage(image, dx, dy, dwidth, dheight);
+                ctx.drawImage(image, dx + offset, dy + offset, dwidth, dheight);
                 ctx.restore();
             };
             image.src = logoImage;
