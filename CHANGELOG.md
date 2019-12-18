@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.2.1]
+### Fixes
+- Changed `quietZone` implementation so that it's included directly in the canvas, instead of just an HTML padding. This fixes the issue that caused the QR Code to appear without the quiet zone when it got saved.
+
 ## [v2.2.0]
 ### Features
 - Added new optional prop `qrStyle` ('squares' | 'dots'), to specify a different pattern for the QR Code main part.

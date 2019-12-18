@@ -31,8 +31,6 @@ export declare class QRCode extends React.Component<IProps, {}> {
         style: {
             height: string;
             width: string;
-            padding: string;
-            background: string;
         };
         ref: React.RefObject<HTMLCanvasElement>;
     }, HTMLCanvasElement>;

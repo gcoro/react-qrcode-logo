@@ -44,8 +44,7 @@ var QRCode = /** @class */ (function (_super) {
         }
         return out;
     };
-    QRCode.prototype.drawPositioningPattern = function (row, col, length, ctx) {
-        var cellSize = this.props.size / length;
+    QRCode.prototype.drawPositioningPattern = function (cellSize, offset, row, col, length, ctx) {
         for (var r = -1; r <= 7; r++) {
             if (!(row + r <= -1 || length <= row + r)) {
                 for (var c = -1; c <= 7; c++) {
@@ -56,7 +55,7 @@ var QRCode = /** @class */ (function (_super) {
                         var w = (Math.ceil(((row + r) + 1) * cellSize) - Math.floor((row + r) * cellSize));
                         var h = (Math.ceil(((col + c) + 1) * cellSize) - Math.floor((col + c) * cellSize));
                         ctx.fillStyle = this.props.fgColor;
-                        ctx.fillRect(Math.round((row + r) * cellSize), Math.round((col + c) * cellSize), w, h);
+                        ctx.fillRect(Math.round((row + r) * cellSize) + offset, Math.round((col + c) * cellSize) + offset, w, h);
                     }
                 }
             }
@@ -73,19 +72,21 @@ var QRCode = /** @class */ (function (_super) {
         this.update();
     };
     QRCode.prototype.update = function () {
-        var _a = this.props, value = _a.value, ecLevel = _a.ecLevel, enableCORS = _a.enableCORS, size = _a.size, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoWidth = _a.logoWidth, logoHeight = _a.logoHeight, logoOpacity = _a.logoOpacity, qrStyle = _a.qrStyle;
+        var _a = this.props, value = _a.value, ecLevel = _a.ecLevel, enableCORS = _a.enableCORS, size = _a.size, quietZone = _a.quietZone, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoWidth = _a.logoWidth, logoHeight = _a.logoHeight, logoOpacity = _a.logoOpacity, qrStyle = _a.qrStyle;
         var qrCode = qrGenerator(0, ecLevel);
         qrCode.addData(QRCode.utf16to8(value));
         qrCode.make();
         var canvas = ReactDOM.findDOMNode(this.canvas.current);
         var ctx = canvas.getContext('2d');
+        var canvasSize = +size + (2 * +quietZone);
         var length = qrCode.getModuleCount();
         var cellSize = size / length;
         var scale = (window.devicePixelRatio || 1);
-        canvas.height = canvas.width = size * scale;
+        canvas.height = canvas.width = canvasSize * scale;
         ctx.scale(scale, scale);
         ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, size, size);
+        ctx.fillRect(0, 0, canvasSize, canvasSize);
+        var offset = +quietZone;
         if (qrStyle === 'dots') {
             ctx.fillStyle = fgColor;
             var radius = cellSize / 2;
@@ -93,15 +94,15 @@ var QRCode = /** @class */ (function (_super) {
                 for (var col = 0; col < length; col++) {
                     if (qrCode.isDark(row, col)) {
                         ctx.beginPath();
-                        ctx.arc(Math.round(col * cellSize) + radius, Math.round(row * cellSize) + radius, (radius / 100) * 75, 0, 2 * Math.PI, false);
+                        ctx.arc(Math.round(col * cellSize) + radius + offset, Math.round(row * cellSize) + radius + offset, (radius / 100) * 75, 0, 2 * Math.PI, false);
                         ctx.closePath();
                         ctx.fill();
                     }
                 }
             }
-            this.drawPositioningPattern(0, 0, length, ctx);
-            this.drawPositioningPattern(length - 7, 0, length, ctx);
-            this.drawPositioningPattern(0, length - 7, length, ctx);
+            this.drawPositioningPattern(cellSize, offset, 0, 0, length, ctx);
+            this.drawPositioningPattern(cellSize, offset, length - 7, 0, length, ctx);
+            this.drawPositioningPattern(cellSize, offset, 0, length - 7, length, ctx);
         }
         else {
             for (var row = 0; row < length; row++) {
@@ -110,7 +111,7 @@ var QRCode = /** @class */ (function (_super) {
                         ctx.fillStyle = fgColor;
                         var w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
                         var h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
-                        ctx.fillRect(Math.round(col * cellSize), Math.round(row * cellSize), w, h);
+                        ctx.fillRect(Math.round(col * cellSize) + offset, Math.round(row * cellSize) + offset, w, h);
                     }
                 }
             }
@@ -129,23 +130,19 @@ var QRCode = /** @class */ (function (_super) {
                 image_1.height = dheight;
                 ctx.save();
                 ctx.globalAlpha = logoOpacity;
-                ctx.drawImage(image_1, dx, dy, dwidth, dheight);
+                ctx.drawImage(image_1, dx + offset, dy + offset, dwidth, dheight);
                 ctx.restore();
             };
             image_1.src = logoImage;
         }
     };
     QRCode.prototype.render = function () {
+        var size = +this.props.size + (2 * +this.props.quietZone);
         return React.createElement('canvas', {
             id: 'react-qrcode-logo',
-            height: this.props.size,
-            width: this.props.size,
-            style: {
-                height: this.props.size + 'px',
-                width: this.props.size + 'px',
-                padding: this.props.quietZone + 'px',
-                background: this.props.bgColor
-            },
+            height: size,
+            width: size,
+            style: { height: size + 'px', width: size + 'px' },
             ref: this.canvas
         });
     };
