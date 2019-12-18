@@ -1,6 +1,12 @@
 # react-qrcode-logo
 Typescript React component to generate a customizable QR Code.
 
+<div style="display: flex; flex-direction: row;">
+	<img src="res/qrcode-react.png" height="256" width="256">
+	<img src="res/qrcode-miku.png" height="256" width="256">
+	<img src="res/qrcode-android.png" height="256" width="256">
+</div>
+
 ## Installation
 
 ```bash
