@@ -37,8 +37,32 @@ React.render(
 ## Example 
 You can find a very simple demo project [here](https://github.com/gcoro/QRCodeCustomizer). 
 
-## Credits 
-This package was inspired by [cssivision/qrcode-react](https://github.com/cssivision/qrcode-react) and [zpao/qrcode.react](https://github.com/zpao/qrcode.react). Also looked up some parts from [kazuhikoarase/qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) (which this package depends on). 
-
 ## Contributing
-PR's are welcome. Thanks to everyone who contributed :)
+Thanks to everyone who contributed :) PRs and suggestions are welcome.
+
+<table>
+<tr><td align="center" valign="top">
+			<a href="https://github.com/gcoro">
+			<img src="https://avatars0.githubusercontent.com/u/37499369?v=4" width="100px;" alt="gcoro" /><br />
+			<sup><b>gcoro</b></sup></a><br />
+			</td><td align="center" valign="top">
+			<a href="https://github.com/JChord">
+			<img src="https://avatars3.githubusercontent.com/u/981214?v=4" width="100px;" alt="JChord" /><br />
+			<sup><b>JChord</b></sup></a><br />
+			</td><td align="center" valign="top">
+			<a href="https://github.com/mushang11">
+			<img src="https://avatars0.githubusercontent.com/u/13930277?v=4" width="100px;" alt="mushang11" /><br />
+			<sup><b>mushang11</b></sup></a><br />
+			</td><td align="center" valign="top">
+			<a href="https://github.com/Trexy94">
+			<img src="https://avatars0.githubusercontent.com/u/16225761?v=4" width="100px;" alt="Trexy94" /><br />
+			<sup><b>Trexy94</b></sup></a><br />
+			</td><td align="center" valign="top">
+			<a href="https://github.com/ty-everett">
+			<img src="https://avatars1.githubusercontent.com/u/23272461?v=4" width="100px;" alt="ty-everett" /><br />
+			<sup><b>ty-everett</b></sup></a><br />
+			</td></tr>
+</table>
+
+## More credits 
+This package was inspired by [cssivision/qrcode-react](https://github.com/cssivision/qrcode-react) and [zpao/qrcode.react](https://github.com/zpao/qrcode.react). Also looked up some parts from [kazuhikoarase/qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) (which this package depends on). 
