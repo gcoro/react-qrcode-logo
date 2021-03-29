@@ -13,6 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.QRCode = void 0;
 var isEqual = require("lodash.isequal");
 var qrGenerator = require("qrcode-generator");
 var React = require("react");

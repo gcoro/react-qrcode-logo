@@ -30,12 +30,16 @@
   "devDependencies": {
     "@types/react": "^16.4.7",
     "@types/react-dom": "^16.0.6",
-    "typescript": "^3.0.1"
+    "typescript": "^3.0.1",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1"
   },
   "dependencies": {
     "lodash.isequal": "^4.5.0",
-    "qrcode-generator": "^1.4.1",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "qrcode-generator": "^1.4.1"
+  },
+  "peerDependencies": {
+    "react": ">=16.4.1",
+    "react-dom": ">=16.4.1"
   }
 }
