@@ -49,23 +49,27 @@ Thanks to everyone who contributed :) PRs and suggestions are welcome.
 <table>
 <tr><td align="center" valign="top">
 			<a href="https://github.com/gcoro">
-			<img src="https://avatars0.githubusercontent.com/u/37499369?v=4" width="100px;" alt="gcoro" /><br />
+			<img src="https://avatars.githubusercontent.com/u/37499369?v=4" width="100px;" alt="gcoro" /><br />
 			<sup><b>gcoro</b></sup></a><br />
 			</td><td align="center" valign="top">
 			<a href="https://github.com/JChord">
-			<img src="https://avatars3.githubusercontent.com/u/981214?v=4" width="100px;" alt="JChord" /><br />
+			<img src="https://avatars.githubusercontent.com/u/981214?v=4" width="100px;" alt="JChord" /><br />
 			<sup><b>JChord</b></sup></a><br />
 			</td><td align="center" valign="top">
 			<a href="https://github.com/mushang11">
-			<img src="https://avatars0.githubusercontent.com/u/13930277?v=4" width="100px;" alt="mushang11" /><br />
+			<img src="https://avatars.githubusercontent.com/u/13930277?v=4" width="100px;" alt="mushang11" /><br />
 			<sup><b>mushang11</b></sup></a><br />
 			</td><td align="center" valign="top">
+			<a href="https://github.com/halitogunc">
+			<img src="https://avatars.githubusercontent.com/u/13641726?v=4" width="100px;" alt="halitogunc" /><br />
+			<sup><b>halitogunc</b></sup></a><br />
+			</td><td align="center" valign="top">
 			<a href="https://github.com/Trexy94">
-			<img src="https://avatars0.githubusercontent.com/u/16225761?v=4" width="100px;" alt="Trexy94" /><br />
+			<img src="https://avatars.githubusercontent.com/u/16225761?v=4" width="100px;" alt="Trexy94" /><br />
 			<sup><b>Trexy94</b></sup></a><br />
 			</td><td align="center" valign="top">
 			<a href="https://github.com/ty-everett">
-			<img src="https://avatars1.githubusercontent.com/u/23272461?v=4" width="100px;" alt="ty-everett" /><br />
+			<img src="https://avatars.githubusercontent.com/u/23272461?v=4" width="100px;" alt="ty-everett" /><br />
 			<sup><b>ty-everett</b></sup></a><br />
 			</td></tr>
 </table>
