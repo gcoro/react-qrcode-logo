@@ -1,4 +1,6 @@
 import * as React from 'react';
+declare type CornerRadii = number[];
+declare type CornerRadiusConfig = number | CornerRadii | CornerRadii[];
 export interface IProps {
     value?: string;
     ecLevel?: 'L' | 'M' | 'Q' | 'H';
@@ -11,6 +13,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
+    eyeRadius?: number | CornerRadiusConfig;
     qrStyle?: 'squares' | 'dots';
     style?: object;
 }
@@ -18,7 +21,9 @@ export declare class QRCode extends React.Component<IProps, {}> {
     private canvas;
     static defaultProps: IProps;
     private static utf16to8;
+    private drawRoundedSquare;
     private drawPositioningPattern;
+    private isInPositioninZone;
     constructor(props: IProps);
     shouldComponentUpdate(nextProps: IProps): boolean;
     componentDidMount(): void;
@@ -35,3 +40,4 @@ export declare class QRCode extends React.Component<IProps, {}> {
         ref: React.RefObject<HTMLCanvasElement>;
     }, HTMLCanvasElement>;
 }
+export {};
