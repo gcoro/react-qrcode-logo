@@ -94,9 +94,9 @@ var QRCode = /** @class */ (function (_super) {
         var lineWidth = Math.ceil(cellSize);
         var radiiOuter;
         var radiiInner;
-        if (Array.isArray(radii[0])) {
-            radiiOuter = radii[0];
-            radiiInner = (radii[1] || 0);
+        if (typeof radii !== 'number' && !Array.isArray(radii)) {
+            radiiOuter = radii.outer || 0;
+            radiiInner = radii.inner || 0;
         }
         else {
             radiiOuter = radii;
@@ -182,7 +182,7 @@ var QRCode = /** @class */ (function (_super) {
         for (var i = 0; i < 3; i++) {
             var _b = positioningZones[i], row = _b.row, col = _b.col;
             var radii = eyeRadius[i];
-            if (!Array.isArray(radii[i])) {
+            if (typeof radii == 'number') {
                 radii = [radii, radii, radii, radii];
             }
             this.drawPositioningPattern(ctx, cellSize, offset, row, col, radii);

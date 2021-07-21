@@ -1,6 +1,9 @@
 import * as React from 'react';
-declare type CornerRadii = number[];
-declare type CornerRadiusConfig = number | CornerRadii | CornerRadii[];
+declare type CornerRadii = number | number[] | InnerOuterRadii;
+declare type InnerOuterRadii = {
+    inner: number | number[];
+    outer: number | number[];
+};
 export interface IProps {
     value?: string;
     ecLevel?: 'L' | 'M' | 'Q' | 'H';
@@ -13,7 +16,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
-    eyeRadius?: number | CornerRadiusConfig;
+    eyeRadius?: CornerRadii[];
     qrStyle?: 'squares' | 'dots';
     style?: object;
 }

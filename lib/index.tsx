@@ -4,8 +4,11 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 
-type CornerRadii = number[];
-type CornerRadiusConfig = number | CornerRadii | CornerRadii[];
+type CornerRadii = number | number[] | InnerOuterRadii;
+type InnerOuterRadii = {
+    inner: number | number[],
+    outer: number | number[],
+}
 
 export interface IProps {
     value?: string;
@@ -19,7 +22,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
-    eyeRadius?: number | CornerRadiusConfig;
+    eyeRadius?: CornerRadii[];
     qrStyle?: 'squares' | 'dots';
     style?: object;
 }
@@ -68,7 +71,7 @@ export class QRCode extends React.Component<IProps, {}> {
     /**
      * Draw a rounded square in the canvas
      */
-    private drawRoundedSquare(lineWidth: number, x: number, y: number, size: number, radii: CornerRadii, fill: boolean, ctx) {
+    private drawRoundedSquare(lineWidth: number, x: number, y: number, size: number, radii: number | number[], fill: boolean, ctx) {
         ctx.lineWidth= lineWidth;
 
         // Adjust coordinates so that the outside of the stroke is aligned to the edges
@@ -84,7 +87,7 @@ export class QRCode extends React.Component<IProps, {}> {
         radii = radii.map((r) => {
             r = Math.min(r, size/2);
             return (r < 0) ? 0 : r;
-        }) as CornerRadii;
+        });
 
         const rTopLeft = radii[0] || 0;
         const rTopRight = radii[1] || 0;
@@ -118,14 +121,14 @@ export class QRCode extends React.Component<IProps, {}> {
     /**
      * Draw a single positional pattern eye.
      */
-    private drawPositioningPattern(ctx, cellSize, offset, row, col, radii: CornerRadiusConfig=[0,0,0,0]) {
+    private drawPositioningPattern(ctx, cellSize, offset, row, col, radii: CornerRadii=[0,0,0,0]) {
         const lineWidth = Math.ceil(cellSize);
 
         let radiiOuter;
         let radiiInner;
-        if (Array.isArray(radii[0])) {
-            radiiOuter = radii[0] as CornerRadii;
-            radiiInner = (radii[1] || 0) as CornerRadii;
+        if (typeof radii !== 'number' && !Array.isArray(radii)) {
+            radiiOuter = radii.outer || 0;
+            radiiInner = radii.inner || 0;
         } else {
             radiiOuter = radii as CornerRadii;
             radiiInner = radiiOuter;
@@ -252,8 +255,8 @@ export class QRCode extends React.Component<IProps, {}> {
         for (let i = 0; i < 3; i++) {
             const { row, col } = positioningZones[i];
             let radii = eyeRadius[i];
-            if (!Array.isArray(radii[i])) {
-                radii = [radii, radii, radii, radii] as CornerRadiusConfig;
+            if (typeof radii == 'number') {
+                radii = [radii, radii, radii, radii] as CornerRadii;
             }
             this.drawPositioningPattern(ctx, cellSize, offset, row, col, radii);
         }
