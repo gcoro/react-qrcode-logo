@@ -45,6 +45,9 @@ var QRCode = /** @class */ (function (_super) {
         }
         return out;
     };
+    /**
+     * Draw a rounded square in the canvas
+     */
     QRCode.prototype.drawRoundedSquare = function (lineWidth, x, y, size, radii, fill, ctx) {
         ctx.lineWidth = lineWidth;
         // Adjust coordinates so that the outside of the stroke is aligned to the edges
@@ -83,6 +86,9 @@ var QRCode = /** @class */ (function (_super) {
             ctx.fill();
         }
     };
+    /**
+     * Draw a single positional pattern eye.
+     */
     QRCode.prototype.drawPositioningPattern = function (ctx, cellSize, offset, row, col, radii) {
         if (radii === void 0) { radii = [0, 0, 0, 0]; }
         var lineWidth = Math.ceil(cellSize);
@@ -102,13 +108,15 @@ var QRCode = /** @class */ (function (_super) {
         // Outer box
         this.drawRoundedSquare(4, x, y, size, radiiOuter, false, ctx);
         // Inner box
-        var innerOffset = cellSize * 2;
         size = cellSize * 3;
         y += cellSize * 2;
         x += cellSize * 2;
         this.drawRoundedSquare(4, x, y, size, radiiInner, true, ctx);
     };
     ;
+    /**
+     * Is this dot inside a positional pattern zone.
+     */
     QRCode.prototype.isInPositioninZone = function (col, row, zones) {
         return zones.some(function (zone) { return (row >= zone.row && row <= zone.row + 7 &&
             col >= zone.col && col <= zone.col + 7); });
@@ -143,6 +151,7 @@ var QRCode = /** @class */ (function (_super) {
             { row: 0, col: length - 7 },
             { row: length - 7, col: 0 },
         ];
+        ctx.strokeStyle = fgColor;
         if (qrStyle === 'dots') {
             ctx.fillStyle = fgColor;
             var radius = cellSize / 2;

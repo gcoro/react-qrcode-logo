@@ -65,6 +65,9 @@ export class QRCode extends React.Component<IProps, {}> {
         return out;
     }
 
+    /**
+     * Draw a rounded square in the canvas
+     */
     private drawRoundedSquare(lineWidth: number, x: number, y: number, size: number, radii: CornerRadii, fill: boolean, ctx) {
         ctx.lineWidth= lineWidth;
 
@@ -112,6 +115,9 @@ export class QRCode extends React.Component<IProps, {}> {
         }
     }
 
+    /**
+     * Draw a single positional pattern eye.
+     */
     private drawPositioningPattern(ctx, cellSize, offset, row, col, radii: CornerRadiusConfig=[0,0,0,0]) {
         const lineWidth = Math.ceil(cellSize);
 
@@ -134,14 +140,15 @@ export class QRCode extends React.Component<IProps, {}> {
         this.drawRoundedSquare(4, x, y, size, radiiOuter, false, ctx);
 
         // Inner box
-        const innerOffset = cellSize * 2;
         size = cellSize * 3;
         y += cellSize * 2;
         x += cellSize * 2;
-
         this.drawRoundedSquare(4, x, y, size, radiiInner, true, ctx);
     };
 
+    /**
+     * Is this dot inside a positional pattern zone.
+     */
     private isInPositioninZone(col: number, row: number, zones: ICoordinates[]) {
         return zones.some((zone) => (
             row >= zone.row && row <= zone.row + 7 &&
@@ -208,6 +215,7 @@ export class QRCode extends React.Component<IProps, {}> {
             { row:length - 7, col: 0 },
         ];
 
+        ctx.strokeStyle = fgColor;
         if (qrStyle === 'dots') {
             ctx.fillStyle = fgColor;
             const radius = cellSize / 2;

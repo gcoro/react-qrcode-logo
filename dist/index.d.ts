@@ -21,8 +21,17 @@ export declare class QRCode extends React.Component<IProps, {}> {
     private canvas;
     static defaultProps: IProps;
     private static utf16to8;
+    /**
+     * Draw a rounded square in the canvas
+     */
     private drawRoundedSquare;
+    /**
+     * Draw a single positional pattern eye.
+     */
     private drawPositioningPattern;
+    /**
+     * Is this dot inside a positional pattern zone.
+     */
     private isInPositioninZone;
     constructor(props: IProps);
     shouldComponentUpdate(nextProps: IProps): boolean;
