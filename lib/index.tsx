@@ -140,13 +140,13 @@ export class QRCode extends React.Component<IProps, {}> {
         let size = cellSize * 7;
 
         // Outer box
-        this.drawRoundedSquare(4, x, y, size, radiiOuter, false, ctx);
+        this.drawRoundedSquare(lineWidth, x, y, size, radiiOuter, false, ctx);
 
         // Inner box
         size = cellSize * 3;
         y += cellSize * 2;
         x += cellSize * 2;
-        this.drawRoundedSquare(4, x, y, size, radiiInner, true, ctx);
+        this.drawRoundedSquare(lineWidth, x, y, size, radiiInner, true, ctx);
     };
 
     /**
