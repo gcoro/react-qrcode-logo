@@ -181,7 +181,10 @@ var QRCode = /** @class */ (function (_super) {
         // Draw positioning patterns
         for (var i = 0; i < 3; i++) {
             var _b = positioningZones[i], row = _b.row, col = _b.col;
-            var radii = eyeRadius[i];
+            var radii = eyeRadius;
+            if (Array.isArray(radii)) {
+                radii = radii[i];
+            }
             if (typeof radii == 'number') {
                 radii = [radii, radii, radii, radii];
             }

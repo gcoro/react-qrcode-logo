@@ -16,7 +16,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
-    eyeRadius?: CornerRadii[];
+    eyeRadius?: CornerRadii | CornerRadii[];
     qrStyle?: 'squares' | 'dots';
     style?: object;
 }

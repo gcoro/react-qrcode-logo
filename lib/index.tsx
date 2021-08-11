@@ -22,7 +22,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
-    eyeRadius?: CornerRadii[];
+    eyeRadius?: CornerRadii | CornerRadii[];
     qrStyle?: 'squares' | 'dots';
     style?: object;
 }
@@ -254,11 +254,14 @@ export class QRCode extends React.Component<IProps, {}> {
         // Draw positioning patterns
         for (let i = 0; i < 3; i++) {
             const { row, col } = positioningZones[i];
-            let radii = eyeRadius[i];
+            let radii = eyeRadius;
+            if (Array.isArray(radii)) {
+                radii = radii[i];
+            }
             if (typeof radii == 'number') {
                 radii = [radii, radii, radii, radii] as CornerRadii;
             }
-            this.drawPositioningPattern(ctx, cellSize, offset, row, col, radii);
+            this.drawPositioningPattern(ctx, cellSize, offset, row, col, radii as CornerRadii);
         }
 
         if (logoImage) {

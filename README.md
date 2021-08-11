@@ -53,7 +53,7 @@ Simple example:
 ```jsx
 <QRCode
 	value="https://github.com/gcoro/react-qrcode-logo"
-	eyeRadius="5" // 5 pixel radius for all corners of all positional eyes
+	eyeRadius={5} // 5 pixel radius for all corners of all positional eyes
 />
 ```
 
