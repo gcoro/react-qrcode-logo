@@ -1,4 +1,9 @@
 import * as React from 'react';
+declare type CornerRadii = number | number[] | InnerOuterRadii;
+declare type InnerOuterRadii = {
+    inner: number | number[];
+    outer: number | number[];
+};
 export interface IProps {
     value?: string;
     ecLevel?: 'L' | 'M' | 'Q' | 'H';
@@ -11,6 +16,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
+    eyeRadius?: CornerRadii | CornerRadii[];
     qrStyle?: 'squares' | 'dots';
     style?: object;
 }
@@ -18,7 +24,18 @@ export declare class QRCode extends React.Component<IProps, {}> {
     private canvas;
     static defaultProps: IProps;
     private static utf16to8;
+    /**
+     * Draw a rounded square in the canvas
+     */
+    private drawRoundedSquare;
+    /**
+     * Draw a single positional pattern eye.
+     */
     private drawPositioningPattern;
+    /**
+     * Is this dot inside a positional pattern zone.
+     */
+    private isInPositioninZone;
     constructor(props: IProps);
     shouldComponentUpdate(nextProps: IProps): boolean;
     componentDidMount(): void;
@@ -35,3 +52,4 @@ export declare class QRCode extends React.Component<IProps, {}> {
         ref: React.RefObject<HTMLCanvasElement>;
     }, HTMLCanvasElement>;
 }
+export {};

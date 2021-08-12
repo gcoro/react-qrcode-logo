@@ -3,6 +3,13 @@ import * as qrGenerator from 'qrcode-generator';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+
+type CornerRadii = number | number[] | InnerOuterRadii;
+type InnerOuterRadii = {
+    inner: number | number[],
+    outer: number | number[],
+}
+
 export interface IProps {
     value?: string;
     ecLevel?: 'L' | 'M' | 'Q' | 'H';
@@ -15,8 +22,14 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
+    eyeRadius?: CornerRadii | CornerRadii[];
     qrStyle?: 'squares' | 'dots';
     style?: object;
+}
+
+interface ICoordinates {
+    row: number;
+    col: number;
 }
 
 export class QRCode extends React.Component<IProps, {}> {
@@ -32,7 +45,8 @@ export class QRCode extends React.Component<IProps, {}> {
         bgColor: '#FFFFFF',
         fgColor: '#000000',
         logoOpacity: 1,
-        qrStyle: 'squares'
+        qrStyle: 'squares',
+        eyeRadius: [],
     };
 
     private static utf16to8(str: string): string {
@@ -54,25 +68,96 @@ export class QRCode extends React.Component<IProps, {}> {
         return out;
     }
 
-    private drawPositioningPattern(cellSize, offset, row, col, length, ctx) {
-        for (let r = -1; r <= 7; r++) {
-            if (!(row + r <= -1 || length <= row + r)) {
-                for (let c = -1; c <= 7; c++) {
-                    if (!(col + c <= -1 || length <= col + c) &&
-                        (0 <= r && r <= 6 && (c == 0 || c == 6)) ||
-                        (0 <= c && c <= 6 && (r == 0 || r == 6)) ||
-                        (2 <= r && r <= 4 && 2 <= c && c <= 4)) {
+    /**
+     * Draw a rounded square in the canvas
+     */
+    private drawRoundedSquare(lineWidth: number, x: number, y: number, size: number, radii: number | number[], fill: boolean, ctx) {
+        ctx.lineWidth= lineWidth;
 
-                        const w = (Math.ceil(((row + r) + 1) * cellSize) - Math.floor((row + r) * cellSize));
-                        const h = (Math.ceil(((col + c) + 1) * cellSize) - Math.floor((col + c) * cellSize));
+        // Adjust coordinates so that the outside of the stroke is aligned to the edges
+        y += lineWidth/2;
+        x += lineWidth/2;
+        size -= lineWidth;
 
-                        ctx.fillStyle = this.props.fgColor;
-                        ctx.fillRect(Math.round((row + r) * cellSize) + offset, Math.round((col + c) * cellSize) + offset, w, h);
-                    }
-                }
-            }
+        if (!Array.isArray(radii)) {
+            radii = [radii, radii, radii, radii];
         }
+
+        // Radius should not be greater than half the size or less than zero
+        radii = radii.map((r) => {
+            r = Math.min(r, size/2);
+            return (r < 0) ? 0 : r;
+        });
+
+        const rTopLeft = radii[0] || 0;
+        const rTopRight = radii[1] || 0;
+        const rBottomRight = radii[2] || 0;
+        const rBottomLeft = radii[3] || 0;
+
+        ctx.beginPath();
+
+        ctx.moveTo(x + rTopLeft, y);
+
+        ctx.lineTo(x + size - rTopRight, y);
+        if (rTopRight)  ctx.quadraticCurveTo(x + size, y, x + size, y + rTopRight);
+
+        ctx.lineTo(x + size, y + size - rBottomRight);
+        if (rBottomRight) ctx.quadraticCurveTo(x + size, y + size, x + size - rBottomRight, y + size);
+
+        ctx.lineTo(x + rBottomLeft, y + size);
+        if (rBottomLeft) ctx.quadraticCurveTo(x, y + size, x, y + size - rBottomLeft);
+
+        ctx.lineTo(x, y + rTopLeft);
+        if (rTopLeft) ctx.quadraticCurveTo(x, y, x + rTopLeft, y);
+
+        ctx.closePath();
+
+        ctx.stroke();
+        if (fill) {
+            ctx.fill();
+        }
+    }
+
+    /**
+     * Draw a single positional pattern eye.
+     */
+    private drawPositioningPattern(ctx, cellSize, offset, row, col, radii: CornerRadii=[0,0,0,0]) {
+        const lineWidth = Math.ceil(cellSize);
+
+        let radiiOuter;
+        let radiiInner;
+        if (typeof radii !== 'number' && !Array.isArray(radii)) {
+            radiiOuter = radii.outer || 0;
+            radiiInner = radii.inner || 0;
+        } else {
+            radiiOuter = radii as CornerRadii;
+            radiiInner = radiiOuter;
+        }
+
+
+        let y = (row * cellSize) + offset;
+        let x = (col * cellSize) + offset;
+        let size = cellSize * 7;
+
+        // Outer box
+        this.drawRoundedSquare(lineWidth, x, y, size, radiiOuter, false, ctx);
+
+        // Inner box
+        size = cellSize * 3;
+        y += cellSize * 2;
+        x += cellSize * 2;
+        this.drawRoundedSquare(lineWidth, x, y, size, radiiInner, true, ctx);
     };
+
+    /**
+     * Is this dot inside a positional pattern zone.
+     */
+    private isInPositioninZone(col: number, row: number, zones: ICoordinates[]) {
+        return zones.some((zone) => (
+            row >= zone.row && row <= zone.row + 7 &&
+            col >= zone.col && col <= zone.col + 7
+        ));
+    }
 
     constructor(props: IProps) {
         super(props);
@@ -104,7 +189,8 @@ export class QRCode extends React.Component<IProps, {}> {
             logoWidth,
             logoHeight,
             logoOpacity,
-            qrStyle
+            qrStyle,
+            eyeRadius
         } = this.props;
 
         const qrCode = qrGenerator(0, ecLevel);
@@ -126,12 +212,19 @@ export class QRCode extends React.Component<IProps, {}> {
 
         const offset = +quietZone;
 
+        const positioningZones: ICoordinates[] = [
+            { row: 0,         col:0 },
+            { row: 0,         col: length - 7 },
+            { row:length - 7, col: 0 },
+        ];
+
+        ctx.strokeStyle = fgColor;
         if (qrStyle === 'dots') {
             ctx.fillStyle = fgColor;
             const radius = cellSize / 2;
             for (let row = 0; row < length; row++) {
                 for (let col = 0; col < length; col++) {
-                    if (qrCode.isDark(row, col)) {
+                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
                         ctx.beginPath();
                         ctx.arc(
                             Math.round(col * cellSize) + radius + offset,
@@ -145,14 +238,10 @@ export class QRCode extends React.Component<IProps, {}> {
                     }
                 }
             }
-
-            this.drawPositioningPattern(cellSize, offset, 0, 0, length, ctx);
-            this.drawPositioningPattern(cellSize, offset, length - 7, 0, length, ctx);
-            this.drawPositioningPattern(cellSize, offset, 0, length - 7, length, ctx);
         } else {
             for (let row = 0; row < length; row++) {
                 for (let col = 0; col < length; col++) {
-                    if (qrCode.isDark(row, col)) {
+                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
                         ctx.fillStyle = fgColor;
                         const w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
                         const h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
@@ -160,6 +249,19 @@ export class QRCode extends React.Component<IProps, {}> {
                     }
                 }
             }
+        }
+
+        // Draw positioning patterns
+        for (let i = 0; i < 3; i++) {
+            const { row, col } = positioningZones[i];
+            let radii = eyeRadius;
+            if (Array.isArray(radii)) {
+                radii = radii[i];
+            }
+            if (typeof radii == 'number') {
+                radii = [radii, radii, radii, radii] as CornerRadii;
+            }
+            this.drawPositioningPattern(ctx, cellSize, offset, row, col, radii as CornerRadii);
         }
 
         if (logoImage) {

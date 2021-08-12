@@ -12,7 +12,7 @@ Typescript React component to generate a customizable QR Code.
 ```bash
 npm install --save react-qrcode-logo
 ```
-## Usage 
+## Usage
 
 ```javascript
 import * as React from 'react';
@@ -39,9 +39,55 @@ React.render(
 | `logoHeight`  | `number` (in pixels)                    | `logoWidth`                     | Logo image height |
 | `logoOpacity` | `number` (css opacity 0 <= x <= 1)      | `1`                    | Logo opacity. This allows you to modify the transparency of your logo, so that it won't compromise the readability of the QR Code |
 | `qrStyle` | `squares` &#124; `dots` | `squares`  | Style of the QR Code modules |
+| `eyeRadius` | `number | number[] | number[][]` | The corner radius for the positional patterns (the three "eyes" around the QR code). See more details below |
 
-## Example 
-You can find a very simple demo project [here](https://github.com/gcoro/QRCodeCustomizer). 
+## Example
+You can find a very simple demo project [here](https://github.com/gcoro/QRCodeCustomizer).
+
+## Positional Pattern Radius
+
+Give the positional pattern custom radii. You can either set one radius for all corners or all positional eyes, or
+specify a radius for each corner of each eye.
+
+Simple example:
+```jsx
+<QRCode
+	value="https://github.com/gcoro/react-qrcode-logo"
+	eyeRadius={5} // 5 pixel radius for all corners of all positional eyes
+/>
+```
+
+Other examples:
+
+```jsx
+// Radius for each eye
+eyeRadius={[
+	5,  // top/left eye
+	10, // top/right eye
+	5,  // bottom/left eye
+]}
+```
+
+```jsx
+// Radius for each corner (array is: top/left, top/right, bottom/right, bottom/left)
+eyeRadius={[
+	[10, 10, 0, 10], // top/left eye
+	[10, 10, 10, 0], // top/right eye
+	[10, 0, 10, 10], // bottom/left
+]}
+```
+
+```jsx
+// Include radius for the inner eye of the top/left eye
+eyeRadius={[
+	{ // top/left eye
+		outer: [10, 10, 0, 10],
+		inner: [0, 10, 10, 10],
+	},
+	[10, 10, 10, 0], // top/right eye
+	[10, 0, 10, 10], // bottom/left
+]}
+```
 
 ## Contributing
 Thanks to everyone who contributed :) PRs and suggestions are welcome.
@@ -74,5 +120,5 @@ Thanks to everyone who contributed :) PRs and suggestions are welcome.
 			</td></tr>
 </table>
 
-## More credits 
-This package was inspired by [cssivision/qrcode-react](https://github.com/cssivision/qrcode-react) and [zpao/qrcode.react](https://github.com/zpao/qrcode.react). Also looked up some parts from [kazuhikoarase/qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) (which this package depends on). 
+## More credits
+This package was inspired by [cssivision/qrcode-react](https://github.com/cssivision/qrcode-react) and [zpao/qrcode.react](https://github.com/zpao/qrcode.react). Also looked up some parts from [kazuhikoarase/qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) (which this package depends on).
