@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.5.0]
+### Features
+- Added new optional prop `eyeRadius` to specify the corner radius for the positional patterns.
+
 ## [v2.2.1]
 ### Fixes
 - Changed `quietZone` implementation so that it's included directly in the canvas, instead of just an HTML padding. This fixes the issue that caused the QR Code to appear without the quiet zone when it got saved.
