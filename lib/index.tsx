@@ -25,6 +25,7 @@ export interface IProps {
     eyeRadius?: CornerRadii | CornerRadii[];
     qrStyle?: 'squares' | 'dots';
     style?: object;
+    id?: string;
 }
 
 interface ICoordinates {
@@ -288,7 +289,7 @@ export class QRCode extends React.Component<IProps, {}> {
     render() {
         const size = +this.props.size + (2 * +this.props.quietZone);
         return React.createElement('canvas', {
-            id: 'react-qrcode-logo',
+            id: this.props.id ?? 'react-qrcode-logo',
             height: size,
             width: size,
             style: { height: size + 'px',   width: size + 'px' },

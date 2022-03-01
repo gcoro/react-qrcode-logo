@@ -211,9 +211,10 @@ var QRCode = /** @class */ (function (_super) {
         }
     };
     QRCode.prototype.render = function () {
+        var _a;
         var size = +this.props.size + (2 * +this.props.quietZone);
         return React.createElement('canvas', {
-            id: 'react-qrcode-logo',
+            id: (_a = this.props.id) !== null && _a !== void 0 ? _a : 'react-qrcode-logo',
             height: size,
             width: size,
             style: { height: size + 'px', width: size + 'px' },

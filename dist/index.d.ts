@@ -19,6 +19,7 @@ export interface IProps {
     eyeRadius?: CornerRadii | CornerRadii[];
     qrStyle?: 'squares' | 'dots';
     style?: object;
+    id?: string;
 }
 export declare class QRCode extends React.Component<IProps, {}> {
     private canvas;
