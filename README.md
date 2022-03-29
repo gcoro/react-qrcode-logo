@@ -123,6 +123,11 @@ Thanks to everyone who contributed :) PRs and suggestions are welcome.
 			<a href="https://github.com/ty-everett">
 			<img src="https://avatars.githubusercontent.com/u/23272461?v=4" width="100px;" alt="ty-everett" /><br />
 			<sup><b>ty-everett</b></sup></a><br />
+			</td><tr/>
+<tr><td align="center" valign="top">
+			<a href="https://github.com/larstel">
+			<img src="https://avatars.githubusercontent.com/u/45731552?v=4" width="100px;" alt="larstel" /><br />
+			<sup><b>larstel</b></sup></a><br />
 			</td></tr>
 </table>
 
