@@ -121,6 +121,23 @@ var QRCode = /** @class */ (function (_super) {
         return zones.some(function (zone) { return (row >= zone.row && row <= zone.row + 7 &&
             col >= zone.col && col <= zone.col + 7); });
     };
+    QRCode.prototype.transformPixelLengthIntoNumberOfCells = function (pixelLength, cellSize) {
+        return pixelLength / cellSize;
+    };
+    QRCode.prototype.isCoordinateInImage = function (col, row, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage) {
+        if (logoImage) {
+            var numberOfCellsMargin = 2;
+            var firstRowOfLogo = this.transformPixelLengthIntoNumberOfCells(dxLogo, cellSize);
+            var firstColumnOfLogo = this.transformPixelLengthIntoNumberOfCells(dyLogo, cellSize);
+            var logoWidthInCells = this.transformPixelLengthIntoNumberOfCells(dWidthLogo, cellSize) - 1;
+            var logoHeightInCells = this.transformPixelLengthIntoNumberOfCells(dHeightLogo, cellSize) - 1;
+            return row >= firstRowOfLogo - numberOfCellsMargin && row <= firstRowOfLogo + logoWidthInCells + numberOfCellsMargin // check rows
+                && col >= firstColumnOfLogo - numberOfCellsMargin && col <= firstColumnOfLogo + logoHeightInCells + numberOfCellsMargin; // check cols
+        }
+        else {
+            return false;
+        }
+    };
     QRCode.prototype.shouldComponentUpdate = function (nextProps) {
         return !isEqual(this.props, nextProps);
     };
@@ -131,7 +148,7 @@ var QRCode = /** @class */ (function (_super) {
         this.update();
     };
     QRCode.prototype.update = function () {
-        var _a = this.props, value = _a.value, ecLevel = _a.ecLevel, enableCORS = _a.enableCORS, size = _a.size, quietZone = _a.quietZone, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoWidth = _a.logoWidth, logoHeight = _a.logoHeight, logoOpacity = _a.logoOpacity, qrStyle = _a.qrStyle, eyeRadius = _a.eyeRadius;
+        var _a = this.props, value = _a.value, ecLevel = _a.ecLevel, enableCORS = _a.enableCORS, size = _a.size, quietZone = _a.quietZone, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoWidth = _a.logoWidth, logoHeight = _a.logoHeight, logoOpacity = _a.logoOpacity, removeQrCodeBehindLogo = _a.removeQrCodeBehindLogo, qrStyle = _a.qrStyle, eyeRadius = _a.eyeRadius;
         var qrCode = qrGenerator(0, ecLevel);
         qrCode.addData(QRCode.utf16to8(value));
         qrCode.make();
@@ -146,6 +163,10 @@ var QRCode = /** @class */ (function (_super) {
         ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, canvasSize, canvasSize);
         var offset = +quietZone;
+        var dWidthLogo = logoWidth || size * 0.2;
+        var dHeightLogo = logoHeight || dWidthLogo;
+        var dxLogo = ((size - dWidthLogo) / 2);
+        var dyLogo = ((size - dHeightLogo) / 2);
         var positioningZones = [
             { row: 0, col: 0 },
             { row: 0, col: length - 7 },
@@ -157,7 +178,7 @@ var QRCode = /** @class */ (function (_super) {
             var radius = cellSize / 2;
             for (var row = 0; row < length; row++) {
                 for (var col = 0; col < length; col++) {
-                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
+                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones) && !(removeQrCodeBehindLogo && this.isCoordinateInImage(row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage))) {
                         ctx.beginPath();
                         ctx.arc(Math.round(col * cellSize) + radius + offset, Math.round(row * cellSize) + radius + offset, (radius / 100) * 75, 0, 2 * Math.PI, false);
                         ctx.closePath();
@@ -169,7 +190,7 @@ var QRCode = /** @class */ (function (_super) {
         else {
             for (var row = 0; row < length; row++) {
                 for (var col = 0; col < length; col++) {
-                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
+                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones) && !(removeQrCodeBehindLogo && this.isCoordinateInImage(row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage))) {
                         ctx.fillStyle = fgColor;
                         var w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
                         var h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
@@ -196,15 +217,9 @@ var QRCode = /** @class */ (function (_super) {
                 image_1.crossOrigin = 'Anonymous';
             }
             image_1.onload = function () {
-                var dwidth = logoWidth || size * 0.2;
-                var dheight = logoHeight || dwidth;
-                var dx = (size - dwidth) / 2;
-                var dy = (size - dheight) / 2;
-                image_1.width = dwidth;
-                image_1.height = dheight;
                 ctx.save();
                 ctx.globalAlpha = logoOpacity;
-                ctx.drawImage(image_1, dx + offset, dy + offset, dwidth, dheight);
+                ctx.drawImage(image_1, dxLogo + offset, dyLogo + offset, dWidthLogo, dHeightLogo);
                 ctx.restore();
             };
             image_1.src = logoImage;
@@ -230,6 +245,7 @@ var QRCode = /** @class */ (function (_super) {
         bgColor: '#FFFFFF',
         fgColor: '#000000',
         logoOpacity: 1,
+        removeQrCodeBehindLogo: false,
         qrStyle: 'squares',
         eyeRadius: [],
     };

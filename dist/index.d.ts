@@ -16,6 +16,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
+    removeQrCodeBehindLogo?: boolean;
     eyeRadius?: CornerRadii | CornerRadii[];
     qrStyle?: 'squares' | 'dots';
     style?: object;
@@ -37,6 +38,8 @@ export declare class QRCode extends React.Component<IProps, {}> {
      * Is this dot inside a positional pattern zone.
      */
     private isInPositioninZone;
+    private transformPixelLengthIntoNumberOfCells;
+    private isCoordinateInImage;
     constructor(props: IProps);
     shouldComponentUpdate(nextProps: IProps): boolean;
     componentDidMount(): void;

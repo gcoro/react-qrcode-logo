@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.7.0]
+### Features
+- Added optional prop `removeQrCodeBehindLogo`, if set to true will draw an empty square around the logo.
+
+## [v2.6.0]
+### Features
+- Added optional prop `id` to specify the id of the canvas element.
+
 ## [v2.5.0]
 ### Features
 - Added new optional prop `eyeRadius` to specify the corner radius for the positional patterns.
