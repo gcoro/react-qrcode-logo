@@ -38,6 +38,7 @@ React.render(
 | `logoWidth`   | `number` (in pixels)                    | `size * 0.2`           | Logo image width |
 | `logoHeight`  | `number` (in pixels)                    | `logoWidth`                     | Logo image height |
 | `logoOpacity` | `number` (css opacity 0 <= x <= 1)      | `1`                    | Logo opacity. This allows you to modify the transparency of your logo, so that it won't compromise the readability of the QR Code |
+| `removeQrCodeBehindLogo`         | `boolean`                 |   `false`              | Removes points behind the logo and adds a border with no points around the logo  |
 | `qrStyle` | `squares` &#124; `dots` | `squares`  | Style of the QR Code modules |
 | `eyeRadius` | `number` &#124; `number[]` &#124; `number[][]` |  | The corner radius for the positional patterns (the three "eyes" around the QR code). See more details below |
 | `id` | `string` | `react-qrcode-logo` | Optional custom id for the QRCode canvas. You can use this prop if you have multiple QRCodes and need to differentiate them |
