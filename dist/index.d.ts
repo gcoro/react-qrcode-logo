@@ -21,6 +21,7 @@ export interface IProps {
     qrStyle?: 'squares' | 'dots';
     style?: object;
     id?: string;
+    scale?: number;
 }
 export declare class QRCode extends React.Component<IProps, {}> {
     private canvas;
