@@ -271,7 +271,7 @@ var QRCode = /** @class */ (function (_super) {
         logoOpacity: 1,
         removeQrCodeBehindLogo: false,
         qrStyle: 'squares',
-        eyeRadius: [],
+        eyeRadius: [0, 0, 0]
     };
     return QRCode;
 }(React.Component));

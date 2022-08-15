@@ -3,16 +3,16 @@ import * as qrGenerator from 'qrcode-generator';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-type SingleEyeColor = string | InnerOuterEyeColor;
+type EyeColor = string | InnerOuterEyeColor;
 type InnerOuterEyeColor = {
     inner: string;
     outer: string;
 }
 
-type CornerRadii = number | number[] | InnerOuterRadii;
+type CornerRadii = number | [number, number, number, number] | InnerOuterRadii;
 type InnerOuterRadii = {
-    inner: number | number[],
-    outer: number | number[],
+    inner: number | [number, number, number, number];
+    outer: number | [number, number, number, number];
 }
 
 export interface IProps {
@@ -28,8 +28,8 @@ export interface IProps {
     logoHeight?: number;
     logoOpacity?: number;
     removeQrCodeBehindLogo?: boolean;
-    eyeRadius?: CornerRadii | CornerRadii[];
-    eyeColor?: SingleEyeColor | [SingleEyeColor, SingleEyeColor, SingleEyeColor];
+    eyeRadius?: CornerRadii | [CornerRadii, CornerRadii, CornerRadii];
+    eyeColor?: EyeColor | [EyeColor, EyeColor, EyeColor];
     qrStyle?: 'squares' | 'dots';
     style?: object;
     id?: string;
@@ -55,7 +55,7 @@ export class QRCode extends React.Component<IProps, {}> {
         logoOpacity: 1,
         removeQrCodeBehindLogo: false,
         qrStyle: 'squares',
-        eyeRadius: [],
+        eyeRadius: [0, 0, 0]
     };
 
     private static utf16to8(str: string): string {
@@ -147,7 +147,7 @@ export class QRCode extends React.Component<IProps, {}> {
         offset: number,
         row: number,
         col: number,
-        color: SingleEyeColor,
+        color: EyeColor,
         radii: CornerRadii = [0, 0, 0, 0]) {
 
         const lineWidth = Math.ceil(cellSize);
@@ -319,7 +319,7 @@ export class QRCode extends React.Component<IProps, {}> {
             const { row, col } = positioningZones[i];
 
             let radii = eyeRadius;
-            let color: SingleEyeColor;
+            let color;
 
             if (Array.isArray(radii)) {
                 radii = radii[i];
@@ -334,7 +334,7 @@ export class QRCode extends React.Component<IProps, {}> {
                 if (Array.isArray(eyeColor)) { // if array, we pass the single color
                     color = eyeColor[i];
                 } else {
-                    color = eyeColor as SingleEyeColor;
+                    color = eyeColor as EyeColor;
                 }
             }
 

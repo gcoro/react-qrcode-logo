@@ -1,13 +1,13 @@
 import * as React from 'react';
-declare type SingleEyeColor = string | InnerOuterEyeColor;
+declare type EyeColor = string | InnerOuterEyeColor;
 declare type InnerOuterEyeColor = {
     inner: string;
     outer: string;
 };
-declare type CornerRadii = number | number[] | InnerOuterRadii;
+declare type CornerRadii = number | [number, number, number, number] | InnerOuterRadii;
 declare type InnerOuterRadii = {
-    inner: number | number[];
-    outer: number | number[];
+    inner: number | [number, number, number, number];
+    outer: number | [number, number, number, number];
 };
 export interface IProps {
     value?: string;
@@ -22,8 +22,8 @@ export interface IProps {
     logoHeight?: number;
     logoOpacity?: number;
     removeQrCodeBehindLogo?: boolean;
-    eyeRadius?: CornerRadii | CornerRadii[];
-    eyeColor?: SingleEyeColor | [SingleEyeColor, SingleEyeColor, SingleEyeColor];
+    eyeRadius?: CornerRadii | [CornerRadii, CornerRadii, CornerRadii];
+    eyeColor?: EyeColor | [EyeColor, EyeColor, EyeColor];
     qrStyle?: 'squares' | 'dots';
     style?: object;
     id?: string;

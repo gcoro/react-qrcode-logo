@@ -40,59 +40,19 @@ React.render(
 | `logoOpacity` | `number` (css opacity 0 <= x <= 1)      | `1`                    | Logo opacity. This allows you to modify the transparency of your logo, so that it won't compromise the readability of the QR Code |
 | `removeQrCodeBehindLogo`         | `boolean`                 |   `false`              | Removes points behind the logo and adds a border with no points around the logo  |
 | `qrStyle` | `squares` &#124; `dots` | `squares`  | Style of the QR Code modules |
-| `eyeRadius` | `number` &#124; `number[]` &#124; `number[][]` |  | The corner radius for the positional patterns (the three "eyes" around the QR code). See more details below |
+| `eyeRadius` | `CornerRadii` &#124; `CornerRadii[]` |  | The corner radius for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeRadius_doc.md) |
+| `eyeColor` | `EyeColor` &#124; `EyeColor[]` |  | The color for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeColor_doc.md) |
 | `id` | `string` | `react-qrcode-logo` | Optional custom id for the QRCode canvas. You can use this prop if you have multiple QRCodes and need to differentiate them |
-
-### About eyeRadius
-
-Give the positional pattern custom radii. You can either set one radius for all corners or all positional eyes, or
-specify a radius for each corner of each eye.
-
-Simple example:
-```jsx
-<QRCode
-	value="https://github.com/gcoro/react-qrcode-logo"
-	eyeRadius={5} // 5 pixel radius for all corners of all positional eyes
-/>
-```
-
-Other examples:
-
-```jsx
-// Radius for each eye
-eyeRadius={[
-	5,  // top/left eye
-	10, // top/right eye
-	5,  // bottom/left eye
-]}
-```
-
-```jsx
-// Radius for each corner (array is: top/left, top/right, bottom/right, bottom/left)
-eyeRadius={[
-	[10, 10, 0, 10], // top/left eye
-	[10, 10, 10, 0], // top/right eye
-	[10, 0, 10, 10], // bottom/left
-]}
-```
-
-```jsx
-// Include radius for the inner eye of the top/left eye
-eyeRadius={[
-	{ // top/left eye
-		outer: [10, 10, 0, 10],
-		inner: [0, 10, 10, 10],
-	},
-	[10, 10, 10, 0], // top/right eye
-	[10, 0, 10, 10], // bottom/left
-]}
-```
 
 ## Usage example
 You can find a very simple demo project [here](https://github.com/gcoro/QRCodeCustomizer).
 
 ## Contributing
-Thanks to everyone who contributed :) PRs and suggestions are welcome.
+PRs and suggestions are welcome.
+When making a pull request, please explain in a clear way the changes you made and why you are making them (+ if you can also update the README accordingly, ty <3). 
+Also try keep the current repo codestyle (eg. do not reformat all the code with prettier).
+
+Thanks to everyone who contributed and/or will contribute :)
 
 <table>
 <tr><td align="center" valign="top">
