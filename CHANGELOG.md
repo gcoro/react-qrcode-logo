@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.8.0]
+### Features
+- Added new optional prop `eyeColor` to specify different colors for the positional patterns.
+
 ## [v2.7.0]
 ### Features
 - Added optional prop `removeQrCodeBehindLogo`, if set to true will draw an empty square around the logo.

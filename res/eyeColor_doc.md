@@ -14,7 +14,7 @@ Other examples:
 
 ```jsx
 // Color for each eye
-eyeRadius={[
+eyeColor={[
 	'red',  // top/left eye
 	'blue', // top/right eye
 	'#ffc0cb',  // bottom/left eye
@@ -23,7 +23,7 @@ eyeRadius={[
 
 ```jsx
 // Include color for the inner part of the top/left eye
-eyeRadius={[
+eyeColor={[
 	{ // top/left eye
 		outer: 'yellow',
 		inner: 'black',
