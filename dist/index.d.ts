@@ -1,4 +1,9 @@
 import * as React from 'react';
+declare type SingleEyeColor = string | InnerOuterEyeColor;
+declare type InnerOuterEyeColor = {
+    inner: string;
+    outer: string;
+};
 declare type CornerRadii = number | number[] | InnerOuterRadii;
 declare type InnerOuterRadii = {
     inner: number | number[];
@@ -18,6 +23,7 @@ export interface IProps {
     logoOpacity?: number;
     removeQrCodeBehindLogo?: boolean;
     eyeRadius?: CornerRadii | CornerRadii[];
+    eyeColor?: SingleEyeColor | [SingleEyeColor, SingleEyeColor, SingleEyeColor];
     qrStyle?: 'squares' | 'dots';
     style?: object;
     id?: string;

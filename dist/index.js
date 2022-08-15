@@ -48,8 +48,10 @@ var QRCode = /** @class */ (function (_super) {
     /**
      * Draw a rounded square in the canvas
      */
-    QRCode.prototype.drawRoundedSquare = function (lineWidth, x, y, size, radii, fill, ctx) {
+    QRCode.prototype.drawRoundedSquare = function (lineWidth, x, y, size, color, radii, fill, ctx) {
         ctx.lineWidth = lineWidth;
+        ctx.fillStyle = color;
+        ctx.strokeStyle = color;
         // Adjust coordinates so that the outside of the stroke is aligned to the edges
         y += lineWidth / 2;
         x += lineWidth / 2;
@@ -89,7 +91,7 @@ var QRCode = /** @class */ (function (_super) {
     /**
      * Draw a single positional pattern eye.
      */
-    QRCode.prototype.drawPositioningPattern = function (ctx, cellSize, offset, row, col, radii) {
+    QRCode.prototype.drawPositioningPattern = function (ctx, cellSize, offset, row, col, color, radii) {
         if (radii === void 0) { radii = [0, 0, 0, 0]; }
         var lineWidth = Math.ceil(cellSize);
         var radiiOuter;
@@ -102,16 +104,26 @@ var QRCode = /** @class */ (function (_super) {
             radiiOuter = radii;
             radiiInner = radiiOuter;
         }
+        var colorOuter;
+        var colorInner;
+        if (typeof color !== 'string') {
+            colorOuter = color.outer;
+            colorInner = color.inner;
+        }
+        else {
+            colorOuter = color;
+            colorInner = color;
+        }
         var y = (row * cellSize) + offset;
         var x = (col * cellSize) + offset;
         var size = cellSize * 7;
         // Outer box
-        this.drawRoundedSquare(lineWidth, x, y, size, radiiOuter, false, ctx);
+        this.drawRoundedSquare(lineWidth, x, y, size, colorOuter, radiiOuter, false, ctx);
         // Inner box
         size = cellSize * 3;
         y += cellSize * 2;
         x += cellSize * 2;
-        this.drawRoundedSquare(lineWidth, x, y, size, radiiInner, true, ctx);
+        this.drawRoundedSquare(lineWidth, x, y, size, colorInner, radiiInner, true, ctx);
     };
     ;
     /**
@@ -148,7 +160,7 @@ var QRCode = /** @class */ (function (_super) {
         this.update();
     };
     QRCode.prototype.update = function () {
-        var _a = this.props, value = _a.value, ecLevel = _a.ecLevel, enableCORS = _a.enableCORS, size = _a.size, quietZone = _a.quietZone, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoWidth = _a.logoWidth, logoHeight = _a.logoHeight, logoOpacity = _a.logoOpacity, removeQrCodeBehindLogo = _a.removeQrCodeBehindLogo, qrStyle = _a.qrStyle, eyeRadius = _a.eyeRadius;
+        var _a = this.props, value = _a.value, ecLevel = _a.ecLevel, enableCORS = _a.enableCORS, size = _a.size, quietZone = _a.quietZone, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoWidth = _a.logoWidth, logoHeight = _a.logoHeight, logoOpacity = _a.logoOpacity, removeQrCodeBehindLogo = _a.removeQrCodeBehindLogo, qrStyle = _a.qrStyle, eyeRadius = _a.eyeRadius, eyeColor = _a.eyeColor;
         var qrCode = qrGenerator(0, ecLevel);
         qrCode.addData(QRCode.utf16to8(value));
         qrCode.make();
@@ -203,13 +215,25 @@ var QRCode = /** @class */ (function (_super) {
         for (var i = 0; i < 3; i++) {
             var _b = positioningZones[i], row = _b.row, col = _b.col;
             var radii = eyeRadius;
+            var color = void 0;
             if (Array.isArray(radii)) {
                 radii = radii[i];
             }
             if (typeof radii == 'number') {
                 radii = [radii, radii, radii, radii];
             }
-            this.drawPositioningPattern(ctx, cellSize, offset, row, col, radii);
+            if (!eyeColor) { // if not specified, eye color is the same as foreground, 
+                color = fgColor;
+            }
+            else {
+                if (Array.isArray(eyeColor)) { // if array, we pass the single color
+                    color = eyeColor[i];
+                }
+                else {
+                    color = eyeColor;
+                }
+            }
+            this.drawPositioningPattern(ctx, cellSize, offset, row, col, color, radii);
         }
         if (logoImage) {
             var image_1 = new Image();

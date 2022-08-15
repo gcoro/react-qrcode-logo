@@ -3,6 +3,11 @@ import * as qrGenerator from 'qrcode-generator';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+type SingleEyeColor = string | InnerOuterEyeColor;
+type InnerOuterEyeColor = {
+    inner: string;
+    outer: string;
+}
 
 type CornerRadii = number | number[] | InnerOuterRadii;
 type InnerOuterRadii = {
@@ -24,6 +29,7 @@ export interface IProps {
     logoOpacity?: number;
     removeQrCodeBehindLogo?: boolean;
     eyeRadius?: CornerRadii | CornerRadii[];
+    eyeColor?: SingleEyeColor | [SingleEyeColor, SingleEyeColor, SingleEyeColor];
     qrStyle?: 'squares' | 'dots';
     style?: object;
     id?: string;
@@ -74,12 +80,23 @@ export class QRCode extends React.Component<IProps, {}> {
     /**
      * Draw a rounded square in the canvas
      */
-    private drawRoundedSquare(lineWidth: number, x: number, y: number, size: number, radii: number | number[], fill: boolean, ctx) {
-        ctx.lineWidth= lineWidth;
+    private drawRoundedSquare(
+        lineWidth: number,
+        x: number,
+        y: number,
+        size: number,
+        color: string,
+        radii: number | number[],
+        fill: boolean,
+        ctx: CanvasRenderingContext2D) {
+
+        ctx.lineWidth = lineWidth;
+        ctx.fillStyle = color;
+        ctx.strokeStyle = color;
 
         // Adjust coordinates so that the outside of the stroke is aligned to the edges
-        y += lineWidth/2;
-        x += lineWidth/2;
+        y += lineWidth / 2;
+        x += lineWidth / 2;
         size -= lineWidth;
 
         if (!Array.isArray(radii)) {
@@ -88,7 +105,7 @@ export class QRCode extends React.Component<IProps, {}> {
 
         // Radius should not be greater than half the size or less than zero
         radii = radii.map((r) => {
-            r = Math.min(r, size/2);
+            r = Math.min(r, size / 2);
             return (r < 0) ? 0 : r;
         });
 
@@ -102,7 +119,7 @@ export class QRCode extends React.Component<IProps, {}> {
         ctx.moveTo(x + rTopLeft, y);
 
         ctx.lineTo(x + size - rTopRight, y);
-        if (rTopRight)  ctx.quadraticCurveTo(x + size, y, x + size, y + rTopRight);
+        if (rTopRight) ctx.quadraticCurveTo(x + size, y, x + size, y + rTopRight);
 
         ctx.lineTo(x + size, y + size - rBottomRight);
         if (rBottomRight) ctx.quadraticCurveTo(x + size, y + size, x + size - rBottomRight, y + size);
@@ -124,7 +141,15 @@ export class QRCode extends React.Component<IProps, {}> {
     /**
      * Draw a single positional pattern eye.
      */
-    private drawPositioningPattern(ctx, cellSize, offset, row, col, radii: CornerRadii=[0,0,0,0]) {
+    private drawPositioningPattern(
+        ctx: CanvasRenderingContext2D,
+        cellSize: number,
+        offset: number,
+        row: number,
+        col: number,
+        color: SingleEyeColor,
+        radii: CornerRadii = [0, 0, 0, 0]) {
+
         const lineWidth = Math.ceil(cellSize);
 
         let radiiOuter;
@@ -137,19 +162,28 @@ export class QRCode extends React.Component<IProps, {}> {
             radiiInner = radiiOuter;
         }
 
+        let colorOuter;
+        let colorInner;
+        if (typeof color !== 'string') {
+            colorOuter = color.outer;
+            colorInner = color.inner;
+        } else {
+            colorOuter = color;
+            colorInner = color;
+        }
 
         let y = (row * cellSize) + offset;
         let x = (col * cellSize) + offset;
         let size = cellSize * 7;
 
         // Outer box
-        this.drawRoundedSquare(lineWidth, x, y, size, radiiOuter, false, ctx);
+        this.drawRoundedSquare(lineWidth, x, y, size, colorOuter, radiiOuter, false, ctx);
 
         // Inner box
         size = cellSize * 3;
         y += cellSize * 2;
         x += cellSize * 2;
-        this.drawRoundedSquare(lineWidth, x, y, size, radiiInner, true, ctx);
+        this.drawRoundedSquare(lineWidth, x, y, size, colorInner, radiiInner, true, ctx);
     };
 
     /**
@@ -167,15 +201,15 @@ export class QRCode extends React.Component<IProps, {}> {
     }
 
     private isCoordinateInImage(col: number, row: number, dWidthLogo: number, dHeightLogo: number, dxLogo: number, dyLogo: number, cellSize: number, logoImage: string) {
-        if(logoImage) {
+        if (logoImage) {
             const numberOfCellsMargin = 2;
             const firstRowOfLogo = this.transformPixelLengthIntoNumberOfCells(dxLogo, cellSize);
             const firstColumnOfLogo = this.transformPixelLengthIntoNumberOfCells(dyLogo, cellSize);
-            const logoWidthInCells = this.transformPixelLengthIntoNumberOfCells(dWidthLogo, cellSize)-1;
-            const logoHeightInCells = this.transformPixelLengthIntoNumberOfCells(dHeightLogo, cellSize)-1;
+            const logoWidthInCells = this.transformPixelLengthIntoNumberOfCells(dWidthLogo, cellSize) - 1;
+            const logoHeightInCells = this.transformPixelLengthIntoNumberOfCells(dHeightLogo, cellSize) - 1;
 
             return row >= firstRowOfLogo - numberOfCellsMargin && row <= firstRowOfLogo + logoWidthInCells + numberOfCellsMargin // check rows
-            && col >=  firstColumnOfLogo - numberOfCellsMargin && col <= firstColumnOfLogo + logoHeightInCells + numberOfCellsMargin // check cols
+                && col >= firstColumnOfLogo - numberOfCellsMargin && col <= firstColumnOfLogo + logoHeightInCells + numberOfCellsMargin // check cols
         } else {
             return false;
         }
@@ -213,7 +247,8 @@ export class QRCode extends React.Component<IProps, {}> {
             logoOpacity,
             removeQrCodeBehindLogo,
             qrStyle,
-            eyeRadius
+            eyeRadius,
+            eyeColor
         } = this.props;
 
         const qrCode = qrGenerator(0, ecLevel);
@@ -241,9 +276,9 @@ export class QRCode extends React.Component<IProps, {}> {
         const dyLogo = ((size - dHeightLogo) / 2);
 
         const positioningZones: ICoordinates[] = [
-            { row: 0,         col:0 },
-            { row: 0,         col: length - 7 },
-            { row:length - 7, col: 0 },
+            { row: 0, col: 0 },
+            { row: 0, col: length - 7 },
+            { row: length - 7, col: 0 },
         ];
 
         ctx.strokeStyle = fgColor;
@@ -282,14 +317,28 @@ export class QRCode extends React.Component<IProps, {}> {
         // Draw positioning patterns
         for (let i = 0; i < 3; i++) {
             const { row, col } = positioningZones[i];
+
             let radii = eyeRadius;
+            let color: SingleEyeColor;
+
             if (Array.isArray(radii)) {
                 radii = radii[i];
             }
             if (typeof radii == 'number') {
-                radii = [radii, radii, radii, radii] as CornerRadii;
+                radii = [radii, radii, radii, radii];
             }
-            this.drawPositioningPattern(ctx, cellSize, offset, row, col, radii as CornerRadii);
+
+            if (!eyeColor) { // if not specified, eye color is the same as foreground, 
+                color = fgColor;
+            } else {
+                if (Array.isArray(eyeColor)) { // if array, we pass the single color
+                    color = eyeColor[i];
+                } else {
+                    color = eyeColor as SingleEyeColor;
+                }
+            }
+
+            this.drawPositioningPattern(ctx, cellSize, offset, row, col, color, radii as CornerRadii);
         }
 
         if (logoImage) {
@@ -313,7 +362,7 @@ export class QRCode extends React.Component<IProps, {}> {
             id: this.props.id ?? 'react-qrcode-logo',
             height: size,
             width: size,
-            style: { height: size + 'px',   width: size + 'px' },
+            style: { height: size + 'px', width: size + 'px' },
             ref: this.canvas
         });
     }
