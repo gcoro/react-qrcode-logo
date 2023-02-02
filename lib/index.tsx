@@ -27,6 +27,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
+    logoOnLoad?: () => void;
     removeQrCodeBehindLogo?: boolean;
     eyeRadius?: CornerRadii | [CornerRadii, CornerRadii, CornerRadii];
     eyeColor?: EyeColor | [EyeColor, EyeColor, EyeColor];
@@ -245,6 +246,7 @@ export class QRCode extends React.Component<IProps, {}> {
             logoWidth,
             logoHeight,
             logoOpacity,
+            logoOnLoad,
             removeQrCodeBehindLogo,
             qrStyle,
             eyeRadius,
@@ -351,6 +353,9 @@ export class QRCode extends React.Component<IProps, {}> {
                 ctx.globalAlpha = logoOpacity;
                 ctx.drawImage(image, dxLogo + offset, dyLogo + offset, dWidthLogo, dHeightLogo);
                 ctx.restore();
+                if(logoOnLoad){
+                    logoOnLoad();
+                }
             };
             image.src = logoImage;
         }
