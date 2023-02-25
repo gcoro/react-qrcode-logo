@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.9.0]
+### Features
+- Added new optional prop `logoPadding` to specify optional padding around the logo.
+- Added new optional prop `logoPaddingStyle` to specify the shape of the logo padding (rectangular with 'square' or elliptic with 'circle').
+
+### Changes 
+- Prop `removeQrCodeBehindLogo` does not have a default padding anymore, but has the same size as the logo.
+
 ## [v2.8.0]
 ### Features
 - Added new optional prop `eyeColor` to specify different colors for the positional patterns.
