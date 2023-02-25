@@ -23,6 +23,7 @@ export interface IProps {
     logoOpacity?: number;
     logoOnLoad?: () => void;
     removeQrCodeBehindLogo?: boolean;
+    logoPadding?: number;
     eyeRadius?: CornerRadii | [CornerRadii, CornerRadii, CornerRadii];
     eyeColor?: EyeColor | [EyeColor, EyeColor, EyeColor];
     qrStyle?: 'squares' | 'dots';

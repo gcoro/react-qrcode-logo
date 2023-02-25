@@ -38,8 +38,9 @@ React.render(
 | `logoWidth`              | `number` (in pixels)                | `size * 0.2`        | Logo image width                                                                                                                   |
 | `logoHeight`             | `number` (in pixels)                | `logoWidth`                  | Logo image height                                                                                                                  |
 | `logoOpacity`            | `number` (css opacity 0 <= x <= 1)  | `1`                 | Logo opacity. This allows you to modify the transparency of your logo, so that it won't compromise the readability of the QR Code  |
-| `logoOnLoad`                      | `function`        |                     | Callback function to know when the logo in the QR Code is loaded                                                                     |
-| `removeQrCodeBehindLogo` | `boolean`                           |   `false`           | Removes points behind the logo and adds a border with no points around the logo                                                    |
+| `logoOnLoad`             | `() => void`                        |                     | Callback function to know when the logo in the QR Code is loaded                                                                     |
+| `removeQrCodeBehindLogo` | `boolean`                           |   `false`           | Removes points behind the logo. If no logoPadding is specified, the removed part will have the same size as the logo                                                    |
+| `logoPadding`            | `number`                            |                     | Adds a border with no points around the logo. When > 0, the padding will be visible even if the prop removeQrCodeBehindLogo is not set to true                                                    |
 | `qrStyle`                | `squares` &#124; `dots`             | `squares`  | Style of the QR Code modules                                                                                                       |
 | `eyeRadius`              | `CornerRadii` &#124; `CornerRadii[]` |  | The corner radius for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeRadius_doc.md) |
 | `eyeColor`               | `EyeColor` &#124; `EyeColor[]`      |  | The color for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeColor_doc.md)          |
@@ -58,36 +59,35 @@ Thanks to everyone who contributed and/or will contribute :)
 <table>
 <tr><td align="center" valign="top">
 			<a href="https://github.com/gcoro">
-			<img src="https://avatars.githubusercontent.com/u/37499369?v=4" width="100px;" alt="gcoro" /><br />
+			<img src="https://avatars.githubusercontent.com/u/37499369?v=4" width="60px;" alt="gcoro" /><br />
 			<sup><b>gcoro</b></sup></a><br />
 			</td><td align="center" valign="top">
 			<a href="https://github.com/jgillick">
-			<img src="https://avatars.githubusercontent.com/u/35894?v=4" width="100px;" alt="jgillick" /><br />
+			<img src="https://avatars.githubusercontent.com/u/35894?v=4" width="60px;" alt="jgillick" /><br />
 			<sup><b>jgillick</b></sup></a><br />
 			</td><td align="center" valign="top">
-			<a href="https://github.com/JChord">
-			<img src="https://avatars.githubusercontent.com/u/981214?v=4" width="100px;" alt="JChord" /><br />
-			<sup><b>JChord</b></sup></a><br />
+			<a href="https://github.com/dos1in">
+			<img src="https://avatars.githubusercontent.com/u/981214?v=4" width="60px;" alt="dos1in" /><br />
+			<sup><b>dos1in</b></sup></a><br />
 			</td><td align="center" valign="top">
 			<a href="https://github.com/halitogunc">
-			<img src="https://avatars.githubusercontent.com/u/13641726?v=4" width="100px;" alt="halitogunc" /><br />
+			<img src="https://avatars.githubusercontent.com/u/13641726?v=4" width="60px;" alt="halitogunc" /><br />
 			<sup><b>halitogunc</b></sup></a><br />
 			</td><td align="center" valign="top">
-			<a href="https://github.com/mushang11">
-			<img src="https://avatars.githubusercontent.com/u/13930277?v=4" width="100px;" alt="mushang11" /><br />
-			<sup><b>mushang11</b></sup></a><br />
+			<a href="https://github.com/qwei-1874">
+			<img src="https://avatars.githubusercontent.com/u/13930277?v=4" width="60px;" alt="qwei-1874" /><br />
+			<sup><b>qwei-1874</b></sup></a><br />
 			</td><td align="center" valign="top">
 			<a href="https://github.com/Trexy94">
-			<img src="https://avatars.githubusercontent.com/u/16225761?v=4" width="100px;" alt="Trexy94" /><br />
+			<img src="https://avatars.githubusercontent.com/u/16225761?v=4" width="60px;" alt="Trexy94" /><br />
 			<sup><b>Trexy94</b></sup></a><br />
 			</td><td align="center" valign="top">
 			<a href="https://github.com/ty-everett">
-			<img src="https://avatars.githubusercontent.com/u/23272461?v=4" width="100px;" alt="ty-everett" /><br />
+			<img src="https://avatars.githubusercontent.com/u/23272461?v=4" width="60px;" alt="ty-everett" /><br />
 			<sup><b>ty-everett</b></sup></a><br />
-			</td><tr/>
-<tr><td align="center" valign="top">
+			</td><td align="center" valign="top">
 			<a href="https://github.com/larstel">
-			<img src="https://avatars.githubusercontent.com/u/45731552?v=4" width="100px;" alt="larstel" /><br />
+			<img src="https://avatars.githubusercontent.com/u/45731552?v=4" width="60px;" alt="larstel" /><br />
 			<sup><b>larstel</b></sup></a><br />
 			</td></tr>
 </table>
