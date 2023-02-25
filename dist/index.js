@@ -256,7 +256,7 @@ var QRCode = /** @class */ (function (_super) {
                     var dHeightLogoPadding = dHeightLogo + (2 * logoPadding);
                     var dxLogoPadding = dxLogo + offset - logoPadding;
                     var dyLogoPadding = dyLogo + offset - logoPadding;
-                    if (logoPaddingStyle === 'round') {
+                    if (logoPaddingStyle === 'circle') {
                         var dxCenterLogoPadding = dxLogoPadding + (dWidthLogoPadding / 2);
                         var dyCenterLogoPadding = dyLogoPadding + (dHeightLogoPadding / 2);
                         ctx.ellipse(dxCenterLogoPadding, dyCenterLogoPadding, dWidthLogoPadding / 2, dHeightLogoPadding / 2, 0, 0, 2 * Math.PI);

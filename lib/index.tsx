@@ -30,7 +30,7 @@ export interface IProps {
     logoOnLoad?: () => void;
     removeQrCodeBehindLogo?: boolean;
     logoPadding?: number;
-    logoPaddingStyle?: 'square' | 'round';
+    logoPaddingStyle?: 'square' | 'circle';
     eyeRadius?: CornerRadii | [CornerRadii, CornerRadii, CornerRadii];
     eyeColor?: EyeColor | [EyeColor, EyeColor, EyeColor];
     qrStyle?: 'squares' | 'dots';
@@ -368,7 +368,7 @@ export class QRCode extends React.Component<IProps, {}> {
                     const dxLogoPadding = dxLogo + offset - logoPadding;
                     const dyLogoPadding = dyLogo + offset - logoPadding;
 
-                    if (logoPaddingStyle === 'round') {
+                    if (logoPaddingStyle === 'circle') {
                         const dxCenterLogoPadding = dxLogoPadding + (dWidthLogoPadding / 2);
                         const dyCenterLogoPadding = dyLogoPadding + (dHeightLogoPadding / 2);
                         ctx.ellipse(dxCenterLogoPadding, dyCenterLogoPadding, dWidthLogoPadding / 2, dHeightLogoPadding / 2, 0, 0, 2 * Math.PI);
