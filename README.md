@@ -38,8 +38,9 @@ React.render(
 | `logoWidth`              | `number` (in pixels)                | `size * 0.2`        | Logo image width                                                                                                                   |
 | `logoHeight`             | `number` (in pixels)                | `logoWidth`                  | Logo image height                                                                                                                  |
 | `logoOpacity`            | `number` (css opacity 0 <= x <= 1)  | `1`                 | Logo opacity. This allows you to modify the transparency of your logo, so that it won't compromise the readability of the QR Code  |
-| `logoOnLoad`                      | `function`        |                     | Callback function to know when the logo in the QR Code is loaded                                                                     |
-| `removeQrCodeBehindLogo` | `boolean`                           |   `false`           | Removes points behind the logo and adds a border with no points around the logo                                                    |
+| `logoOnLoad`             | `() => void`                        |                     | Callback function to know when the logo in the QR Code is loaded                                                                     |
+| `removeQrCodeBehindLogo` | `boolean`                           |   `false`           | Removes points behind the logo                                                    |
+| `logoPadding`            | `number`                            |                     | Adds a border with no points around the logo                                                    |
 | `qrStyle`                | `squares` &#124; `dots`             | `squares`  | Style of the QR Code modules                                                                                                       |
 | `eyeRadius`              | `CornerRadii` &#124; `CornerRadii[]` |  | The corner radius for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeRadius_doc.md) |
 | `eyeColor`               | `EyeColor` &#124; `EyeColor[]`      |  | The color for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeColor_doc.md)          |
