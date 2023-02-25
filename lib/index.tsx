@@ -30,6 +30,7 @@ export interface IProps {
     logoOnLoad?: () => void;
     removeQrCodeBehindLogo?: boolean;
     logoPadding?: number;
+    logoPaddingStyle?: 'square' | 'round';
     eyeRadius?: CornerRadii | [CornerRadii, CornerRadii, CornerRadii];
     eyeColor?: EyeColor | [EyeColor, EyeColor, EyeColor];
     qrStyle?: 'squares' | 'dots';
@@ -56,7 +57,8 @@ export class QRCode extends React.Component<IProps, {}> {
         fgColor: '#000000',
         logoOpacity: 1,
         qrStyle: 'squares',
-        eyeRadius: [0, 0, 0]
+        eyeRadius: [0, 0, 0],
+        logoPaddingStyle: 'square'
     };
 
     private static utf16to8(str: string): string {
@@ -246,7 +248,8 @@ export class QRCode extends React.Component<IProps, {}> {
             removeQrCodeBehindLogo,
             qrStyle,
             eyeRadius,
-            eyeColor
+            eyeColor,
+            logoPaddingStyle
         } = this.props;
 
         // just make sure that these params are passed as numbers
@@ -355,10 +358,25 @@ export class QRCode extends React.Component<IProps, {}> {
                 const dyLogo = ((size - dHeightLogo) / 2);
 
                 if (removeQrCodeBehindLogo || logoPadding) {
+                    ctx.beginPath();
+
+                    ctx.strokeStyle = bgColor;
                     ctx.fillStyle = bgColor;
-                    const rectWidthLogo = dWidthLogo + (2 * logoPadding);
-                    const rectHeightLogo = dHeightLogo + (2 * logoPadding);
-                    ctx.fillRect(dxLogo + offset - logoPadding, dyLogo + offset - logoPadding, rectWidthLogo, rectHeightLogo);
+
+                    const dWidthLogoPadding = dWidthLogo + (2 * logoPadding);
+                    const dHeightLogoPadding = dHeightLogo + (2 * logoPadding);
+                    const dxLogoPadding = dxLogo + offset - logoPadding;
+                    const dyLogoPadding = dyLogo + offset - logoPadding;
+
+                    if (logoPaddingStyle === 'round') {
+                        const dxCenterLogoPadding = dxLogoPadding + (dWidthLogoPadding / 2);
+                        const dyCenterLogoPadding = dyLogoPadding + (dHeightLogoPadding / 2);
+                        ctx.ellipse(dxCenterLogoPadding, dyCenterLogoPadding, dWidthLogoPadding / 2, dHeightLogoPadding / 2, 0, 0, 2 * Math.PI);
+                        ctx.stroke();
+                        ctx.fill();
+                    } else {
+                        ctx.fillRect(dxLogoPadding, dyLogoPadding, dWidthLogoPadding, dHeightLogoPadding);
+                    }
                 }
 
                 ctx.globalAlpha = logoOpacity;
