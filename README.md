@@ -47,6 +47,13 @@ React.render(
 | `eyeColor`               | `EyeColor` &#124; `EyeColor[]`      |  | The color for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeColor_doc.md)          |
 | `id`                     | `string`                            | `react-qrcode-logo` | Optional custom id for the QRCode canvas. You can use this prop if you have multiple QRCodes and need to differentiate them        |
 
+## Functions
+To access these functions, you need to use ref. [Reference](https://react.dev/learn/manipulating-the-dom-with-refs)
+
+|	Functions							| Params		|	Descriptions				|
+|-----------------------|-----------|---------------------|
+| `saveAsImage`					|	`filename?: string`		|	Save QRCode as png image |
+
 ## Usage example
 You can find a very simple demo project [here](https://github.com/gcoro/QRCodeCustomizer).
 

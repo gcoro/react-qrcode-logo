@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.9.1]
+### Features
+- Added save to image functionality via ref.
+
 ## [v2.9.0]
 ### Features
 - Added new optional prop `logoPadding` to specify optional padding around the logo.
