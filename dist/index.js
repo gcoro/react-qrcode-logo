@@ -278,13 +278,13 @@ var QRCode = /** @class */ (function (_super) {
         }
     };
     QRCode.prototype.render = function () {
-        var _a;
+        var _a, _b;
         var qrSize = +this.props.size + (2 * +this.props.quietZone);
         return React.createElement('canvas', {
             id: (_a = this.props.id) !== null && _a !== void 0 ? _a : 'react-qrcode-logo',
             height: qrSize,
             width: qrSize,
-            style: { height: qrSize + 'px', width: qrSize + 'px' },
+            style: (_b = this.props.style) !== null && _b !== void 0 ? _b : { height: qrSize + 'px', width: qrSize + 'px' },
             ref: this.canvas
         });
     };
