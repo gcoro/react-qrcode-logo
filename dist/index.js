@@ -222,19 +222,12 @@ var QRCode = /** @class */ (function (_super) {
                         ctx.arc(Math.round(col * cellSize) + radius + offset, Math.round(row * cellSize) + radius + offset, radius, 0, 2 * Math.PI, false);
                         ctx.closePath();
                         ctx.fill();
-                        // ctx.lineWidth = 1;
-                        // ctx.strokeStyle = fgColor;
-                        // ctx.stroke();                       
-                        // ctx.fillStyle = "pink";
                         if (!roundedCorners[0])
                             ctx.fillRect(Math.round(col * cellSize) + offset, Math.round(row * cellSize) + offset, w / 2, h / 2);
-                        // ctx.fillStyle = "pink";
                         if (!roundedCorners[1])
                             ctx.fillRect(Math.round(col * cellSize) + offset + Math.floor(w / 2), Math.round(row * cellSize) + offset, w / 2, h / 2);
-                        // ctx.fillStyle = "pink";
                         if (!roundedCorners[2])
                             ctx.fillRect(Math.round(col * cellSize) + offset + Math.floor(w / 2), Math.round(row * cellSize) + offset + Math.floor(h / 2), w / 2, h / 2);
-                        // ctx.fillStyle = "pink";
                         if (!roundedCorners[3])
                             ctx.fillRect(Math.round(col * cellSize) + offset, Math.round(row * cellSize) + offset + Math.floor(h / 2), w / 2, h / 2);
                     }
