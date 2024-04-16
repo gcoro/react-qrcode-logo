@@ -4,7 +4,7 @@ Typescript React component to generate a customizable QR Code.
 <div style="display: flex; flex-direction: row;">
 	<img src="res/qrcode-react.png" height="256" width="256">
 	<img src="res/qrcode-mikuv3.png" height="256" width="256">
-	<img src="res/qrcode-ts.png" height="256" width="256">
+	<img src="res/qrcode-ts-fluid.png" height="256" width="256">
 </div>
 
 ## Installation
@@ -42,7 +42,7 @@ React.render(
 | `removeQrCodeBehindLogo` | `boolean`                           |   `false`           | Removes points behind the logo. If no logoPadding is specified, the removed part will have the same size as the logo                                                    |
 | `logoPadding`            | `number`                            |                     | Adds a border with no points around the logo. When > 0, the padding will be visible even if the prop removeQrCodeBehindLogo is not set to true                                                    |
 | `logoPaddingStyle`            | `square` &#124; `circle`        | `square`     | Sets the shape of the padding area around the logo                                                     |
-| `qrStyle`                | `squares` &#124; `dots`             | `squares`  | Style of the QR Code modules                                                                                                       |
+| `qrStyle`                | `squares` &#124; `dots` &#124; `fluid`            | `squares`  | Style of the QR Code modules                                                                                                       |
 | `eyeRadius`              | `CornerRadii` &#124; `CornerRadii[]` |  | The corner radius for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeRadius_doc.md) |
 | `eyeColor`               | `EyeColor` &#124; `EyeColor[]`      |  | The color for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeColor_doc.md)          |
 | `id`                     | `string`                            | `react-qrcode-logo` | Optional custom id for the QRCode canvas. You can use this prop if you have multiple QRCodes and need to differentiate them        |
@@ -74,6 +74,14 @@ Thanks to everyone who contributed and/or will contribute :)
 			<a href="https://github.com/halitogunc">
 			<img src="https://avatars.githubusercontent.com/u/13641726?v=4" width="60px;" alt="halitogunc" /><br />
 			<sup><b>halitogunc</b></sup></a><br />
+			</td><td align="center" valign="top">
+			<a href="https://github.com/joellord">
+			<img src="https://avatars.githubusercontent.com/u/1615433?v=4" width="60px;" alt="joellord" /><br />
+			<sup><b>joellord</b></sup></a><br />
+			</td><td align="center" valign="top">
+			<a href="https://github.com/Michael-AT-Corporation">
+			<img src="https://avatars.githubusercontent.com/u/77804353?v=4" width="60px;" alt="Michael-AT-Corporation" /><br />
+			<sup><b>Michael-AT-Corporation</b></sup></a><br />
 			</td><td align="center" valign="top">
 			<a href="https://github.com/qwei-1874">
 			<img src="https://avatars.githubusercontent.com/u/13930277?v=4" width="60px;" alt="qwei-1874" /><br />

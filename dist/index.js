@@ -214,6 +214,39 @@ var QRCode = /** @class */ (function (_super) {
                 }
             }
         }
+        else if (qrStyle === 'fluid') {
+            var radius = Math.ceil(cellSize / 2);
+            for (var row = 0; row < length; row++) {
+                for (var col = 0; col < length; col++) {
+                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
+                        var roundedCorners = [false, false, false, false]; // top-left, top-right, bottom-right, bottom-left
+                        if ((row > 0 && !qrCode.isDark(row - 1, col)) && (col > 0 && !qrCode.isDark(row, col - 1)))
+                            roundedCorners[0] = true;
+                        if ((row > 0 && !qrCode.isDark(row - 1, col)) && (col < length - 1 && !qrCode.isDark(row, col + 1)))
+                            roundedCorners[1] = true;
+                        if ((row < length - 1 && !qrCode.isDark(row + 1, col)) && (col < length - 1 && !qrCode.isDark(row, col + 1)))
+                            roundedCorners[2] = true;
+                        if ((row < length - 1 && !qrCode.isDark(row + 1, col)) && (col > 0 && !qrCode.isDark(row, col - 1)))
+                            roundedCorners[3] = true;
+                        var w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
+                        var h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
+                        ctx.fillStyle = fgColor;
+                        ctx.beginPath();
+                        ctx.arc(Math.round(col * cellSize) + radius + offset, Math.round(row * cellSize) + radius + offset, radius, 0, 2 * Math.PI, false);
+                        ctx.closePath();
+                        ctx.fill();
+                        if (!roundedCorners[0])
+                            ctx.fillRect(Math.round(col * cellSize) + offset, Math.round(row * cellSize) + offset, w / 2, h / 2);
+                        if (!roundedCorners[1])
+                            ctx.fillRect(Math.round(col * cellSize) + offset + Math.floor(w / 2), Math.round(row * cellSize) + offset, w / 2, h / 2);
+                        if (!roundedCorners[2])
+                            ctx.fillRect(Math.round(col * cellSize) + offset + Math.floor(w / 2), Math.round(row * cellSize) + offset + Math.floor(h / 2), w / 2, h / 2);
+                        if (!roundedCorners[3])
+                            ctx.fillRect(Math.round(col * cellSize) + offset, Math.round(row * cellSize) + offset + Math.floor(h / 2), w / 2, h / 2);
+                    }
+                }
+            }
+        }
         else {
             for (var row = 0; row < length; row++) {
                 for (var col = 0; col < length; col++) {

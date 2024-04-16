@@ -27,7 +27,7 @@ export interface IProps {
     logoPaddingStyle?: 'square' | 'circle';
     eyeRadius?: CornerRadii | [CornerRadii, CornerRadii, CornerRadii];
     eyeColor?: EyeColor | [EyeColor, EyeColor, EyeColor];
-    qrStyle?: 'squares' | 'dots';
+    qrStyle?: 'squares' | 'dots' | 'fluid';
     style?: object;
     id?: string;
 }
