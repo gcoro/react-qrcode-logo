@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.10.0]
+### Features
+- Added new `qrStyle`: `fluid`.
+
 ## [v2.9.0]
 ### Features
 - Added new optional prop `logoPadding` to specify optional padding around the logo.

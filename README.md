@@ -4,7 +4,7 @@ Typescript React component to generate a customizable QR Code.
 <div style="display: flex; flex-direction: row;">
 	<img src="res/qrcode-react.png" height="256" width="256">
 	<img src="res/qrcode-mikuv3.png" height="256" width="256">
-	<img src="res/qrcode-ts.png" height="256" width="256">
+	<img src="res/qrcode-ts-fluid.png" height="256" width="256">
 </div>
 
 ## Installation
@@ -74,6 +74,14 @@ Thanks to everyone who contributed and/or will contribute :)
 			<a href="https://github.com/halitogunc">
 			<img src="https://avatars.githubusercontent.com/u/13641726?v=4" width="60px;" alt="halitogunc" /><br />
 			<sup><b>halitogunc</b></sup></a><br />
+			</td><td align="center" valign="top">
+			<a href="https://github.com/joellord">
+			<img src="https://avatars.githubusercontent.com/u/1615433?v=4" width="60px;" alt="joellord" /><br />
+			<sup><b>joellord</b></sup></a><br />
+			</td><td align="center" valign="top">
+			<a href="https://github.com/Michael-AT-Corporation">
+			<img src="https://avatars.githubusercontent.com/u/77804353?v=4" width="60px;" alt="Michael-AT-Corporation" /><br />
+			<sup><b>Michael-AT-Corporation</b></sup></a><br />
 			</td><td align="center" valign="top">
 			<a href="https://github.com/qwei-1874">
 			<img src="https://avatars.githubusercontent.com/u/13930277?v=4" width="60px;" alt="qwei-1874" /><br />
