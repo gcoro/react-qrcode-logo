@@ -396,7 +396,7 @@ export class QRCode extends React.Component<IProps, {}> {
             id: this.props.id ?? 'react-qrcode-logo',
             height: qrSize,
             width: qrSize,
-            style: this.props.style ?? { height: qrSize + 'px', width: qrSize + 'px' },
+            style: { height: qrSize + 'px', width: qrSize + 'px' , ...this.props.style },
             ref: this.canvas
         });
     }

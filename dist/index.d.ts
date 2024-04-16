@@ -1,11 +1,11 @@
 import * as React from 'react';
-declare type EyeColor = string | InnerOuterEyeColor;
-declare type InnerOuterEyeColor = {
+type EyeColor = string | InnerOuterEyeColor;
+type InnerOuterEyeColor = {
     inner: string;
     outer: string;
 };
-declare type CornerRadii = number | [number, number, number, number] | InnerOuterRadii;
-declare type InnerOuterRadii = {
+type CornerRadii = number | [number, number, number, number] | InnerOuterRadii;
+type InnerOuterRadii = {
     inner: number | [number, number, number, number];
     outer: number | [number, number, number, number];
 };
@@ -58,7 +58,10 @@ export declare class QRCode extends React.Component<IProps, {}> {
         id: string;
         height: number;
         width: number;
-        style: object;
+        style: {
+            height: string;
+            width: string;
+        };
         ref: React.RefObject<HTMLCanvasElement>;
     }, HTMLCanvasElement>;
 }
