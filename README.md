@@ -1,10 +1,11 @@
 # react-qrcode-logo
+
 Typescript React component to generate a customizable QR Code.
 
 <div style="display: flex; flex-direction: row;">
-	<img src="res/qrcode-react.png" height="256" width="256">
-	<img src="res/qrcode-mikuv3.png" height="256" width="256">
-	<img src="res/qrcode-ts-fluid.png" height="256" width="256">
+ <img src="res/qrcode-react.png" height="256" width="256">
+ <img src="res/qrcode-mikuv3.png" height="256" width="256">
+ <img src="res/qrcode-ts-fluid.png" height="256" width="256">
 </div>
 
 ## Installation
@@ -12,19 +13,24 @@ Typescript React component to generate a customizable QR Code.
 ```bash
 npm install --save react-qrcode-logo
 ```
+
 ## Usage
 
 ```javascript
-import * as React from 'react';
+// import
 import { QRCode } from 'react-qrcode-logo';
 
-React.render(
-  <QRCode value="https://github.com/gcoro/react-qrcode-logo" />,
-  mountNode
-);
+// usage
+<QRCode value="https://github.com/gcoro/react-qrcode-logo" />
+
 ```
 
+## Compatibility
+
+If you are using a React version >= 18, use react-qrcode-logo version >= 3.0.0
+
 ## Props
+
 | Prop                     | Type                                | Default value       | Description                                                                                                                        |
 |--------------------------|-------------------------------------| --------------------|------------------------------------------------------------------------------------------------------------------------------------|
 | `value`                  | `string`                            | `https://reactjs.org/` | The value encoded in the QR Code. When the QR Code is decoded, this value will be returned                                         |
@@ -46,12 +52,14 @@ React.render(
 | `eyeRadius`              | `CornerRadii` &#124; `CornerRadii[]` |  | The corner radius for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeRadius_doc.md) |
 | `eyeColor`               | `EyeColor` &#124; `EyeColor[]`      |  | The color for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeColor_doc.md)          |
 | `id`                     | `string`                            | `react-qrcode-logo` | Optional custom id for the QRCode canvas. You can use this prop if you have multiple QRCodes and need to differentiate them        |
-| `style`       | `Object` (css style properties) |  | CSS style properties that will be applied to the canvas component |
+| `style`       | `React.CSSProperties` |  | CSS style properties that will be applied to the canvas component |
 
 ## Usage example
+
 You can find a very simple demo project [here](https://github.com/gcoro/QRCodeCustomizer).
 
 ## Contributing
+
 PRs and suggestions are welcome.
 When making a pull request, please explain in a clear way the changes you made and why you are making them (+ if you can also update the README accordingly, ty <3). 
 Also try keep the current repo codestyle (eg. do not reformat all the code with prettier).
@@ -60,47 +68,53 @@ Thanks to everyone who contributed and/or will contribute :)
 
 <table>
 <tr><td align="center" valign="top">
-			<a href="https://github.com/gcoro">
-			<img src="https://avatars.githubusercontent.com/u/37499369?v=4" width="60px;" alt="gcoro" /><br />
-			<sup><b>gcoro</b></sup></a><br />
-			</td><td align="center" valign="top">
-			<a href="https://github.com/jgillick">
-			<img src="https://avatars.githubusercontent.com/u/35894?v=4" width="60px;" alt="jgillick" /><br />
-			<sup><b>jgillick</b></sup></a><br />
-			</td><td align="center" valign="top">
-			<a href="https://github.com/dos1in">
-			<img src="https://avatars.githubusercontent.com/u/981214?v=4" width="60px;" alt="dos1in" /><br />
-			<sup><b>dos1in</b></sup></a><br />
-			</td><td align="center" valign="top">
-			<a href="https://github.com/halitogunc">
-			<img src="https://avatars.githubusercontent.com/u/13641726?v=4" width="60px;" alt="halitogunc" /><br />
-			<sup><b>halitogunc</b></sup></a><br />
-			</td><td align="center" valign="top">
-			<a href="https://github.com/joellord">
-			<img src="https://avatars.githubusercontent.com/u/1615433?v=4" width="60px;" alt="joellord" /><br />
-			<sup><b>joellord</b></sup></a><br />
-			</td><td align="center" valign="top">
-			<a href="https://github.com/Michael-AT-Corporation">
-			<img src="https://avatars.githubusercontent.com/u/77804353?v=4" width="60px;" alt="Michael-AT-Corporation" /><br />
-			<sup><b>Michael-AT-Corporation</b></sup></a><br />
-			</td><td align="center" valign="top">
-			<a href="https://github.com/qwei-1874">
-			<img src="https://avatars.githubusercontent.com/u/13930277?v=4" width="60px;" alt="qwei-1874" /><br />
-			<sup><b>qwei-1874</b></sup></a><br />
-			</td><td align="center" valign="top">
-			<a href="https://github.com/Trexy94">
-			<img src="https://avatars.githubusercontent.com/u/16225761?v=4" width="60px;" alt="Trexy94" /><br />
-			<sup><b>Trexy94</b></sup></a><br />
-			</td><td align="center" valign="top">
-			<a href="https://github.com/ty-everett">
-			<img src="https://avatars.githubusercontent.com/u/23272461?v=4" width="60px;" alt="ty-everett" /><br />
-			<sup><b>ty-everett</b></sup></a><br />
-			</td><td align="center" valign="top">
-			<a href="https://github.com/larstel">
-			<img src="https://avatars.githubusercontent.com/u/45731552?v=4" width="60px;" alt="larstel" /><br />
-			<sup><b>larstel</b></sup></a><br />
-			</td></tr>
+   <a href="https://github.com/gcoro">
+   <img src="https://avatars.githubusercontent.com/u/37499369?v=4" width="60px;" alt="gcoro" /><br />
+   <sup><b>gcoro</b></sup></a><br />
+   </td><td align="center" valign="top">
+   <a href="https://github.com/brycekunkel">
+   <img src="https://avatars.githubusercontent.com/u/22450894?v=4" width="60px;" alt="brycekunkel" /><br />
+   <sup><b>brycekunkel</b></sup></a><br />
+   </td><td align="center" valign="top">
+   <a href="https://github.com/jgillick">
+   <img src="https://avatars.githubusercontent.com/u/35894?v=4" width="60px;" alt="jgillick" /><br />
+   <sup><b>jgillick</b></sup></a><br />
+   </td><td align="center" valign="top">
+   <a href="https://github.com/dos1in">
+   <img src="https://avatars.githubusercontent.com/u/981214?v=4" width="60px;" alt="dos1in" /><br />
+   <sup><b>dos1in</b></sup></a><br />
+   </td><td align="center" valign="top">
+   <a href="https://github.com/halitogunc">
+   <img src="https://avatars.githubusercontent.com/u/13641726?v=4" width="60px;" alt="halitogunc" /><br />
+   <sup><b>halitogunc</b></sup></a><br />
+   </td><td align="center" valign="top">
+   <a href="https://github.com/joellord">
+   <img src="https://avatars.githubusercontent.com/u/1615433?v=4" width="60px;" alt="joellord" /><br />
+   <sup><b>joellord</b></sup></a><br />
+   </td><td align="center" valign="top">
+   <a href="https://github.com/Michael-AT-Corporation">
+   <img src="https://avatars.githubusercontent.com/u/77804353?v=4" width="60px;" alt="Michael-AT-Corporation" /><br />
+   <sup><b>Michael-AT-Corporation</b></sup></a><br />
+   </td><td align="center" valign="top">
+   <a href="https://github.com/qwei-1874">
+   <img src="https://avatars.githubusercontent.com/u/13930277?v=4" width="60px;" alt="qwei-1874" /><br />
+   <sup><b>qwei-1874</b></sup></a><br />
+   </td><td align="center" valign="top">
+   <a href="https://github.com/Trexy94">
+   <img src="https://avatars.githubusercontent.com/u/16225761?v=4" width="60px;" alt="Trexy94" /><br />
+   <sup><b>Trexy94</b></sup></a><br />
+   </td><td align="center" valign="top">
+   <a href="https://github.com/ty-everett">
+   <img src="https://avatars.githubusercontent.com/u/23272461?v=4" width="60px;" alt="ty-everett" /><br />
+   <sup><b>ty-everett</b></sup></a><br />
+   </td><tr/>
+<tr><td align="center" valign="top">
+   <a href="https://github.com/larstel">
+   <img src="https://avatars.githubusercontent.com/u/45731552?v=4" width="60px;" alt="larstel" /><br />
+   <sup><b>larstel</b></sup></a><br />
+   </td></tr>
 </table>
 
 ## More credits
+
 This package was inspired by [cssivision/qrcode-react](https://github.com/cssivision/qrcode-react) and [zpao/qrcode.react](https://github.com/zpao/qrcode.react). Also looked up some parts from [kazuhikoarase/qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) (which this package depends on).

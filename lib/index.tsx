@@ -1,7 +1,6 @@
 import * as isEqual from 'lodash.isequal';
 import * as qrGenerator from 'qrcode-generator';
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 
 type EyeColor = string | InnerOuterEyeColor;
 type InnerOuterEyeColor = {
@@ -34,7 +33,7 @@ export interface IProps {
     eyeRadius?: CornerRadii | [CornerRadii, CornerRadii, CornerRadii];
     eyeColor?: EyeColor | [EyeColor, EyeColor, EyeColor];
     qrStyle?: 'squares' | 'dots' | 'fluid';
-    style?: object;
+    style?: React.CSSProperties;
     id?: string;
 }
 
@@ -421,13 +420,12 @@ export class QRCode extends React.Component<IProps, {}> {
 
     render() {
         const qrSize = +this.props.size + (2 * +this.props.quietZone);
-        return (
-            <canvas
-                id={this.props.id ?? 'react-qrcode-logo'}
-                height={qrSize}
-                width={qrSize}
-                style={{ height: qrSize + 'px', width: qrSize + 'px', ...this.props.style }}
-                ref={this.canvasRef}
-            />);
+        return React.createElement('canvas', {
+            id: this.props.id ?? 'react-qrcode-logo',
+            height: qrSize,
+            width: qrSize,
+            style: { height: qrSize + 'px', width: qrSize + 'px', ...this.props.style },
+            ref: this.canvasRef
+        });
     }
 }

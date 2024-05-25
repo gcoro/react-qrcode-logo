@@ -325,7 +325,13 @@ var QRCode = /** @class */ (function (_super) {
     QRCode.prototype.render = function () {
         var _a;
         var qrSize = +this.props.size + (2 * +this.props.quietZone);
-        return (React.createElement("canvas", { id: (_a = this.props.id) !== null && _a !== void 0 ? _a : 'react-qrcode-logo', height: qrSize, width: qrSize, style: __assign({ height: qrSize + 'px', width: qrSize + 'px' }, this.props.style), ref: this.canvasRef }));
+        return React.createElement('canvas', {
+            id: (_a = this.props.id) !== null && _a !== void 0 ? _a : 'react-qrcode-logo',
+            height: qrSize,
+            width: qrSize,
+            style: __assign({ height: qrSize + 'px', width: qrSize + 'px' }, this.props.style),
+            ref: this.canvasRef
+        });
     };
     QRCode.defaultProps = {
         value: 'https://reactjs.org/',

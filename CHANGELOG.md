@@ -1,6 +1,9 @@
 # Changelog
 
-## [v2.11.0]
+## [v3.0.0]
+### Fixes
+- Removed use of `ReactDOM.findDOMNode`, which has been deprecated in React 18, and removed in React 19.
+
 ### Features
 - Added `style` prop to pass to the canvas.
 
