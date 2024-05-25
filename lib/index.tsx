@@ -45,7 +45,7 @@ interface ICoordinates {
 
 export class QRCode extends React.Component<IProps, {}> {
 
-    private canvas: React.RefObject<HTMLCanvasElement>;
+    private canvasRef = React.createRef<HTMLCanvasElement>();
 
     public static defaultProps: IProps = {
         value: 'https://reactjs.org/',
@@ -220,7 +220,6 @@ export class QRCode extends React.Component<IProps, {}> {
 
     constructor(props: IProps) {
         super(props);
-        this.canvas = React.createRef();
     }
 
     shouldComponentUpdate(nextProps: IProps) {
@@ -263,7 +262,7 @@ export class QRCode extends React.Component<IProps, {}> {
         qrCode.addData(QRCode.utf16to8(value));
         qrCode.make();
 
-        const canvas: HTMLCanvasElement = ReactDOM.findDOMNode(this.canvas.current) as HTMLCanvasElement;
+        const canvas: HTMLCanvasElement = this.canvasRef.current;
         const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
 
         const canvasSize = size + (2 * quietZone);
@@ -312,8 +311,8 @@ export class QRCode extends React.Component<IProps, {}> {
                         let roundedCorners = [false, false, false, false]; // top-left, top-right, bottom-right, bottom-left
                         if ((row > 0 && !qrCode.isDark(row - 1, col)) && (col > 0 && !qrCode.isDark(row, col - 1))) roundedCorners[0] = true;
                         if ((row > 0 && !qrCode.isDark(row - 1, col)) && (col < length - 1 && !qrCode.isDark(row, col + 1))) roundedCorners[1] = true;
-                        if ((row < length -1 && !qrCode.isDark(row + 1, col)) && (col < length - 1 && !qrCode.isDark(row, col + 1))) roundedCorners[2] = true;
-                        if ((row < length -1 && !qrCode.isDark(row + 1, col)) && (col > 0 && !qrCode.isDark(row, col - 1))) roundedCorners[3] = true;
+                        if ((row < length - 1 && !qrCode.isDark(row + 1, col)) && (col < length - 1 && !qrCode.isDark(row, col + 1))) roundedCorners[2] = true;
+                        if ((row < length - 1 && !qrCode.isDark(row + 1, col)) && (col > 0 && !qrCode.isDark(row, col - 1))) roundedCorners[3] = true;
                         const w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
                         const h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
                         ctx.fillStyle = fgColor;
@@ -326,7 +325,7 @@ export class QRCode extends React.Component<IProps, {}> {
                             2 * Math.PI,
                             false);
                         ctx.closePath();
-                        ctx.fill(); 
+                        ctx.fill();
                         if (!roundedCorners[0]) ctx.fillRect(Math.round(col * cellSize) + offset, Math.round(row * cellSize) + offset, w / 2, h / 2)
                         if (!roundedCorners[1]) ctx.fillRect(Math.round(col * cellSize) + offset + Math.floor(w / 2), Math.round(row * cellSize) + offset, w / 2, h / 2)
                         if (!roundedCorners[2]) ctx.fillRect(Math.round(col * cellSize) + offset + Math.floor(w / 2), Math.round(row * cellSize) + offset + Math.floor(h / 2), w / 2, h / 2)
@@ -422,12 +421,13 @@ export class QRCode extends React.Component<IProps, {}> {
 
     render() {
         const qrSize = +this.props.size + (2 * +this.props.quietZone);
-        return React.createElement('canvas', {
-            id: this.props.id ?? 'react-qrcode-logo',
-            height: qrSize,
-            width: qrSize,
-            style: { height: qrSize + 'px', width: qrSize + 'px' , ...this.props.style },
-            ref: this.canvas
-        });
+        return (
+            <canvas
+                id={this.props.id ?? 'react-qrcode-logo'}
+                height={qrSize}
+                width={qrSize}
+                style={{ height: qrSize + 'px', width: qrSize + 'px', ...this.props.style }}
+                ref={this.canvasRef}
+            />);
     }
 }

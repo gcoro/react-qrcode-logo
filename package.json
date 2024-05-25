@@ -28,18 +28,18 @@
   },
   "homepage": "https://github.com/gcoro/react-qrcode-logo#readme",
   "devDependencies": {
-    "@types/react": "^16.4.7",
-    "@types/react-dom": "^16.0.6",
-    "typescript": "^3.0.1",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^5.4.5",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "dependencies": {
     "lodash.isequal": "^4.5.0",
-    "qrcode-generator": "^1.4.1"
+    "qrcode-generator": "^1.4.4"
   },
   "peerDependencies": {
-    "react": ">=16.4.1",
-    "react-dom": ">=16.4.1"
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   }
 }

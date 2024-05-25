@@ -3,10 +3,12 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -28,12 +30,11 @@ exports.QRCode = void 0;
 var isEqual = require("lodash.isequal");
 var qrGenerator = require("qrcode-generator");
 var React = require("react");
-var ReactDOM = require("react-dom");
 var QRCode = /** @class */ (function (_super) {
     __extends(QRCode, _super);
     function QRCode(props) {
         var _this = _super.call(this, props) || this;
-        _this.canvas = React.createRef();
+        _this.canvasRef = React.createRef();
         return _this;
     }
     QRCode.utf16to8 = function (str) {
@@ -181,7 +182,7 @@ var QRCode = /** @class */ (function (_super) {
         var qrCode = qrGenerator(0, ecLevel);
         qrCode.addData(QRCode.utf16to8(value));
         qrCode.make();
-        var canvas = ReactDOM.findDOMNode(this.canvas.current);
+        var canvas = this.canvasRef.current;
         var ctx = canvas.getContext('2d');
         var canvasSize = size + (2 * quietZone);
         var length = qrCode.getModuleCount();
@@ -324,13 +325,7 @@ var QRCode = /** @class */ (function (_super) {
     QRCode.prototype.render = function () {
         var _a;
         var qrSize = +this.props.size + (2 * +this.props.quietZone);
-        return React.createElement('canvas', {
-            id: (_a = this.props.id) !== null && _a !== void 0 ? _a : 'react-qrcode-logo',
-            height: qrSize,
-            width: qrSize,
-            style: __assign({ height: qrSize + 'px', width: qrSize + 'px' }, this.props.style),
-            ref: this.canvas
-        });
+        return (React.createElement("canvas", { id: (_a = this.props.id) !== null && _a !== void 0 ? _a : 'react-qrcode-logo', height: qrSize, width: qrSize, style: __assign({ height: qrSize + 'px', width: qrSize + 'px' }, this.props.style), ref: this.canvasRef }));
     };
     QRCode.defaultProps = {
         value: 'https://reactjs.org/',
