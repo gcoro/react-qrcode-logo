@@ -35,6 +35,7 @@ export interface IProps {
     qrStyle?: 'squares' | 'dots' | 'fluid';
     style?: React.CSSProperties;
     id?: string;
+    ref?: React.RefObject<QRCodeComponent>;
 }
 
 interface ICoordinates {
@@ -42,7 +43,7 @@ interface ICoordinates {
     col: number;
 }
 
-export class QRCode extends React.Component<IProps, {}> {
+class QRCodeComponent extends React.Component<IProps, {}> {
 
     private canvasRef = React.createRef<HTMLCanvasElement>();
 
@@ -60,7 +61,29 @@ export class QRCode extends React.Component<IProps, {}> {
         logoPaddingStyle: 'square'
     };
 
-    private static utf16to8(str: string): string {
+    public download(fileType?: 'png' | 'jpg' | 'webp', fileName?: string) {
+        if (this.canvasRef.current) {
+            let mimeType;
+
+            switch (fileType) {
+                case 'jpg':
+                    mimeType = 'image/jpeg'; break;
+                case 'webp':
+                    mimeType = 'image/webp'; break;
+                case 'png':
+                default:
+                    mimeType = 'image/png'; break;
+            }
+
+            const url = this.canvasRef.current.toDataURL(mimeType);
+            const link = document.createElement('a');
+            link.download = fileName ?? 'react-qrcode-logo';
+            link.href = url;
+            link.click();
+        }
+    }
+
+    private utf16to8(str: string): string {
         let out: string = '', i: number, c: number;
         const len: number = str.length;
         for (i = 0; i < len; i++) {
@@ -258,10 +281,10 @@ export class QRCode extends React.Component<IProps, {}> {
         const logoPadding = this.props.logoPadding ? +this.props.logoPadding : 0;
 
         const qrCode = qrGenerator(0, ecLevel);
-        qrCode.addData(QRCode.utf16to8(value));
+        qrCode.addData(this.utf16to8(value));
         qrCode.make();
 
-        const canvas: HTMLCanvasElement = this.canvasRef.current;
+        const canvas: HTMLCanvasElement = this.canvasRef?.current;
         const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
 
         const canvasSize = size + (2 * quietZone);
@@ -420,12 +443,15 @@ export class QRCode extends React.Component<IProps, {}> {
 
     render() {
         const qrSize = +this.props.size + (2 * +this.props.quietZone);
-        return React.createElement('canvas', {
-            id: this.props.id ?? 'react-qrcode-logo',
-            height: qrSize,
-            width: qrSize,
-            style: { height: qrSize + 'px', width: qrSize + 'px', ...this.props.style },
-            ref: this.canvasRef
-        });
+
+        return <canvas
+            id={this.props.id ?? 'react-qrcode-logo'}
+            height={qrSize}
+            width={qrSize}
+            style={{ height: qrSize + 'px', width: qrSize + 'px', ...this.props.style }}
+            ref={this.canvasRef}
+        />;
     }
 }
+
+export const QRCode = React.forwardRef((props: IProps, ref) => <QRCodeComponent ref={ref as React.RefObject<QRCodeComponent>} {...props} />);
