@@ -1,5 +1,9 @@
 # Changelog
 
+## [v2.11.0]
+### Features
+- Added `style` prop to pass to the canvas.
+
 ## [v2.10.0]
 ### Features
 - Added new `qrStyle`: `fluid`.

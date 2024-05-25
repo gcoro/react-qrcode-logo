@@ -46,6 +46,7 @@ React.render(
 | `eyeRadius`              | `CornerRadii` &#124; `CornerRadii[]` |  | The corner radius for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeRadius_doc.md) |
 | `eyeColor`               | `EyeColor` &#124; `EyeColor[]`      |  | The color for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeColor_doc.md)          |
 | `id`                     | `string`                            | `react-qrcode-logo` | Optional custom id for the QRCode canvas. You can use this prop if you have multiple QRCodes and need to differentiate them        |
+| `style`       | `Object` (css style properties) |  | CSS style properties that will be applied to the canvas component |
 
 ## Usage example
 You can find a very simple demo project [here](https://github.com/gcoro/QRCodeCustomizer).

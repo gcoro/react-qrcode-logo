@@ -1,11 +1,11 @@
 import * as React from 'react';
-type EyeColor = string | InnerOuterEyeColor;
-type InnerOuterEyeColor = {
+declare type EyeColor = string | InnerOuterEyeColor;
+declare type InnerOuterEyeColor = {
     inner: string;
     outer: string;
 };
-type CornerRadii = number | [number, number, number, number] | InnerOuterRadii;
-type InnerOuterRadii = {
+declare type CornerRadii = number | [number, number, number, number] | InnerOuterRadii;
+declare type InnerOuterRadii = {
     inner: number | [number, number, number, number];
     outer: number | [number, number, number, number];
 };
