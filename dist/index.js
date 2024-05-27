@@ -3,10 +3,12 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -28,15 +30,36 @@ exports.QRCode = void 0;
 var isEqual = require("lodash.isequal");
 var qrGenerator = require("qrcode-generator");
 var React = require("react");
-var ReactDOM = require("react-dom");
 var QRCode = /** @class */ (function (_super) {
     __extends(QRCode, _super);
     function QRCode(props) {
         var _this = _super.call(this, props) || this;
-        _this.canvas = React.createRef();
+        _this.canvasRef = React.createRef();
         return _this;
     }
-    QRCode.utf16to8 = function (str) {
+    QRCode.prototype.download = function (fileType, fileName) {
+        if (this.canvasRef.current) {
+            var mimeType = void 0;
+            switch (fileType) {
+                case 'jpg':
+                    mimeType = 'image/jpeg';
+                    break;
+                case 'webp':
+                    mimeType = 'image/webp';
+                    break;
+                case 'png':
+                default:
+                    mimeType = 'image/png';
+                    break;
+            }
+            var url = this.canvasRef.current.toDataURL(mimeType, 1.0);
+            var link = document.createElement('a');
+            link.download = fileName !== null && fileName !== void 0 ? fileName : 'react-qrcode-logo';
+            link.href = url;
+            link.click();
+        }
+    };
+    QRCode.prototype.utf16to8 = function (str) {
         var out = '', i, c;
         var len = str.length;
         for (i = 0; i < len; i++) {
@@ -171,7 +194,8 @@ var QRCode = /** @class */ (function (_super) {
         this.update();
     };
     QRCode.prototype.update = function () {
-        var _a = this.props, value = _a.value, ecLevel = _a.ecLevel, enableCORS = _a.enableCORS, bgColor = _a.bgColor, fgColor = _a.fgColor, logoImage = _a.logoImage, logoOpacity = _a.logoOpacity, logoOnLoad = _a.logoOnLoad, removeQrCodeBehindLogo = _a.removeQrCodeBehindLogo, qrStyle = _a.qrStyle, eyeRadius = _a.eyeRadius, eyeColor = _a.eyeColor, logoPaddingStyle = _a.logoPaddingStyle;
+        var _a;
+        var _b = this.props, value = _b.value, ecLevel = _b.ecLevel, enableCORS = _b.enableCORS, bgColor = _b.bgColor, fgColor = _b.fgColor, logoImage = _b.logoImage, logoOpacity = _b.logoOpacity, logoOnLoad = _b.logoOnLoad, removeQrCodeBehindLogo = _b.removeQrCodeBehindLogo, qrStyle = _b.qrStyle, eyeRadius = _b.eyeRadius, eyeColor = _b.eyeColor, logoPaddingStyle = _b.logoPaddingStyle;
         // just make sure that these params are passed as numbers
         var size = +this.props.size;
         var quietZone = +this.props.quietZone;
@@ -179,9 +203,9 @@ var QRCode = /** @class */ (function (_super) {
         var logoHeight = this.props.logoHeight ? +this.props.logoHeight : 0;
         var logoPadding = this.props.logoPadding ? +this.props.logoPadding : 0;
         var qrCode = qrGenerator(0, ecLevel);
-        qrCode.addData(QRCode.utf16to8(value));
+        qrCode.addData(this.utf16to8(value));
         qrCode.make();
-        var canvas = ReactDOM.findDOMNode(this.canvas.current);
+        var canvas = (_a = this.canvasRef) === null || _a === void 0 ? void 0 : _a.current;
         var ctx = canvas.getContext('2d');
         var canvasSize = size + (2 * quietZone);
         var length = qrCode.getModuleCount();
@@ -259,7 +283,7 @@ var QRCode = /** @class */ (function (_super) {
         }
         // Draw positioning patterns
         for (var i = 0; i < 3; i++) {
-            var _b = positioningZones[i], row = _b.row, col = _b.col;
+            var _c = positioningZones[i], row = _c.row, col = _c.col;
             var radii = eyeRadius;
             var color = void 0;
             if (Array.isArray(radii)) {
@@ -286,7 +310,7 @@ var QRCode = /** @class */ (function (_super) {
             if (enableCORS) {
                 image_1.crossOrigin = 'Anonymous';
             }
-            image_1.onload = function () {
+            image_1.onload = function (e) {
                 ctx.save();
                 var dWidthLogo = logoWidth || size * 0.2;
                 var dHeightLogo = logoHeight || dWidthLogo;
@@ -315,7 +339,7 @@ var QRCode = /** @class */ (function (_super) {
                 ctx.drawImage(image_1, dxLogo + offset, dyLogo + offset, dWidthLogo, dHeightLogo);
                 ctx.restore();
                 if (logoOnLoad) {
-                    logoOnLoad();
+                    logoOnLoad(e);
                 }
             };
             image_1.src = logoImage;
@@ -324,13 +348,7 @@ var QRCode = /** @class */ (function (_super) {
     QRCode.prototype.render = function () {
         var _a;
         var qrSize = +this.props.size + (2 * +this.props.quietZone);
-        return React.createElement('canvas', {
-            id: (_a = this.props.id) !== null && _a !== void 0 ? _a : 'react-qrcode-logo',
-            height: qrSize,
-            width: qrSize,
-            style: __assign({ height: qrSize + 'px', width: qrSize + 'px' }, this.props.style),
-            ref: this.canvas
-        });
+        return React.createElement("canvas", { id: (_a = this.props.id) !== null && _a !== void 0 ? _a : 'react-qrcode-logo', height: qrSize, width: qrSize, style: __assign({ height: qrSize + 'px', width: qrSize + 'px' }, this.props.style), ref: this.canvasRef });
     };
     QRCode.defaultProps = {
         value: 'https://reactjs.org/',
