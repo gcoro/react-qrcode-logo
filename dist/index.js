@@ -30,14 +30,14 @@ exports.QRCode = void 0;
 var isEqual = require("lodash.isequal");
 var qrGenerator = require("qrcode-generator");
 var React = require("react");
-var QRCodeComponent = /** @class */ (function (_super) {
-    __extends(QRCodeComponent, _super);
-    function QRCodeComponent(props) {
+var QRCode = /** @class */ (function (_super) {
+    __extends(QRCode, _super);
+    function QRCode(props) {
         var _this = _super.call(this, props) || this;
         _this.canvasRef = React.createRef();
         return _this;
     }
-    QRCodeComponent.prototype.download = function (fileType, fileName) {
+    QRCode.prototype.download = function (fileType, fileName) {
         if (this.canvasRef.current) {
             var mimeType = void 0;
             switch (fileType) {
@@ -52,14 +52,14 @@ var QRCodeComponent = /** @class */ (function (_super) {
                     mimeType = 'image/png';
                     break;
             }
-            var url = this.canvasRef.current.toDataURL(mimeType);
+            var url = this.canvasRef.current.toDataURL(mimeType, 1.0);
             var link = document.createElement('a');
             link.download = fileName !== null && fileName !== void 0 ? fileName : 'react-qrcode-logo';
             link.href = url;
             link.click();
         }
     };
-    QRCodeComponent.prototype.utf16to8 = function (str) {
+    QRCode.prototype.utf16to8 = function (str) {
         var out = '', i, c;
         var len = str.length;
         for (i = 0; i < len; i++) {
@@ -82,7 +82,7 @@ var QRCodeComponent = /** @class */ (function (_super) {
     /**
      * Draw a rounded square in the canvas
      */
-    QRCodeComponent.prototype.drawRoundedSquare = function (lineWidth, x, y, size, color, radii, fill, ctx) {
+    QRCode.prototype.drawRoundedSquare = function (lineWidth, x, y, size, color, radii, fill, ctx) {
         ctx.lineWidth = lineWidth;
         ctx.fillStyle = color;
         ctx.strokeStyle = color;
@@ -125,7 +125,7 @@ var QRCodeComponent = /** @class */ (function (_super) {
     /**
      * Draw a single positional pattern eye.
      */
-    QRCodeComponent.prototype.drawPositioningPattern = function (ctx, cellSize, offset, row, col, color, radii) {
+    QRCode.prototype.drawPositioningPattern = function (ctx, cellSize, offset, row, col, color, radii) {
         if (radii === void 0) { radii = [0, 0, 0, 0]; }
         var lineWidth = Math.ceil(cellSize);
         var radiiOuter;
@@ -163,14 +163,14 @@ var QRCodeComponent = /** @class */ (function (_super) {
     /**
      * Is this dot inside a positional pattern zone.
      */
-    QRCodeComponent.prototype.isInPositioninZone = function (col, row, zones) {
+    QRCode.prototype.isInPositioninZone = function (col, row, zones) {
         return zones.some(function (zone) { return (row >= zone.row && row <= zone.row + 7 &&
             col >= zone.col && col <= zone.col + 7); });
     };
-    QRCodeComponent.prototype.transformPixelLengthIntoNumberOfCells = function (pixelLength, cellSize) {
+    QRCode.prototype.transformPixelLengthIntoNumberOfCells = function (pixelLength, cellSize) {
         return pixelLength / cellSize;
     };
-    QRCodeComponent.prototype.isCoordinateInImage = function (col, row, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage) {
+    QRCode.prototype.isCoordinateInImage = function (col, row, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage) {
         if (logoImage) {
             var numberOfCellsMargin = 2;
             var firstRowOfLogo = this.transformPixelLengthIntoNumberOfCells(dxLogo, cellSize);
@@ -184,16 +184,16 @@ var QRCodeComponent = /** @class */ (function (_super) {
             return false;
         }
     };
-    QRCodeComponent.prototype.shouldComponentUpdate = function (nextProps) {
+    QRCode.prototype.shouldComponentUpdate = function (nextProps) {
         return !isEqual(this.props, nextProps);
     };
-    QRCodeComponent.prototype.componentDidMount = function () {
+    QRCode.prototype.componentDidMount = function () {
         this.update();
     };
-    QRCodeComponent.prototype.componentDidUpdate = function () {
+    QRCode.prototype.componentDidUpdate = function () {
         this.update();
     };
-    QRCodeComponent.prototype.update = function () {
+    QRCode.prototype.update = function () {
         var _a;
         var _b = this.props, value = _b.value, ecLevel = _b.ecLevel, enableCORS = _b.enableCORS, bgColor = _b.bgColor, fgColor = _b.fgColor, logoImage = _b.logoImage, logoOpacity = _b.logoOpacity, logoOnLoad = _b.logoOnLoad, removeQrCodeBehindLogo = _b.removeQrCodeBehindLogo, qrStyle = _b.qrStyle, eyeRadius = _b.eyeRadius, eyeColor = _b.eyeColor, logoPaddingStyle = _b.logoPaddingStyle;
         // just make sure that these params are passed as numbers
@@ -310,7 +310,7 @@ var QRCodeComponent = /** @class */ (function (_super) {
             if (enableCORS) {
                 image_1.crossOrigin = 'Anonymous';
             }
-            image_1.onload = function () {
+            image_1.onload = function (e) {
                 ctx.save();
                 var dWidthLogo = logoWidth || size * 0.2;
                 var dHeightLogo = logoHeight || dWidthLogo;
@@ -339,18 +339,18 @@ var QRCodeComponent = /** @class */ (function (_super) {
                 ctx.drawImage(image_1, dxLogo + offset, dyLogo + offset, dWidthLogo, dHeightLogo);
                 ctx.restore();
                 if (logoOnLoad) {
-                    logoOnLoad();
+                    logoOnLoad(e);
                 }
             };
             image_1.src = logoImage;
         }
     };
-    QRCodeComponent.prototype.render = function () {
+    QRCode.prototype.render = function () {
         var _a;
         var qrSize = +this.props.size + (2 * +this.props.quietZone);
         return React.createElement("canvas", { id: (_a = this.props.id) !== null && _a !== void 0 ? _a : 'react-qrcode-logo', height: qrSize, width: qrSize, style: __assign({ height: qrSize + 'px', width: qrSize + 'px' }, this.props.style), ref: this.canvasRef });
     };
-    QRCodeComponent.defaultProps = {
+    QRCode.defaultProps = {
         value: 'https://reactjs.org/',
         ecLevel: 'M',
         enableCORS: false,
@@ -363,6 +363,6 @@ var QRCodeComponent = /** @class */ (function (_super) {
         eyeRadius: [0, 0, 0],
         logoPaddingStyle: 'square'
     };
-    return QRCodeComponent;
+    return QRCode;
 }(React.Component));
-exports.QRCode = React.forwardRef(function (props, ref) { return React.createElement(QRCodeComponent, __assign({ ref: ref }, props)); });
+exports.QRCode = QRCode;

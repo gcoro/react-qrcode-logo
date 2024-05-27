@@ -26,7 +26,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
-    logoOnLoad?: () => void;
+    logoOnLoad?: (e: Event) => void;
     removeQrCodeBehindLogo?: boolean;
     logoPadding?: number;
     logoPaddingStyle?: 'square' | 'circle';
@@ -35,7 +35,6 @@ export interface IProps {
     qrStyle?: 'squares' | 'dots' | 'fluid';
     style?: React.CSSProperties;
     id?: string;
-    ref?: React.RefObject<QRCodeComponent>;
 }
 
 interface ICoordinates {
@@ -43,7 +42,7 @@ interface ICoordinates {
     col: number;
 }
 
-class QRCodeComponent extends React.Component<IProps, {}> {
+export class QRCode extends React.Component<IProps, {}> {
 
     private canvasRef = React.createRef<HTMLCanvasElement>();
 
@@ -75,7 +74,7 @@ class QRCodeComponent extends React.Component<IProps, {}> {
                     mimeType = 'image/png'; break;
             }
 
-            const url = this.canvasRef.current.toDataURL(mimeType);
+            const url = this.canvasRef.current.toDataURL(mimeType, 1.0);
             const link = document.createElement('a');
             link.download = fileName ?? 'react-qrcode-logo';
             link.href = url;
@@ -400,7 +399,7 @@ class QRCodeComponent extends React.Component<IProps, {}> {
             if (enableCORS) {
                 image.crossOrigin = 'Anonymous';
             }
-            image.onload = () => {
+            image.onload = (e: Event) => {
                 ctx.save();
 
                 const dWidthLogo = logoWidth || size * 0.2;
@@ -434,7 +433,7 @@ class QRCodeComponent extends React.Component<IProps, {}> {
                 ctx.drawImage(image, dxLogo + offset, dyLogo + offset, dWidthLogo, dHeightLogo);
                 ctx.restore();
                 if (logoOnLoad) {
-                    logoOnLoad();
+                    logoOnLoad(e);
                 }
             };
             image.src = logoImage;
@@ -453,5 +452,3 @@ class QRCodeComponent extends React.Component<IProps, {}> {
         />;
     }
 }
-
-export const QRCode = React.forwardRef((props: IProps, ref) => <QRCodeComponent ref={ref as React.RefObject<QRCodeComponent>} {...props} />);

@@ -21,7 +21,7 @@ export interface IProps {
     logoWidth?: number;
     logoHeight?: number;
     logoOpacity?: number;
-    logoOnLoad?: () => void;
+    logoOnLoad?: (e: Event) => void;
     removeQrCodeBehindLogo?: boolean;
     logoPadding?: number;
     logoPaddingStyle?: 'square' | 'circle';
@@ -30,9 +30,8 @@ export interface IProps {
     qrStyle?: 'squares' | 'dots' | 'fluid';
     style?: React.CSSProperties;
     id?: string;
-    ref?: React.RefObject<QRCodeComponent>;
 }
-declare class QRCodeComponent extends React.Component<IProps, {}> {
+export declare class QRCode extends React.Component<IProps, {}> {
     private canvasRef;
     static defaultProps: IProps;
     download(fileType?: 'png' | 'jpg' | 'webp', fileName?: string): void;
@@ -58,5 +57,4 @@ declare class QRCodeComponent extends React.Component<IProps, {}> {
     update(): void;
     render(): React.JSX.Element;
 }
-export declare const QRCode: React.ForwardRefExoticComponent<Omit<IProps, "ref"> & React.RefAttributes<unknown>>;
 export {};
