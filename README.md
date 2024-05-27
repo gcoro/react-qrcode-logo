@@ -61,6 +61,8 @@ If you are using a React version >= 18, use react-qrcode-logo version >= 3.0.0
 
 ## Methods
 
+Methods must be called on a valid QRCode ref - [learn more](https://react.dev/learn/manipulating-the-dom-with-refs). 
+
 | Method Name                     | Arguments                                | Description                                                                                                                      |
 |--------------------------|-------------------------------------| ----------------------------------------------------------------------------------------------------------------------------------|
 | `download`                  | `fileType?`: `'png'` &#124; `'jpg'` &#124; `'webp'`, `fileName?: string`                            | This function will download the QR Code as image. Format and file name can be specified                                         |
