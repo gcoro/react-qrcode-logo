@@ -69,7 +69,7 @@ Methods must be called on a valid QRCode ref - [learn more](https://react.dev/le
 
 ## Example
 
-You can find a demo project [here](https://github.com/gcoro/QRCodeCustomizer).
+You can find a demo project [here](https://gcoro.github.io/QRCodeCustomizer/).
 
 ## Contributing
 
