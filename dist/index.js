@@ -195,7 +195,7 @@ var QRCode = /** @class */ (function (_super) {
     };
     QRCode.prototype.update = function () {
         var _a;
-        var _b = this.props, value = _b.value, ecLevel = _b.ecLevel, enableCORS = _b.enableCORS, bgColor = _b.bgColor, fgColor = _b.fgColor, logoImage = _b.logoImage, logoOpacity = _b.logoOpacity, logoOnLoad = _b.logoOnLoad, removeQrCodeBehindLogo = _b.removeQrCodeBehindLogo, qrStyle = _b.qrStyle, eyeRadius = _b.eyeRadius, eyeColor = _b.eyeColor, logoPaddingStyle = _b.logoPaddingStyle;
+        var _b = this.props, value = _b.value, ecLevel = _b.ecLevel, enableCORS = _b.enableCORS, bgColor = _b.bgColor, fgColor = _b.fgColor, logoImage = _b.logoImage, logoOpacity = _b.logoOpacity, logoOnLoad = _b.logoOnLoad, removeQrCodeBehindLogo = _b.removeQrCodeBehindLogo, qrStyle = _b.qrStyle, eyeRadius = _b.eyeRadius, eyeColor = _b.eyeColor, logoPaddingRadius = _b.logoPaddingRadius;
         // just make sure that these params are passed as numbers
         var size = +this.props.size;
         var quietZone = +this.props.quietZone;
@@ -324,16 +324,9 @@ var QRCode = /** @class */ (function (_super) {
                     var dHeightLogoPadding = dHeightLogo + (2 * logoPadding);
                     var dxLogoPadding = dxLogo + offset - logoPadding;
                     var dyLogoPadding = dyLogo + offset - logoPadding;
-                    if (logoPaddingStyle === 'circle') {
-                        var dxCenterLogoPadding = dxLogoPadding + (dWidthLogoPadding / 2);
-                        var dyCenterLogoPadding = dyLogoPadding + (dHeightLogoPadding / 2);
-                        ctx.ellipse(dxCenterLogoPadding, dyCenterLogoPadding, dWidthLogoPadding / 2, dHeightLogoPadding / 2, 0, 0, 2 * Math.PI);
-                        ctx.stroke();
-                        ctx.fill();
-                    }
-                    else {
-                        ctx.fillRect(dxLogoPadding, dyLogoPadding, dWidthLogoPadding, dHeightLogoPadding);
-                    }
+                    ctx.roundRect(dxLogoPadding, dyLogoPadding, dWidthLogoPadding, dHeightLogoPadding, logoPaddingRadius);
+                    ctx.stroke();
+                    ctx.fill();
                 }
                 ctx.globalAlpha = logoOpacity;
                 ctx.drawImage(image_1, dxLogo + offset, dyLogo + offset, dWidthLogo, dHeightLogo);
@@ -361,7 +354,7 @@ var QRCode = /** @class */ (function (_super) {
         logoOpacity: 1,
         qrStyle: 'squares',
         eyeRadius: [0, 0, 0],
-        logoPaddingStyle: 'square'
+        logoPaddingRadius: 0
     };
     return QRCode;
 }(React.Component));
