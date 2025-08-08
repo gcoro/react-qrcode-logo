@@ -24,6 +24,7 @@ export interface IProps {
     logoOnLoad?: (e: Event) => void;
     removeQrCodeBehindLogo?: boolean;
     logoPadding?: number;
+    logoPaddingStyle?: 'square' | 'circle';
     logoPaddingRadius?: number | DOMPointInit | (number | DOMPointInit)[];
     eyeRadius?: CornerRadii | [CornerRadii, CornerRadii, CornerRadii];
     eyeColor?: EyeColor | [EyeColor, EyeColor, EyeColor];

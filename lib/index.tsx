@@ -29,6 +29,7 @@ export interface IProps {
     logoOnLoad?: (e: Event) => void;
     removeQrCodeBehindLogo?: boolean;
     logoPadding?: number;
+    logoPaddingStyle?: 'square' | 'circle';
     logoPaddingRadius?: number | DOMPointInit | (number | DOMPointInit)[];
     eyeRadius?: CornerRadii | [CornerRadii, CornerRadii, CornerRadii];
     eyeColor?: EyeColor | [EyeColor, EyeColor, EyeColor];
@@ -57,6 +58,7 @@ export class QRCode extends React.Component<IProps, {}> {
         logoOpacity: 1,
         qrStyle: 'squares',
         eyeRadius: [0, 0, 0],
+        logoPaddingStyle: 'square',
         logoPaddingRadius: 0
     };
 
@@ -269,6 +271,7 @@ export class QRCode extends React.Component<IProps, {}> {
             qrStyle,
             eyeRadius,
             eyeColor,
+            logoPaddingStyle,
             logoPaddingRadius
         } = this.props;
 
@@ -418,9 +421,17 @@ export class QRCode extends React.Component<IProps, {}> {
                     const dxLogoPadding = dxLogo + offset - logoPadding;
                     const dyLogoPadding = dyLogo + offset - logoPadding;
 
-                    ctx.roundRect(dxLogoPadding, dyLogoPadding, dWidthLogoPadding, dHeightLogoPadding, logoPaddingRadius)
-                    ctx.stroke();
-                    ctx.fill();
+                    if (logoPaddingStyle === 'circle') {
+                        const dxCenterLogoPadding = dxLogoPadding + (dWidthLogoPadding / 2);
+                        const dyCenterLogoPadding = dyLogoPadding + (dHeightLogoPadding / 2);
+                        ctx.ellipse(dxCenterLogoPadding, dyCenterLogoPadding, dWidthLogoPadding / 2, dHeightLogoPadding / 2, 0, 0, 2 * Math.PI);
+                        ctx.stroke();
+                        ctx.fill();
+                    } else {
+                        ctx.roundRect(dxLogoPadding, dyLogoPadding, dWidthLogoPadding, dHeightLogoPadding, logoPaddingRadius)
+                        ctx.stroke();
+                        ctx.fill();
+                    }
                 }
 
                 ctx.globalAlpha = logoOpacity;
