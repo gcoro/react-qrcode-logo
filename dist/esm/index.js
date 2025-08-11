@@ -1,45 +1,25 @@
-"use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
+import React from 'react';
+import isEqual from 'lodash.isequal';
+import qrGenerator from 'qrcode-generator';
+export class QRCode extends React.Component {
+    canvasRef = React.createRef();
+    static defaultProps = {
+        value: 'https://reactjs.org/',
+        ecLevel: 'M',
+        enableCORS: false,
+        size: 150,
+        quietZone: 10,
+        bgColor: '#FFFFFF',
+        fgColor: '#000000',
+        logoOpacity: 1,
+        qrStyle: 'squares',
+        eyeRadius: [0, 0, 0],
+        logoPaddingStyle: 'square',
+        logoPaddingRadius: 0
     };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.QRCode = void 0;
-var isEqual = require("lodash.isequal");
-var qrGenerator = require("qrcode-generator");
-var React = require("react");
-var QRCode = /** @class */ (function (_super) {
-    __extends(QRCode, _super);
-    function QRCode(props) {
-        var _this = _super.call(this, props) || this;
-        _this.canvasRef = React.createRef();
-        return _this;
-    }
-    QRCode.prototype.download = function (fileType, fileName) {
+    download(fileType, fileName) {
         if (this.canvasRef.current) {
-            var mimeType = void 0;
+            let mimeType;
             switch (fileType) {
                 case 'jpg':
                     mimeType = 'image/jpeg';
@@ -52,16 +32,16 @@ var QRCode = /** @class */ (function (_super) {
                     mimeType = 'image/png';
                     break;
             }
-            var url = this.canvasRef.current.toDataURL(mimeType, 1.0);
-            var link = document.createElement('a');
-            link.download = fileName !== null && fileName !== void 0 ? fileName : 'react-qrcode-logo';
+            const url = this.canvasRef.current.toDataURL(mimeType, 1.0);
+            const link = document.createElement('a');
+            link.download = fileName ?? 'react-qrcode-logo';
             link.href = url;
             link.click();
         }
-    };
-    QRCode.prototype.utf16to8 = function (str) {
-        var out = '', i, c;
-        var len = str.length;
+    }
+    utf16to8(str) {
+        let out = '', i, c;
+        const len = str.length;
         for (i = 0; i < len; i++) {
             c = str.charCodeAt(i);
             if ((c >= 0x0001) && (c <= 0x007F)) {
@@ -78,11 +58,11 @@ var QRCode = /** @class */ (function (_super) {
             }
         }
         return out;
-    };
+    }
     /**
      * Draw a rounded square in the canvas
      */
-    QRCode.prototype.drawRoundedSquare = function (lineWidth, x, y, size, color, radii, fill, ctx) {
+    drawRoundedSquare(lineWidth, x, y, size, color, radii, fill, ctx) {
         ctx.lineWidth = lineWidth;
         ctx.fillStyle = color;
         ctx.strokeStyle = color;
@@ -94,14 +74,14 @@ var QRCode = /** @class */ (function (_super) {
             radii = [radii, radii, radii, radii];
         }
         // Radius should not be greater than half the size or less than zero
-        radii = radii.map(function (r) {
+        radii = radii.map((r) => {
             r = Math.min(r, size / 2);
             return (r < 0) ? 0 : r;
         });
-        var rTopLeft = radii[0] || 0;
-        var rTopRight = radii[1] || 0;
-        var rBottomRight = radii[2] || 0;
-        var rBottomLeft = radii[3] || 0;
+        const rTopLeft = radii[0] || 0;
+        const rTopRight = radii[1] || 0;
+        const rBottomRight = radii[2] || 0;
+        const rBottomLeft = radii[3] || 0;
         ctx.beginPath();
         ctx.moveTo(x + rTopLeft, y);
         ctx.lineTo(x + size - rTopRight, y);
@@ -121,15 +101,14 @@ var QRCode = /** @class */ (function (_super) {
         if (fill) {
             ctx.fill();
         }
-    };
+    }
     /**
      * Draw a single positional pattern eye.
      */
-    QRCode.prototype.drawPositioningPattern = function (ctx, cellSize, offset, row, col, color, radii) {
-        if (radii === void 0) { radii = [0, 0, 0, 0]; }
-        var lineWidth = Math.ceil(cellSize);
-        var radiiOuter;
-        var radiiInner;
+    drawPositioningPattern(ctx, cellSize, offset, row, col, color, radii = [0, 0, 0, 0]) {
+        const lineWidth = Math.ceil(cellSize);
+        let radiiOuter;
+        let radiiInner;
         if (typeof radii !== 'number' && !Array.isArray(radii)) {
             radiiOuter = radii.outer || 0;
             radiiInner = radii.inner || 0;
@@ -138,8 +117,8 @@ var QRCode = /** @class */ (function (_super) {
             radiiOuter = radii;
             radiiInner = radiiOuter;
         }
-        var colorOuter;
-        var colorInner;
+        let colorOuter;
+        let colorInner;
         if (typeof color !== 'string') {
             colorOuter = color.outer;
             colorInner = color.inner;
@@ -148,9 +127,9 @@ var QRCode = /** @class */ (function (_super) {
             colorOuter = color;
             colorInner = color;
         }
-        var y = (row * cellSize) + offset;
-        var x = (col * cellSize) + offset;
-        var size = cellSize * 7;
+        let y = (row * cellSize) + offset;
+        let x = (col * cellSize) + offset;
+        let size = cellSize * 7;
         // Outer box
         this.drawRoundedSquare(lineWidth, x, y, size, colorOuter, radiiOuter, false, ctx);
         // Inner box
@@ -158,65 +137,67 @@ var QRCode = /** @class */ (function (_super) {
         y += cellSize * 2;
         x += cellSize * 2;
         this.drawRoundedSquare(lineWidth, x, y, size, colorInner, radiiInner, true, ctx);
-    };
+    }
     ;
     /**
      * Is this dot inside a positional pattern zone.
      */
-    QRCode.prototype.isInPositioninZone = function (col, row, zones) {
-        return zones.some(function (zone) { return (row >= zone.row && row <= zone.row + 7 &&
-            col >= zone.col && col <= zone.col + 7); });
-    };
-    QRCode.prototype.transformPixelLengthIntoNumberOfCells = function (pixelLength, cellSize) {
+    isInPositioninZone(col, row, zones) {
+        return zones.some((zone) => (row >= zone.row && row <= zone.row + 7 &&
+            col >= zone.col && col <= zone.col + 7));
+    }
+    transformPixelLengthIntoNumberOfCells(pixelLength, cellSize) {
         return pixelLength / cellSize;
-    };
-    QRCode.prototype.isCoordinateInImage = function (col, row, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage) {
+    }
+    isCoordinateInImage(col, row, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage) {
         if (logoImage) {
-            var numberOfCellsMargin = 2;
-            var firstRowOfLogo = this.transformPixelLengthIntoNumberOfCells(dxLogo, cellSize);
-            var firstColumnOfLogo = this.transformPixelLengthIntoNumberOfCells(dyLogo, cellSize);
-            var logoWidthInCells = this.transformPixelLengthIntoNumberOfCells(dWidthLogo, cellSize) - 1;
-            var logoHeightInCells = this.transformPixelLengthIntoNumberOfCells(dHeightLogo, cellSize) - 1;
+            const numberOfCellsMargin = 2;
+            const firstRowOfLogo = this.transformPixelLengthIntoNumberOfCells(dxLogo, cellSize);
+            const firstColumnOfLogo = this.transformPixelLengthIntoNumberOfCells(dyLogo, cellSize);
+            const logoWidthInCells = this.transformPixelLengthIntoNumberOfCells(dWidthLogo, cellSize) - 1;
+            const logoHeightInCells = this.transformPixelLengthIntoNumberOfCells(dHeightLogo, cellSize) - 1;
             return row >= firstRowOfLogo - numberOfCellsMargin && row <= firstRowOfLogo + logoWidthInCells + numberOfCellsMargin // check rows
                 && col >= firstColumnOfLogo - numberOfCellsMargin && col <= firstColumnOfLogo + logoHeightInCells + numberOfCellsMargin; // check cols
         }
         else {
             return false;
         }
-    };
-    QRCode.prototype.shouldComponentUpdate = function (nextProps) {
+    }
+    constructor(props) {
+        super(props);
+    }
+    shouldComponentUpdate(nextProps) {
         return !isEqual(this.props, nextProps);
-    };
-    QRCode.prototype.componentDidMount = function () {
+    }
+    componentDidMount() {
         this.update();
-    };
-    QRCode.prototype.componentDidUpdate = function () {
+    }
+    componentDidUpdate() {
         this.update();
-    };
-    QRCode.prototype.update = function () {
-        var _a;
-        var _b = this.props, value = _b.value, ecLevel = _b.ecLevel, enableCORS = _b.enableCORS, bgColor = _b.bgColor, fgColor = _b.fgColor, logoImage = _b.logoImage, logoOpacity = _b.logoOpacity, logoOnLoad = _b.logoOnLoad, removeQrCodeBehindLogo = _b.removeQrCodeBehindLogo, qrStyle = _b.qrStyle, eyeRadius = _b.eyeRadius, eyeColor = _b.eyeColor, logoPaddingStyle = _b.logoPaddingStyle, logoPaddingRadius = _b.logoPaddingRadius;
+    }
+    update() {
+        const { value, ecLevel, enableCORS, bgColor, fgColor, logoImage, logoOpacity, logoOnLoad, removeQrCodeBehindLogo, qrStyle, eyeRadius, eyeColor, logoPaddingStyle, logoPaddingRadius } = this.props;
         // just make sure that these params are passed as numbers
-        var size = +this.props.size;
-        var quietZone = +this.props.quietZone;
-        var logoWidth = this.props.logoWidth ? +this.props.logoWidth : 0;
-        var logoHeight = this.props.logoHeight ? +this.props.logoHeight : 0;
-        var logoPadding = this.props.logoPadding ? +this.props.logoPadding : 0;
-        var qrCode = qrGenerator(0, ecLevel);
+        const size = +this.props.size;
+        const quietZone = +this.props.quietZone;
+        const logoWidth = this.props.logoWidth ? +this.props.logoWidth : 0;
+        const logoHeight = this.props.logoHeight ? +this.props.logoHeight : 0;
+        const logoPadding = this.props.logoPadding ? +this.props.logoPadding : 0;
+        const qrCode = qrGenerator(0, ecLevel);
         qrCode.addData(this.utf16to8(value));
         qrCode.make();
-        var canvas = (_a = this.canvasRef) === null || _a === void 0 ? void 0 : _a.current;
-        var ctx = canvas.getContext('2d');
-        var canvasSize = size + (2 * quietZone);
-        var length = qrCode.getModuleCount();
-        var cellSize = size / length;
-        var scale = (window.devicePixelRatio || 1);
+        const canvas = this.canvasRef?.current;
+        const ctx = canvas.getContext('2d');
+        const canvasSize = size + (2 * quietZone);
+        const length = qrCode.getModuleCount();
+        const cellSize = size / length;
+        const scale = (window.devicePixelRatio || 1);
         canvas.height = canvas.width = canvasSize * scale;
         ctx.scale(scale, scale);
         ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, canvasSize, canvasSize);
-        var offset = quietZone;
-        var positioningZones = [
+        const offset = quietZone;
+        const positioningZones = [
             { row: 0, col: 0 },
             { row: 0, col: length - 7 },
             { row: length - 7, col: 0 },
@@ -224,9 +205,9 @@ var QRCode = /** @class */ (function (_super) {
         ctx.strokeStyle = fgColor;
         if (qrStyle === 'dots') {
             ctx.fillStyle = fgColor;
-            var radius = cellSize / 2;
-            for (var row = 0; row < length; row++) {
-                for (var col = 0; col < length; col++) {
+            const radius = cellSize / 2;
+            for (let row = 0; row < length; row++) {
+                for (let col = 0; col < length; col++) {
                     if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
                         ctx.beginPath();
                         ctx.arc(Math.round(col * cellSize) + radius + offset, Math.round(row * cellSize) + radius + offset, (radius / 100) * 75, 0, 2 * Math.PI, false);
@@ -237,11 +218,11 @@ var QRCode = /** @class */ (function (_super) {
             }
         }
         else if (qrStyle === 'fluid') {
-            var radius = Math.ceil(cellSize / 2);
-            for (var row = 0; row < length; row++) {
-                for (var col = 0; col < length; col++) {
+            const radius = Math.ceil(cellSize / 2);
+            for (let row = 0; row < length; row++) {
+                for (let col = 0; col < length; col++) {
                     if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
-                        var roundedCorners = [false, false, false, false]; // top-left, top-right, bottom-right, bottom-left
+                        let roundedCorners = [false, false, false, false]; // top-left, top-right, bottom-right, bottom-left
                         if ((row > 0 && !qrCode.isDark(row - 1, col)) && (col > 0 && !qrCode.isDark(row, col - 1)))
                             roundedCorners[0] = true;
                         if ((row > 0 && !qrCode.isDark(row - 1, col)) && (col < length - 1 && !qrCode.isDark(row, col + 1)))
@@ -250,8 +231,8 @@ var QRCode = /** @class */ (function (_super) {
                             roundedCorners[2] = true;
                         if ((row < length - 1 && !qrCode.isDark(row + 1, col)) && (col > 0 && !qrCode.isDark(row, col - 1)))
                             roundedCorners[3] = true;
-                        var w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
-                        var h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
+                        const w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
+                        const h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
                         ctx.fillStyle = fgColor;
                         ctx.beginPath();
                         ctx.arc(Math.round(col * cellSize) + radius + offset, Math.round(row * cellSize) + radius + offset, radius, 0, 2 * Math.PI, false);
@@ -270,22 +251,22 @@ var QRCode = /** @class */ (function (_super) {
             }
         }
         else {
-            for (var row = 0; row < length; row++) {
-                for (var col = 0; col < length; col++) {
+            for (let row = 0; row < length; row++) {
+                for (let col = 0; col < length; col++) {
                     if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
                         ctx.fillStyle = fgColor;
-                        var w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
-                        var h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
+                        const w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
+                        const h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
                         ctx.fillRect(Math.round(col * cellSize) + offset, Math.round(row * cellSize) + offset, w, h);
                     }
                 }
             }
         }
         // Draw positioning patterns
-        for (var i = 0; i < 3; i++) {
-            var _c = positioningZones[i], row = _c.row, col = _c.col;
-            var radii = eyeRadius;
-            var color = void 0;
+        for (let i = 0; i < 3; i++) {
+            const { row, col } = positioningZones[i];
+            let radii = eyeRadius;
+            let color;
             if (Array.isArray(radii)) {
                 radii = radii[i];
             }
@@ -306,27 +287,27 @@ var QRCode = /** @class */ (function (_super) {
             this.drawPositioningPattern(ctx, cellSize, offset, row, col, color, radii);
         }
         if (logoImage) {
-            var image_1 = new Image();
+            const image = new Image();
             if (enableCORS) {
-                image_1.crossOrigin = 'Anonymous';
+                image.crossOrigin = 'Anonymous';
             }
-            image_1.onload = function (e) {
+            image.onload = (e) => {
                 ctx.save();
-                var dWidthLogo = logoWidth || size * 0.2;
-                var dHeightLogo = logoHeight || dWidthLogo;
-                var dxLogo = ((size - dWidthLogo) / 2);
-                var dyLogo = ((size - dHeightLogo) / 2);
+                const dWidthLogo = logoWidth || size * 0.2;
+                const dHeightLogo = logoHeight || dWidthLogo;
+                const dxLogo = ((size - dWidthLogo) / 2);
+                const dyLogo = ((size - dHeightLogo) / 2);
                 if (removeQrCodeBehindLogo || logoPadding) {
                     ctx.beginPath();
                     ctx.strokeStyle = bgColor;
                     ctx.fillStyle = bgColor;
-                    var dWidthLogoPadding = dWidthLogo + (2 * logoPadding);
-                    var dHeightLogoPadding = dHeightLogo + (2 * logoPadding);
-                    var dxLogoPadding = dxLogo + offset - logoPadding;
-                    var dyLogoPadding = dyLogo + offset - logoPadding;
+                    const dWidthLogoPadding = dWidthLogo + (2 * logoPadding);
+                    const dHeightLogoPadding = dHeightLogo + (2 * logoPadding);
+                    const dxLogoPadding = dxLogo + offset - logoPadding;
+                    const dyLogoPadding = dyLogo + offset - logoPadding;
                     if (logoPaddingStyle === 'circle') {
-                        var dxCenterLogoPadding = dxLogoPadding + (dWidthLogoPadding / 2);
-                        var dyCenterLogoPadding = dyLogoPadding + (dHeightLogoPadding / 2);
+                        const dxCenterLogoPadding = dxLogoPadding + (dWidthLogoPadding / 2);
+                        const dyCenterLogoPadding = dyLogoPadding + (dHeightLogoPadding / 2);
                         ctx.ellipse(dxCenterLogoPadding, dyCenterLogoPadding, dWidthLogoPadding / 2, dHeightLogoPadding / 2, 0, 0, 2 * Math.PI);
                         ctx.stroke();
                         ctx.fill();
@@ -338,34 +319,18 @@ var QRCode = /** @class */ (function (_super) {
                     }
                 }
                 ctx.globalAlpha = logoOpacity;
-                ctx.drawImage(image_1, dxLogo + offset, dyLogo + offset, dWidthLogo, dHeightLogo);
+                ctx.drawImage(image, dxLogo + offset, dyLogo + offset, dWidthLogo, dHeightLogo);
                 ctx.restore();
                 if (logoOnLoad) {
                     logoOnLoad(e);
                 }
             };
-            image_1.src = logoImage;
+            image.src = logoImage;
         }
-    };
-    QRCode.prototype.render = function () {
-        var _a;
-        var qrSize = +this.props.size + (2 * +this.props.quietZone);
-        return React.createElement("canvas", { id: (_a = this.props.id) !== null && _a !== void 0 ? _a : 'react-qrcode-logo', height: qrSize, width: qrSize, style: __assign({ height: qrSize + 'px', width: qrSize + 'px' }, this.props.style), ref: this.canvasRef });
-    };
-    QRCode.defaultProps = {
-        value: 'https://reactjs.org/',
-        ecLevel: 'M',
-        enableCORS: false,
-        size: 150,
-        quietZone: 10,
-        bgColor: '#FFFFFF',
-        fgColor: '#000000',
-        logoOpacity: 1,
-        qrStyle: 'squares',
-        eyeRadius: [0, 0, 0],
-        logoPaddingStyle: 'square',
-        logoPaddingRadius: 0
-    };
-    return QRCode;
-}(React.Component));
-exports.QRCode = QRCode;
+    }
+    render() {
+        const qrSize = +this.props.size + (2 * +this.props.quietZone);
+        return React.createElement("canvas", { id: this.props.id ?? 'react-qrcode-logo', height: qrSize, width: qrSize, style: { height: qrSize + 'px', width: qrSize + 'px', ...this.props.style }, ref: this.canvasRef });
+    }
+}
+export default QRCode;

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 type EyeColor = string | InnerOuterEyeColor;
 type InnerOuterEyeColor = {
     inner: string;
@@ -58,4 +58,4 @@ export declare class QRCode extends React.Component<IProps, {}> {
     update(): void;
     render(): React.JSX.Element;
 }
-export {};
+export default QRCode;

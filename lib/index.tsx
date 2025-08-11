@@ -1,6 +1,6 @@
-import * as isEqual from 'lodash.isequal';
-import * as qrGenerator from 'qrcode-generator';
-import * as React from 'react';
+import React from 'react';
+import isEqual from 'lodash.isequal';
+import qrGenerator from 'qrcode-generator';
 
 type EyeColor = string | InnerOuterEyeColor;
 type InnerOuterEyeColor = {
@@ -457,3 +457,5 @@ export class QRCode extends React.Component<IProps, {}> {
         />;
     }
 }
+
+export default QRCode;
