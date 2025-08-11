@@ -195,7 +195,7 @@ var QRCode = /** @class */ (function (_super) {
     };
     QRCode.prototype.update = function () {
         var _a;
-        var _b = this.props, value = _b.value, ecLevel = _b.ecLevel, enableCORS = _b.enableCORS, bgColor = _b.bgColor, fgColor = _b.fgColor, logoImage = _b.logoImage, logoOpacity = _b.logoOpacity, logoOnLoad = _b.logoOnLoad, removeQrCodeBehindLogo = _b.removeQrCodeBehindLogo, qrStyle = _b.qrStyle, eyeRadius = _b.eyeRadius, eyeColor = _b.eyeColor, logoPaddingStyle = _b.logoPaddingStyle;
+        var _b = this.props, value = _b.value, ecLevel = _b.ecLevel, enableCORS = _b.enableCORS, bgColor = _b.bgColor, fgColor = _b.fgColor, logoImage = _b.logoImage, logoOpacity = _b.logoOpacity, logoOnLoad = _b.logoOnLoad, removeQrCodeBehindLogo = _b.removeQrCodeBehindLogo, qrStyle = _b.qrStyle, eyeRadius = _b.eyeRadius, eyeColor = _b.eyeColor, logoPaddingStyle = _b.logoPaddingStyle, logoPaddingRadius = _b.logoPaddingRadius;
         // just make sure that these params are passed as numbers
         var size = +this.props.size;
         var quietZone = +this.props.quietZone;
@@ -332,7 +332,9 @@ var QRCode = /** @class */ (function (_super) {
                         ctx.fill();
                     }
                     else {
-                        ctx.fillRect(dxLogoPadding, dyLogoPadding, dWidthLogoPadding, dHeightLogoPadding);
+                        ctx.roundRect(dxLogoPadding, dyLogoPadding, dWidthLogoPadding, dHeightLogoPadding, logoPaddingRadius);
+                        ctx.stroke();
+                        ctx.fill();
                     }
                 }
                 ctx.globalAlpha = logoOpacity;
@@ -361,7 +363,8 @@ var QRCode = /** @class */ (function (_super) {
         logoOpacity: 1,
         qrStyle: 'squares',
         eyeRadius: [0, 0, 0],
-        logoPaddingStyle: 'square'
+        logoPaddingStyle: 'square',
+        logoPaddingRadius: 0
     };
     return QRCode;
 }(React.Component));

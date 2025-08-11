@@ -30,6 +30,7 @@ export interface IProps {
     removeQrCodeBehindLogo?: boolean;
     logoPadding?: number;
     logoPaddingStyle?: 'square' | 'circle';
+    logoPaddingRadius?: number | DOMPointInit | (number | DOMPointInit)[];
     eyeRadius?: CornerRadii | [CornerRadii, CornerRadii, CornerRadii];
     eyeColor?: EyeColor | [EyeColor, EyeColor, EyeColor];
     qrStyle?: 'squares' | 'dots' | 'fluid';
@@ -57,7 +58,8 @@ export class QRCode extends React.Component<IProps, {}> {
         logoOpacity: 1,
         qrStyle: 'squares',
         eyeRadius: [0, 0, 0],
-        logoPaddingStyle: 'square'
+        logoPaddingStyle: 'square',
+        logoPaddingRadius: 0
     };
 
     public download(fileType?: 'png' | 'jpg' | 'webp', fileName?: string) {
@@ -269,7 +271,8 @@ export class QRCode extends React.Component<IProps, {}> {
             qrStyle,
             eyeRadius,
             eyeColor,
-            logoPaddingStyle
+            logoPaddingStyle,
+            logoPaddingRadius
         } = this.props;
 
         // just make sure that these params are passed as numbers
@@ -425,7 +428,9 @@ export class QRCode extends React.Component<IProps, {}> {
                         ctx.stroke();
                         ctx.fill();
                     } else {
-                        ctx.fillRect(dxLogoPadding, dyLogoPadding, dWidthLogoPadding, dHeightLogoPadding);
+                        ctx.roundRect(dxLogoPadding, dyLogoPadding, dWidthLogoPadding, dHeightLogoPadding, logoPaddingRadius)
+                        ctx.stroke();
+                        ctx.fill();
                     }
                 }
 
