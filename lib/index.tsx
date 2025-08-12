@@ -221,23 +221,57 @@ export class QRCode extends React.Component<IProps, {}> {
         ));
     }
 
-    private transformPixelLengthIntoNumberOfCells(pixelLength: number, cellSize: number) {
-        return pixelLength / cellSize;
-    }
+    /**
+     * Checks wheter the coordinate is behind the logo and needs to be removed.
+     */
+    private removeCoordinateBehindLogo(
+        removeQrCodeBehindLogo: boolean,
+        row: number,
+        col: number,
+        dWidthLogo: number,
+        dHeightLogo: number,
+        dxLogo: number,
+        dyLogo: number,
+        cellSize: number,
+        logoImage?: string,
+        logoPadding: number = 0,
+        logoPaddingStyle: 'square' | 'circle' = 'square'
+    ): boolean {
 
-    private isCoordinateInImage(col: number, row: number, dWidthLogo: number, dHeightLogo: number, dxLogo: number, dyLogo: number, cellSize: number, logoImage: string) {
-        if (logoImage) {
-            const numberOfCellsMargin = 2;
-            const firstRowOfLogo = this.transformPixelLengthIntoNumberOfCells(dxLogo, cellSize);
-            const firstColumnOfLogo = this.transformPixelLengthIntoNumberOfCells(dyLogo, cellSize);
-            const logoWidthInCells = this.transformPixelLengthIntoNumberOfCells(dWidthLogo, cellSize) - 1;
-            const logoHeightInCells = this.transformPixelLengthIntoNumberOfCells(dHeightLogo, cellSize) - 1;
+        if (!removeQrCodeBehindLogo || !logoImage) return false;
 
-            return row >= firstRowOfLogo - numberOfCellsMargin && row <= firstRowOfLogo + logoWidthInCells + numberOfCellsMargin // check rows
-                && col >= firstColumnOfLogo - numberOfCellsMargin && col <= firstColumnOfLogo + logoHeightInCells + numberOfCellsMargin // check cols
-        } else {
-            return false;
+        const epsilon = 1e-9;
+
+        const startX = dxLogo - logoPadding;
+        const endX = dxLogo + dWidthLogo + logoPadding;
+        const startY = dyLogo - logoPadding;
+        const endY = dyLogo + dHeightLogo + logoPadding;
+
+        const firstCol = Math.floor(startX / cellSize);
+        const lastColExclusive = Math.ceil(endX / cellSize);
+        const firstRow = Math.floor(startY / cellSize);
+        const lastRowExclusive = Math.ceil(endY / cellSize);
+
+        if (logoPaddingStyle === 'square') {
+            const isInsideX = col >= firstCol && col < lastColExclusive;
+            const isInsideY = row >= firstRow && row < lastRowExclusive;
+            return isInsideX && isInsideY;
         }
+
+        if (logoPaddingStyle === 'circle') {
+            const logoWidthInCells = lastColExclusive - firstCol;
+            const logoHeightInCells = lastRowExclusive - firstRow;
+
+            const cx = firstCol + logoWidthInCells / 2;
+            const cy = firstRow + logoHeightInCells / 2;
+            const radius = Math.max(logoWidthInCells, logoHeightInCells) / 2;
+
+            const dx = col + 0.5 - cx;
+            const dy = row + 0.5 - cy;
+            return Math.sqrt(dx * dx + dy * dy) <= radius;
+        }
+
+        return false;
     }
 
     constructor(props: IProps) {
@@ -271,7 +305,7 @@ export class QRCode extends React.Component<IProps, {}> {
             eyeRadius,
             eyeColor,
             logoPaddingStyle,
-            logoPaddingRadius
+            logoPaddingRadius,
         } = this.props;
 
         // just make sure that these params are passed as numbers
@@ -292,6 +326,12 @@ export class QRCode extends React.Component<IProps, {}> {
         const length = qrCode.getModuleCount();
         const cellSize = size / length;
         const scale = (window.devicePixelRatio || 1);
+
+        const dWidthLogo = logoWidth || size * 0.2;
+        const dHeightLogo = logoHeight || dWidthLogo;
+        const dxLogo = ((size - dWidthLogo) / 2);
+        const dyLogo = ((size - dHeightLogo) / 2);
+
         canvas.height = canvas.width = canvasSize * scale;
         ctx.scale(scale, scale);
 
@@ -312,7 +352,8 @@ export class QRCode extends React.Component<IProps, {}> {
             const radius = cellSize / 2;
             for (let row = 0; row < length; row++) {
                 for (let col = 0; col < length; col++) {
-                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
+                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)
+                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo ?? false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage, logoPadding, logoPaddingStyle)) {
                         ctx.beginPath();
                         ctx.arc(
                             Math.round(col * cellSize) + radius + offset,
@@ -330,7 +371,8 @@ export class QRCode extends React.Component<IProps, {}> {
             const radius = Math.ceil(cellSize / 2);
             for (let row = 0; row < length; row++) {
                 for (let col = 0; col < length; col++) {
-                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
+                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)
+                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo ?? false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage, logoPadding, logoPaddingStyle)) {
                         let roundedCorners = [false, false, false, false]; // top-left, top-right, bottom-right, bottom-left
                         if ((row > 0 && !qrCode.isDark(row - 1, col)) && (col > 0 && !qrCode.isDark(row, col - 1))) roundedCorners[0] = true;
                         if ((row > 0 && !qrCode.isDark(row - 1, col)) && (col < length - 1 && !qrCode.isDark(row, col + 1))) roundedCorners[1] = true;
@@ -359,7 +401,8 @@ export class QRCode extends React.Component<IProps, {}> {
         } else {
             for (let row = 0; row < length; row++) {
                 for (let col = 0; col < length; col++) {
-                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
+                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)
+                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo ?? false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage, logoPadding, logoPaddingStyle)) {
                         ctx.fillStyle = fgColor;
                         const w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
                         const h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
@@ -404,12 +447,7 @@ export class QRCode extends React.Component<IProps, {}> {
             image.onload = (e: Event) => {
                 ctx.save();
 
-                const dWidthLogo = logoWidth || size * 0.2;
-                const dHeightLogo = logoHeight || dWidthLogo;
-                const dxLogo = ((size - dWidthLogo) / 2);
-                const dyLogo = ((size - dHeightLogo) / 2);
-
-                if (removeQrCodeBehindLogo || logoPadding) {
+                if (logoPadding) {
                     ctx.beginPath();
 
                     ctx.strokeStyle = bgColor;

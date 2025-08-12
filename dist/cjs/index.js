@@ -205,22 +205,39 @@ var QRCode = /** @class */ (function (_super) {
         return zones.some(function (zone) { return (row >= zone.row && row <= zone.row + 7 &&
             col >= zone.col && col <= zone.col + 7); });
     };
-    QRCode.prototype.transformPixelLengthIntoNumberOfCells = function (pixelLength, cellSize) {
-        return pixelLength / cellSize;
-    };
-    QRCode.prototype.isCoordinateInImage = function (col, row, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage) {
-        if (logoImage) {
-            var numberOfCellsMargin = 2;
-            var firstRowOfLogo = this.transformPixelLengthIntoNumberOfCells(dxLogo, cellSize);
-            var firstColumnOfLogo = this.transformPixelLengthIntoNumberOfCells(dyLogo, cellSize);
-            var logoWidthInCells = this.transformPixelLengthIntoNumberOfCells(dWidthLogo, cellSize) - 1;
-            var logoHeightInCells = this.transformPixelLengthIntoNumberOfCells(dHeightLogo, cellSize) - 1;
-            return row >= firstRowOfLogo - numberOfCellsMargin && row <= firstRowOfLogo + logoWidthInCells + numberOfCellsMargin // check rows
-                && col >= firstColumnOfLogo - numberOfCellsMargin && col <= firstColumnOfLogo + logoHeightInCells + numberOfCellsMargin; // check cols
-        }
-        else {
+    /**
+     * Checks wheter the coordinate is behind the logo and needs to be removed.
+     */
+    QRCode.prototype.removeCoordinateBehindLogo = function (removeQrCodeBehindLogo, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage, logoPadding, logoPaddingStyle) {
+        if (logoPadding === void 0) { logoPadding = 0; }
+        if (logoPaddingStyle === void 0) { logoPaddingStyle = 'square'; }
+        if (!removeQrCodeBehindLogo || !logoImage)
             return false;
+        var epsilon = 1e-9;
+        var startX = dxLogo - logoPadding;
+        var endX = dxLogo + dWidthLogo + logoPadding;
+        var startY = dyLogo - logoPadding;
+        var endY = dyLogo + dHeightLogo + logoPadding;
+        var firstCol = Math.floor(startX / cellSize);
+        var lastColExclusive = Math.ceil(endX / cellSize);
+        var firstRow = Math.floor(startY / cellSize);
+        var lastRowExclusive = Math.ceil(endY / cellSize);
+        if (logoPaddingStyle === 'square') {
+            var isInsideX = col >= firstCol && col < lastColExclusive;
+            var isInsideY = row >= firstRow && row < lastRowExclusive;
+            return isInsideX && isInsideY;
         }
+        if (logoPaddingStyle === 'circle') {
+            var logoWidthInCells = lastColExclusive - firstCol;
+            var logoHeightInCells = lastRowExclusive - firstRow;
+            var cx = firstCol + logoWidthInCells / 2;
+            var cy = firstRow + logoHeightInCells / 2;
+            var radius = Math.max(logoWidthInCells, logoHeightInCells) / 2;
+            var dx = col + 0.5 - cx;
+            var dy = row + 0.5 - cy;
+            return Math.sqrt(dx * dx + dy * dy) <= radius;
+        }
+        return false;
     };
     QRCode.prototype.shouldComponentUpdate = function (nextProps) {
         return !deepEqual(this.props, nextProps);
@@ -249,6 +266,10 @@ var QRCode = /** @class */ (function (_super) {
         var length = qrCode.getModuleCount();
         var cellSize = size / length;
         var scale = (window.devicePixelRatio || 1);
+        var dWidthLogo = logoWidth || size * 0.2;
+        var dHeightLogo = logoHeight || dWidthLogo;
+        var dxLogo = ((size - dWidthLogo) / 2);
+        var dyLogo = ((size - dHeightLogo) / 2);
         canvas.height = canvas.width = canvasSize * scale;
         ctx.scale(scale, scale);
         ctx.fillStyle = bgColor;
@@ -265,7 +286,8 @@ var QRCode = /** @class */ (function (_super) {
             var radius = cellSize / 2;
             for (var row = 0; row < length; row++) {
                 for (var col = 0; col < length; col++) {
-                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
+                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)
+                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo !== null && removeQrCodeBehindLogo !== void 0 ? removeQrCodeBehindLogo : false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage, logoPadding, logoPaddingStyle)) {
                         ctx.beginPath();
                         ctx.arc(Math.round(col * cellSize) + radius + offset, Math.round(row * cellSize) + radius + offset, (radius / 100) * 75, 0, 2 * Math.PI, false);
                         ctx.closePath();
@@ -278,7 +300,8 @@ var QRCode = /** @class */ (function (_super) {
             var radius = Math.ceil(cellSize / 2);
             for (var row = 0; row < length; row++) {
                 for (var col = 0; col < length; col++) {
-                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
+                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)
+                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo !== null && removeQrCodeBehindLogo !== void 0 ? removeQrCodeBehindLogo : false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage, logoPadding, logoPaddingStyle)) {
                         var roundedCorners = [false, false, false, false]; // top-left, top-right, bottom-right, bottom-left
                         if ((row > 0 && !qrCode.isDark(row - 1, col)) && (col > 0 && !qrCode.isDark(row, col - 1)))
                             roundedCorners[0] = true;
@@ -310,7 +333,8 @@ var QRCode = /** @class */ (function (_super) {
         else {
             for (var row = 0; row < length; row++) {
                 for (var col = 0; col < length; col++) {
-                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
+                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)
+                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo !== null && removeQrCodeBehindLogo !== void 0 ? removeQrCodeBehindLogo : false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage, logoPadding, logoPaddingStyle)) {
                         ctx.fillStyle = fgColor;
                         var w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
                         var h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
@@ -350,11 +374,7 @@ var QRCode = /** @class */ (function (_super) {
             }
             image_1.onload = function (e) {
                 ctx.save();
-                var dWidthLogo = logoWidth || size * 0.2;
-                var dHeightLogo = logoHeight || dWidthLogo;
-                var dxLogo = ((size - dWidthLogo) / 2);
-                var dyLogo = ((size - dHeightLogo) / 2);
-                if (removeQrCodeBehindLogo || logoPadding) {
+                if (logoPadding) {
                     ctx.beginPath();
                     ctx.strokeStyle = bgColor;
                     ctx.fillStyle = bgColor;
