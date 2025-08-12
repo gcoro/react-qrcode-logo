@@ -70,13 +70,15 @@ Methods must be called on a valid QRCode ref - [learn more](https://react.dev/le
 
 ## Example
 
-You can find a demo project [here](https://github.com/gcoro/QRCodeCustomizer).
+You can find a demo project [in this repo](https://github.com/gcoro/QRCodeCustomizer) - and the respective live version [at this url](https://gcoro.github.io/QRCodeCustomizer/)
 
 ## Contributing
 
 PRs and suggestions are welcome.
 When making a pull request, please explain in a clear way the changes you made and why you are making them (+ if you can also update the README accordingly, ty <3).
 Also try keep the current repo codestyle (eg. do not reformat all the code with prettier).
+
+To generate the dist for both cjs and esm, you can run `npx tsc -p tsconfig.cjs.json && npx tsc -p tsconfig.esm.json`.  
 
 Thanks to everyone who contributed and/or will contribute :)
 
