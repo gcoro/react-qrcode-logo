@@ -148,41 +148,39 @@ export class QRCode extends React.Component {
     /**
      * Checks wheter the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
      */
-    removeCoordinateBehindLogo(removeQrCodeBehindLogo, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage, logoPadding = 0, logoPaddingStyle = 'square') {
-        if (!removeQrCodeBehindLogo || !logoImage)
+    removeCoordinateBehindLogo(removeQrCodeBehindLogo, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, offset, logoImage, logoPadding = 0, logoPaddingStyle = 'square') {
+        if (!removeQrCodeBehindLogo || !logoImage) {
             return false;
-        const cellLeft = col * cellSize;
-        const cellRight = cellLeft + cellSize;
-        const cellTop = row * cellSize;
-        const cellBottom = cellTop + cellSize;
+        }
+        const paddingInCells = Math.ceil(logoPadding / cellSize);
+        const snappedPadding = paddingInCells * cellSize;
+        const absolute_dxLogo = dxLogo + offset;
+        const absolute_dyLogo = dyLogo + offset;
+        const cellLeft = Math.round(col * cellSize) + offset;
+        const cellTop = Math.round(row * cellSize) + offset;
+        const w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
+        const h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
+        const cellRight = cellLeft + w;
+        const cellBottom = cellTop + h;
         if (logoPaddingStyle === 'square') {
-            const logoLeft = dxLogo - logoPadding;
-            const logoRight = dxLogo + dWidthLogo + logoPadding;
-            const logoTop = dyLogo - logoPadding;
-            const logoBottom = dyLogo + dHeightLogo + logoPadding;
-            const firstCol = Math.floor(logoLeft / cellSize) - 1;
-            const lastColExclusive = Math.ceil(logoRight / cellSize) + 1;
-            const firstRow = Math.floor(logoTop / cellSize) - 1;
-            const lastRowExclusive = Math.ceil(logoBottom / cellSize) + 1;
-            return col >= firstCol && col < lastColExclusive &&
-                row >= firstRow && row < lastRowExclusive;
+            const logoLeft = absolute_dxLogo - snappedPadding;
+            const logoRight = absolute_dxLogo + dWidthLogo + snappedPadding;
+            const logoTop = absolute_dyLogo - snappedPadding;
+            const logoBottom = absolute_dyLogo + dHeightLogo + snappedPadding;
+            const overlapX = cellLeft < logoRight && cellRight > logoLeft;
+            const overlapY = cellTop < logoBottom && cellBottom > logoTop;
+            return overlapX && overlapY;
         }
         if (logoPaddingStyle === 'circle') {
-            const cx = dxLogo + dWidthLogo / 2;
-            const cy = dyLogo + dHeightLogo / 2;
-            const radius = Math.max(dWidthLogo, dHeightLogo) / 2 + logoPadding;
-            const corners = [
-                [cellLeft, cellTop],
-                [cellRight, cellTop],
-                [cellLeft, cellBottom],
-                [cellRight, cellBottom]
-            ];
-            const margin = 1 + cellSize * 0.25;
-            return corners.some(([x, y]) => {
-                const dx = x - cx;
-                const dy = y - cy;
-                return dx * dx + dy * dy <= (radius + margin) * (radius + margin);
-            });
+            const logoCenterX = absolute_dxLogo + dWidthLogo / 2;
+            const logoCenterY = absolute_dyLogo + dHeightLogo / 2;
+            const circleRadius = (Math.max(dWidthLogo, dHeightLogo) / 2) + snappedPadding;
+            const closestX = Math.max(cellLeft, Math.min(logoCenterX, cellRight));
+            const closestY = Math.max(cellTop, Math.min(logoCenterY, cellBottom));
+            const distanceX = logoCenterX - closestX;
+            const distanceY = logoCenterY - closestY;
+            const distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+            return distanceSquared < (circleRadius * circleRadius);
         }
         return false;
     }
@@ -236,7 +234,7 @@ export class QRCode extends React.Component {
             for (let row = 0; row < length; row++) {
                 for (let col = 0; col < length; col++) {
                     if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)
-                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo ?? false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage, logoPadding, logoPaddingStyle)) {
+                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo ?? false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, offset, logoImage, logoPadding, logoPaddingStyle)) {
                         ctx.beginPath();
                         ctx.arc(Math.round(col * cellSize) + radius + offset, Math.round(row * cellSize) + radius + offset, (radius / 100) * 75, 0, 2 * Math.PI, false);
                         ctx.closePath();
@@ -250,7 +248,7 @@ export class QRCode extends React.Component {
             for (let row = 0; row < length; row++) {
                 for (let col = 0; col < length; col++) {
                     if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)
-                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo ?? false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage, logoPadding, logoPaddingStyle)) {
+                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo ?? false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, offset, logoImage, logoPadding, logoPaddingStyle)) {
                         let roundedCorners = [false, false, false, false]; // top-left, top-right, bottom-right, bottom-left
                         if ((row > 0 && !qrCode.isDark(row - 1, col)) && (col > 0 && !qrCode.isDark(row, col - 1)))
                             roundedCorners[0] = true;
@@ -283,7 +281,7 @@ export class QRCode extends React.Component {
             for (let row = 0; row < length; row++) {
                 for (let col = 0; col < length; col++) {
                     if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)
-                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo ?? false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage, logoPadding, logoPaddingStyle)) {
+                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo ?? false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, offset, logoImage, logoPadding, logoPaddingStyle)) {
                         ctx.fillStyle = fgColor;
                         const w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
                         const h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
