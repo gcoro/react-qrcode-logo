@@ -1,14 +1,9 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "react",
     "target": "es5", /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */
+    "downlevelIteration": true, /* Provide full support for iterables in for..of, spread, and destructuring when targeting ES5 or ES3. */
     "module": "commonjs", /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
-    "declaration": true, /* Generates corresponding '.d.ts' file. */
-    "outDir": "./dist", /* Redirect output structure to the directory. */
-    "lib": [
-      "es2015",
-      "es2017",
-      "dom"
-    ]
+    "outDir": "./dist/cjs" /* Redirect output structure to the directory. */
   }
 }

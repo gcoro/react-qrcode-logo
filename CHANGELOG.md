@@ -1,5 +1,17 @@
 # Changelog
 
+## [v4.0.0]
+
+### Fixes
+
+- Fixed behavior of `removeQrCodeBehindLogo`, if true it will now excavate the QR code so that the single cells are not cropped by the logo;
+- Updated the main QR code library to the latest version;
+- Removed deprecated library lodash.isequal and use a customer compare method instead;
+
+### Features
+
+- Added new optional prop `logoPaddingRadius` to specify radius of the area around the logo;
+
 ## [v3.0.0]
 
 ### Fixes

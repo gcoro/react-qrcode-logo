@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "declaration": true, /* Generates corresponding '.d.ts' file. */
+    "lib": [
+      "es2015",
+      "es2017",
+      "dom"
+    ],
+    "esModuleInterop": true
+  }
+}

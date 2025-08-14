@@ -25,16 +25,54 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QRCode = void 0;
-var isEqual = require("lodash.isequal");
-var qrGenerator = require("qrcode-generator");
-var React = require("react");
+var react_1 = __importDefault(require("react"));
+var qrcode_generator_1 = __importDefault(require("qrcode-generator"));
 var QRCode = /** @class */ (function (_super) {
     __extends(QRCode, _super);
     function QRCode(props) {
         var _this = _super.call(this, props) || this;
-        _this.canvasRef = React.createRef();
+        _this.canvasRef = react_1.default.createRef();
         return _this;
     }
     QRCode.prototype.download = function (fileType, fileName) {
@@ -163,29 +201,53 @@ var QRCode = /** @class */ (function (_super) {
     /**
      * Is this dot inside a positional pattern zone.
      */
-    QRCode.prototype.isInPositioninZone = function (col, row, zones) {
+    QRCode.prototype.isInPositioninZone = function (row, col, zones) {
         return zones.some(function (zone) { return (row >= zone.row && row <= zone.row + 7 &&
             col >= zone.col && col <= zone.col + 7); });
     };
-    QRCode.prototype.transformPixelLengthIntoNumberOfCells = function (pixelLength, cellSize) {
-        return pixelLength / cellSize;
-    };
-    QRCode.prototype.isCoordinateInImage = function (col, row, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage) {
-        if (logoImage) {
-            var numberOfCellsMargin = 2;
-            var firstRowOfLogo = this.transformPixelLengthIntoNumberOfCells(dxLogo, cellSize);
-            var firstColumnOfLogo = this.transformPixelLengthIntoNumberOfCells(dyLogo, cellSize);
-            var logoWidthInCells = this.transformPixelLengthIntoNumberOfCells(dWidthLogo, cellSize) - 1;
-            var logoHeightInCells = this.transformPixelLengthIntoNumberOfCells(dHeightLogo, cellSize) - 1;
-            return row >= firstRowOfLogo - numberOfCellsMargin && row <= firstRowOfLogo + logoWidthInCells + numberOfCellsMargin // check rows
-                && col >= firstColumnOfLogo - numberOfCellsMargin && col <= firstColumnOfLogo + logoHeightInCells + numberOfCellsMargin; // check cols
-        }
-        else {
+    /**
+     * Checks wheter the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
+     */
+    QRCode.prototype.removeCoordinateBehindLogo = function (removeQrCodeBehindLogo, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, offset, logoImage, logoPadding, logoPaddingStyle) {
+        if (logoPadding === void 0) { logoPadding = 0; }
+        if (logoPaddingStyle === void 0) { logoPaddingStyle = 'square'; }
+        if (!removeQrCodeBehindLogo || !logoImage) {
             return false;
         }
+        var paddingInCells = Math.ceil(logoPadding / cellSize);
+        var snappedPadding = paddingInCells * cellSize;
+        var absolute_dxLogo = dxLogo + offset;
+        var absolute_dyLogo = dyLogo + offset;
+        var cellLeft = Math.round(col * cellSize) + offset;
+        var cellTop = Math.round(row * cellSize) + offset;
+        var w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
+        var h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
+        var cellRight = cellLeft + w;
+        var cellBottom = cellTop + h;
+        if (logoPaddingStyle === 'square') {
+            var logoLeft = absolute_dxLogo - snappedPadding;
+            var logoRight = absolute_dxLogo + dWidthLogo + snappedPadding;
+            var logoTop = absolute_dyLogo - snappedPadding;
+            var logoBottom = absolute_dyLogo + dHeightLogo + snappedPadding;
+            var overlapX = cellLeft < logoRight && cellRight > logoLeft;
+            var overlapY = cellTop < logoBottom && cellBottom > logoTop;
+            return overlapX && overlapY;
+        }
+        if (logoPaddingStyle === 'circle') {
+            var logoCenterX = absolute_dxLogo + dWidthLogo / 2;
+            var logoCenterY = absolute_dyLogo + dHeightLogo / 2;
+            var circleRadius = (Math.max(dWidthLogo, dHeightLogo) / 2) + snappedPadding;
+            var closestX = Math.max(cellLeft, Math.min(logoCenterX, cellRight));
+            var closestY = Math.max(cellTop, Math.min(logoCenterY, cellBottom));
+            var distanceX = logoCenterX - closestX;
+            var distanceY = logoCenterY - closestY;
+            var distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+            return distanceSquared < (circleRadius * circleRadius);
+        }
+        return false;
     };
     QRCode.prototype.shouldComponentUpdate = function (nextProps) {
-        return !isEqual(this.props, nextProps);
+        return !deepEqual(this.props, nextProps);
     };
     QRCode.prototype.componentDidMount = function () {
         this.update();
@@ -202,7 +264,7 @@ var QRCode = /** @class */ (function (_super) {
         var logoWidth = this.props.logoWidth ? +this.props.logoWidth : 0;
         var logoHeight = this.props.logoHeight ? +this.props.logoHeight : 0;
         var logoPadding = this.props.logoPadding ? +this.props.logoPadding : 0;
-        var qrCode = qrGenerator(0, ecLevel);
+        var qrCode = (0, qrcode_generator_1.default)(0, ecLevel);
         qrCode.addData(this.utf16to8(value));
         qrCode.make();
         var canvas = (_a = this.canvasRef) === null || _a === void 0 ? void 0 : _a.current;
@@ -211,6 +273,10 @@ var QRCode = /** @class */ (function (_super) {
         var length = qrCode.getModuleCount();
         var cellSize = size / length;
         var scale = (window.devicePixelRatio || 1);
+        var dWidthLogo = logoWidth || size * 0.2;
+        var dHeightLogo = logoHeight || dWidthLogo;
+        var dxLogo = ((size - dWidthLogo) / 2);
+        var dyLogo = ((size - dHeightLogo) / 2);
         canvas.height = canvas.width = canvasSize * scale;
         ctx.scale(scale, scale);
         ctx.fillStyle = bgColor;
@@ -227,7 +293,8 @@ var QRCode = /** @class */ (function (_super) {
             var radius = cellSize / 2;
             for (var row = 0; row < length; row++) {
                 for (var col = 0; col < length; col++) {
-                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
+                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)
+                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo !== null && removeQrCodeBehindLogo !== void 0 ? removeQrCodeBehindLogo : false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, offset, logoImage, logoPadding, logoPaddingStyle)) {
                         ctx.beginPath();
                         ctx.arc(Math.round(col * cellSize) + radius + offset, Math.round(row * cellSize) + radius + offset, (radius / 100) * 75, 0, 2 * Math.PI, false);
                         ctx.closePath();
@@ -240,7 +307,8 @@ var QRCode = /** @class */ (function (_super) {
             var radius = Math.ceil(cellSize / 2);
             for (var row = 0; row < length; row++) {
                 for (var col = 0; col < length; col++) {
-                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
+                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)
+                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo !== null && removeQrCodeBehindLogo !== void 0 ? removeQrCodeBehindLogo : false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, offset, logoImage, logoPadding, logoPaddingStyle)) {
                         var roundedCorners = [false, false, false, false]; // top-left, top-right, bottom-right, bottom-left
                         if ((row > 0 && !qrCode.isDark(row - 1, col)) && (col > 0 && !qrCode.isDark(row, col - 1)))
                             roundedCorners[0] = true;
@@ -272,7 +340,8 @@ var QRCode = /** @class */ (function (_super) {
         else {
             for (var row = 0; row < length; row++) {
                 for (var col = 0; col < length; col++) {
-                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)) {
+                    if (qrCode.isDark(row, col) && !this.isInPositioninZone(row, col, positioningZones)
+                        && !this.removeCoordinateBehindLogo(removeQrCodeBehindLogo !== null && removeQrCodeBehindLogo !== void 0 ? removeQrCodeBehindLogo : false, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, offset, logoImage, logoPadding, logoPaddingStyle)) {
                         ctx.fillStyle = fgColor;
                         var w = (Math.ceil((col + 1) * cellSize) - Math.floor(col * cellSize));
                         var h = (Math.ceil((row + 1) * cellSize) - Math.floor(row * cellSize));
@@ -312,11 +381,7 @@ var QRCode = /** @class */ (function (_super) {
             }
             image_1.onload = function (e) {
                 ctx.save();
-                var dWidthLogo = logoWidth || size * 0.2;
-                var dHeightLogo = logoHeight || dWidthLogo;
-                var dxLogo = ((size - dWidthLogo) / 2);
-                var dyLogo = ((size - dHeightLogo) / 2);
-                if (removeQrCodeBehindLogo || logoPadding) {
+                if (logoPadding) {
                     ctx.beginPath();
                     ctx.strokeStyle = bgColor;
                     ctx.fillStyle = bgColor;
@@ -350,7 +415,7 @@ var QRCode = /** @class */ (function (_super) {
     QRCode.prototype.render = function () {
         var _a;
         var qrSize = +this.props.size + (2 * +this.props.quietZone);
-        return React.createElement("canvas", { id: (_a = this.props.id) !== null && _a !== void 0 ? _a : 'react-qrcode-logo', height: qrSize, width: qrSize, style: __assign({ height: qrSize + 'px', width: qrSize + 'px' }, this.props.style), ref: this.canvasRef });
+        return react_1.default.createElement("canvas", { id: (_a = this.props.id) !== null && _a !== void 0 ? _a : 'react-qrcode-logo', height: qrSize, width: qrSize, style: __assign({ height: qrSize + 'px', width: qrSize + 'px' }, this.props.style), ref: this.canvasRef });
     };
     QRCode.defaultProps = {
         value: 'https://reactjs.org/',
@@ -367,5 +432,121 @@ var QRCode = /** @class */ (function (_super) {
         logoPaddingRadius: 0
     };
     return QRCode;
-}(React.Component));
+}(react_1.default.Component));
 exports.QRCode = QRCode;
+function deepEqual(a, b, visited) {
+    var e_1, _a, e_2, _b, e_3, _c;
+    if (visited === void 0) { visited = new WeakMap(); }
+    // same reference or same primitive value
+    if (Object.is(a, b))
+        return true;
+    // different types -> cannot be equal
+    if (typeof a !== typeof b)
+        return false;
+    // null / undefined check
+    if (a == null || b == null)
+        return false;
+    // functions compare only by reference
+    if (typeof a === 'function' || typeof b === 'function') {
+        return a === b;
+    }
+    // avoid infinite loops on circular references
+    if (typeof a === 'object' && typeof b === 'object') {
+        if (visited.has(a) && visited.get(a) === b) {
+            return true;
+        }
+        visited.set(a, b);
+    }
+    // date
+    if (a instanceof Date && b instanceof Date) {
+        return a.getTime() === b.getTime();
+    }
+    // arrays
+    if (Array.isArray(a) && Array.isArray(b)) {
+        if (a.length !== b.length)
+            return false;
+        for (var i = 0; i < a.length; i++) {
+            if (!deepEqual(a[i], b[i], visited))
+                return false;
+        }
+        return true;
+    }
+    // sets
+    if (a instanceof Set && b instanceof Set) {
+        if (a.size !== b.size)
+            return false;
+        var _loop_1 = function (val) {
+            if (!__spreadArray([], __read(b), false).some(function (bVal) { return deepEqual(val, bVal, visited); }))
+                return { value: false };
+        };
+        try {
+            for (var a_1 = __values(a), a_1_1 = a_1.next(); !a_1_1.done; a_1_1 = a_1.next()) {
+                var val = a_1_1.value;
+                var state_1 = _loop_1(val);
+                if (typeof state_1 === "object")
+                    return state_1.value;
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (a_1_1 && !a_1_1.done && (_a = a_1.return)) _a.call(a_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return true;
+    }
+    // maps
+    if (a instanceof Map && b instanceof Map) {
+        if (a.size !== b.size)
+            return false;
+        try {
+            for (var a_2 = __values(a), a_2_1 = a_2.next(); !a_2_1.done; a_2_1 = a_2.next()) {
+                var _d = __read(a_2_1.value, 2), key = _d[0], val = _d[1];
+                if (!b.has(key) || !deepEqual(val, b.get(key), visited))
+                    return false;
+            }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (a_2_1 && !a_2_1.done && (_b = a_2.return)) _b.call(a_2);
+            }
+            finally { if (e_2) throw e_2.error; }
+        }
+        return true;
+    }
+    // plain objects
+    if (Object.getPrototypeOf(a) === Object.prototype ||
+        Object.getPrototypeOf(a) === null) {
+        var keysA = Object.keys(a);
+        var keysB = Object.keys(b);
+        if (keysA.length !== keysB.length)
+            return false;
+        try {
+            for (var keysA_1 = __values(keysA), keysA_1_1 = keysA_1.next(); !keysA_1_1.done; keysA_1_1 = keysA_1.next()) {
+                var key = keysA_1_1.value;
+                if (!keysB.includes(key))
+                    return false;
+                if (!deepEqual(a[key], b[key], visited))
+                    return false;
+            }
+        }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        finally {
+            try {
+                if (keysA_1_1 && !keysA_1_1.done && (_c = keysA_1.return)) _c.call(keysA_1);
+            }
+            finally { if (e_3) throw e_3.error; }
+        }
+        return true;
+    }
+    // remaining objects with custom prototypes (e.g., DOMPointInit, CSSProperties)
+    try {
+        return JSON.stringify(a) === JSON.stringify(b);
+    }
+    catch (_e) {
+        return false;
+    }
+}
+exports.default = QRCode;

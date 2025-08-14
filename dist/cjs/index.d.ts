@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 type EyeColor = string | InnerOuterEyeColor;
 type InnerOuterEyeColor = {
     inner: string;
@@ -49,8 +49,10 @@ export declare class QRCode extends React.Component<IProps, {}> {
      * Is this dot inside a positional pattern zone.
      */
     private isInPositioninZone;
-    private transformPixelLengthIntoNumberOfCells;
-    private isCoordinateInImage;
+    /**
+     * Checks wheter the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
+     */
+    private removeCoordinateBehindLogo;
     constructor(props: IProps);
     shouldComponentUpdate(nextProps: IProps): boolean;
     componentDidMount(): void;
@@ -58,4 +60,4 @@ export declare class QRCode extends React.Component<IProps, {}> {
     update(): void;
     render(): React.JSX.Element;
 }
-export {};
+export default QRCode;
