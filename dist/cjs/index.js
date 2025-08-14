@@ -201,41 +201,51 @@ var QRCode = /** @class */ (function (_super) {
     /**
      * Is this dot inside a positional pattern zone.
      */
-    QRCode.prototype.isInPositioninZone = function (col, row, zones) {
+    QRCode.prototype.isInPositioninZone = function (row, col, zones) {
         return zones.some(function (zone) { return (row >= zone.row && row <= zone.row + 7 &&
             col >= zone.col && col <= zone.col + 7); });
     };
     /**
-     * Checks wheter the coordinate is behind the logo and needs to be removed.
+     * Checks wheter the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
      */
     QRCode.prototype.removeCoordinateBehindLogo = function (removeQrCodeBehindLogo, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage, logoPadding, logoPaddingStyle) {
         if (logoPadding === void 0) { logoPadding = 0; }
         if (logoPaddingStyle === void 0) { logoPaddingStyle = 'square'; }
         if (!removeQrCodeBehindLogo || !logoImage)
             return false;
-        var epsilon = 1e-9;
-        var startX = dxLogo - logoPadding;
-        var endX = dxLogo + dWidthLogo + logoPadding;
-        var startY = dyLogo - logoPadding;
-        var endY = dyLogo + dHeightLogo + logoPadding;
-        var firstCol = Math.floor(startX / cellSize);
-        var lastColExclusive = Math.ceil(endX / cellSize);
-        var firstRow = Math.floor(startY / cellSize);
-        var lastRowExclusive = Math.ceil(endY / cellSize);
+        var cellLeft = col * cellSize;
+        var cellRight = cellLeft + cellSize;
+        var cellTop = row * cellSize;
+        var cellBottom = cellTop + cellSize;
         if (logoPaddingStyle === 'square') {
-            var isInsideX = col >= firstCol && col < lastColExclusive;
-            var isInsideY = row >= firstRow && row < lastRowExclusive;
-            return isInsideX && isInsideY;
+            var logoLeft = dxLogo - logoPadding;
+            var logoRight = dxLogo + dWidthLogo + logoPadding;
+            var logoTop = dyLogo - logoPadding;
+            var logoBottom = dyLogo + dHeightLogo + logoPadding;
+            var firstCol = Math.floor(logoLeft / cellSize) - 1;
+            var lastColExclusive = Math.ceil(logoRight / cellSize) + 1;
+            var firstRow = Math.floor(logoTop / cellSize) - 1;
+            var lastRowExclusive = Math.ceil(logoBottom / cellSize) + 1;
+            return col >= firstCol && col < lastColExclusive &&
+                row >= firstRow && row < lastRowExclusive;
         }
         if (logoPaddingStyle === 'circle') {
-            var logoWidthInCells = lastColExclusive - firstCol;
-            var logoHeightInCells = lastRowExclusive - firstRow;
-            var cx = firstCol + logoWidthInCells / 2;
-            var cy = firstRow + logoHeightInCells / 2;
-            var radius = Math.max(logoWidthInCells, logoHeightInCells) / 2;
-            var dx = col + 0.5 - cx;
-            var dy = row + 0.5 - cy;
-            return Math.sqrt(dx * dx + dy * dy) <= radius;
+            var cx_1 = dxLogo + dWidthLogo / 2;
+            var cy_1 = dyLogo + dHeightLogo / 2;
+            var radius_1 = Math.max(dWidthLogo, dHeightLogo) / 2 + logoPadding;
+            var corners = [
+                [cellLeft, cellTop],
+                [cellRight, cellTop],
+                [cellLeft, cellBottom],
+                [cellRight, cellBottom]
+            ];
+            var margin_1 = 1 + cellSize * 0.25;
+            return corners.some(function (_a) {
+                var _b = __read(_a, 2), x = _b[0], y = _b[1];
+                var dx = x - cx_1;
+                var dy = y - cy_1;
+                return dx * dx + dy * dy <= (radius_1 + margin_1) * (radius_1 + margin_1);
+            });
         }
         return false;
     };

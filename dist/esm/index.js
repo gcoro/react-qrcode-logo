@@ -141,39 +141,48 @@ export class QRCode extends React.Component {
     /**
      * Is this dot inside a positional pattern zone.
      */
-    isInPositioninZone(col, row, zones) {
+    isInPositioninZone(row, col, zones) {
         return zones.some((zone) => (row >= zone.row && row <= zone.row + 7 &&
             col >= zone.col && col <= zone.col + 7));
     }
     /**
-     * Checks wheter the coordinate is behind the logo and needs to be removed.
+     * Checks wheter the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
      */
     removeCoordinateBehindLogo(removeQrCodeBehindLogo, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, logoImage, logoPadding = 0, logoPaddingStyle = 'square') {
         if (!removeQrCodeBehindLogo || !logoImage)
             return false;
-        const epsilon = 1e-9;
-        const startX = dxLogo - logoPadding;
-        const endX = dxLogo + dWidthLogo + logoPadding;
-        const startY = dyLogo - logoPadding;
-        const endY = dyLogo + dHeightLogo + logoPadding;
-        const firstCol = Math.floor(startX / cellSize);
-        const lastColExclusive = Math.ceil(endX / cellSize);
-        const firstRow = Math.floor(startY / cellSize);
-        const lastRowExclusive = Math.ceil(endY / cellSize);
+        const cellLeft = col * cellSize;
+        const cellRight = cellLeft + cellSize;
+        const cellTop = row * cellSize;
+        const cellBottom = cellTop + cellSize;
         if (logoPaddingStyle === 'square') {
-            const isInsideX = col >= firstCol && col < lastColExclusive;
-            const isInsideY = row >= firstRow && row < lastRowExclusive;
-            return isInsideX && isInsideY;
+            const logoLeft = dxLogo - logoPadding;
+            const logoRight = dxLogo + dWidthLogo + logoPadding;
+            const logoTop = dyLogo - logoPadding;
+            const logoBottom = dyLogo + dHeightLogo + logoPadding;
+            const firstCol = Math.floor(logoLeft / cellSize) - 1;
+            const lastColExclusive = Math.ceil(logoRight / cellSize) + 1;
+            const firstRow = Math.floor(logoTop / cellSize) - 1;
+            const lastRowExclusive = Math.ceil(logoBottom / cellSize) + 1;
+            return col >= firstCol && col < lastColExclusive &&
+                row >= firstRow && row < lastRowExclusive;
         }
         if (logoPaddingStyle === 'circle') {
-            const logoWidthInCells = lastColExclusive - firstCol;
-            const logoHeightInCells = lastRowExclusive - firstRow;
-            const cx = firstCol + logoWidthInCells / 2;
-            const cy = firstRow + logoHeightInCells / 2;
-            const radius = Math.max(logoWidthInCells, logoHeightInCells) / 2;
-            const dx = col + 0.5 - cx;
-            const dy = row + 0.5 - cy;
-            return Math.sqrt(dx * dx + dy * dy) <= radius;
+            const cx = dxLogo + dWidthLogo / 2;
+            const cy = dyLogo + dHeightLogo / 2;
+            const radius = Math.max(dWidthLogo, dHeightLogo) / 2 + logoPadding;
+            const corners = [
+                [cellLeft, cellTop],
+                [cellRight, cellTop],
+                [cellLeft, cellBottom],
+                [cellRight, cellBottom]
+            ];
+            const margin = 1 + cellSize * 0.25;
+            return corners.some(([x, y]) => {
+                const dx = x - cx;
+                const dy = y - cy;
+                return dx * dx + dy * dy <= (radius + margin) * (radius + margin);
+            });
         }
         return false;
     }
