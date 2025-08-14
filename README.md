@@ -44,10 +44,10 @@ If you are using a React version >= 18, use react-qrcode-logo version >= 3.0.0
 | `logoWidth`              | `number` (in pixels)                | `size * 0.2`        | Logo image width                                                                                                                   |
 | `logoHeight`             | `number` (in pixels)                | `logoWidth`                  | Logo image height                                                                                                                  |
 | `logoOpacity`            | `number` (css opacity 0 <= x <= 1)  | `1`                 | Logo opacity. This allows you to modify the transparency of your logo, so that it won't compromise the readability of the QR Code  |
-| `removeQrCodeBehindLogo` | `boolean`                           |   `false`           | Removes points behind the logo. If no logoPadding is specified, the removed part will have the same size as the logo                                                    |
-| `logoPadding`            | `number`                            |                     | Adds a border with no points around the logo. When > 0, the padding will be visible even if the prop removeQrCodeBehindLogo is not set to true                                                    |
+| `logoPadding`            | `number`                            |                     | Adds a border with no points around the logo                                                    |
 | `logoPaddingStyle`            | `square` &#124; `circle`        | `square`     | Sets the shape of the padding area around the logo                                                     |
-| `logoPaddingRadius`            | `number` &#124; `DOMPointInit` &#124; `(number \| DOMPointInit)[]`        | `0`     | Sets the radius of the padding area around the logo                                                     |
+| `logoPaddingRadius`            | `number` &#124; `DOMPointInit` &#124; `(number \| DOMPointInit)[]`        | `0`     | Sets the radius of the padding area around the logo, if `square`                                                     |
+| `removeQrCodeBehindLogo` | `boolean`                           |   `false`           | Removes QR cells behind the logo (including its padding, if specified)                                                    |
 | `qrStyle`                | `squares` &#124; `dots` &#124; `fluid`            | `squares`  | Style of the QR Code modules                                                                                                       |
 | `eyeRadius`              | `CornerRadii` &#124; `CornerRadii[]` |  | The corner radius for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeRadius_doc.md) |
 | `eyeColor`               | `EyeColor` &#124; `EyeColor[]`      |  | The color for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeColor_doc.md)          |
@@ -62,7 +62,7 @@ If you are using a React version >= 18, use react-qrcode-logo version >= 3.0.0
 
 ## Methods
 
-Methods must be called on a valid QRCode ref - [learn more](https://react.dev/learn/manipulating-the-dom-with-refs). 
+Methods must be called on a valid QRCode ref - [learn more](https://react.dev/learn/manipulating-the-dom-with-refs).
 
 | Method Name                     | Arguments                                | Description                                                                                                                      |
 |--------------------------|-------------------------------------| ----------------------------------------------------------------------------------------------------------------------------------|

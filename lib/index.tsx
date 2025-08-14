@@ -222,7 +222,7 @@ export class QRCode extends React.Component<IProps, {}> {
     }
 
     /**
-     * Checks wheter the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
+     * Checks whether the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
      */
     private removeCoordinateBehindLogo(
         removeQrCodeBehindLogo: boolean,
