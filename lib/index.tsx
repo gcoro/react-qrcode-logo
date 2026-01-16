@@ -13,6 +13,8 @@ type InnerOuterRadii = {
     outer: number | [number, number, number, number];
 }
 
+type PupilRadii = number | [number, number, number, number];
+
 export interface IProps {
     value?: string;
     ecLevel?: 'L' | 'M' | 'Q' | 'H';
@@ -32,6 +34,7 @@ export interface IProps {
     logoPaddingRadius?: number | DOMPointInit | (number | DOMPointInit)[];
     eyeRadius?: CornerRadii | [CornerRadii, CornerRadii, CornerRadii];
     eyeColor?: EyeColor | [EyeColor, EyeColor, EyeColor];
+    squarePupilRadius?: PupilRadii | [PupilRadii, PupilRadii, PupilRadii];
     qrStyle?: 'squares' | 'dots' | 'fluid';
     style?: React.CSSProperties;
     id?: string;
@@ -173,7 +176,8 @@ export class QRCode extends React.Component<IProps, {}> {
         row: number,
         col: number,
         color: EyeColor,
-        radii: CornerRadii = [0, 0, 0, 0]) {
+        radii: CornerRadii = [0, 0, 0, 0],
+        squarePupilRadii?: PupilRadii) {
 
         const lineWidth = Math.ceil(cellSize);
 
@@ -204,11 +208,14 @@ export class QRCode extends React.Component<IProps, {}> {
         // Outer box
         this.drawRoundedSquare(lineWidth, x, y, size, colorOuter, radiiOuter, false, ctx);
 
-        // Inner box
+        // Inner box/pupil
         size = cellSize * 3;
         y += cellSize * 2;
         x += cellSize * 2;
-        this.drawRoundedSquare(lineWidth, x, y, size, colorInner, radiiInner, true, ctx);
+
+        // Use squarePupilRadii if provided, otherwise fall back to radiiInner (original behavior)
+        const pupilRadii = squarePupilRadii !== undefined ? squarePupilRadii : radiiInner;
+        this.drawRoundedSquare(lineWidth, x, y, size, colorInner, pupilRadii, true, ctx);
     };
 
     /**
@@ -314,6 +321,7 @@ export class QRCode extends React.Component<IProps, {}> {
             qrStyle,
             eyeRadius,
             eyeColor,
+            squarePupilRadius,
             logoPaddingStyle,
             logoPaddingRadius,
         } = this.props;
@@ -436,7 +444,24 @@ export class QRCode extends React.Component<IProps, {}> {
                 radii = [radii, radii, radii, radii];
             }
 
-            if (!eyeColor) { // if not specified, eye color is the same as foreground, 
+            // Process squarePupilRadius similar to eyeRadius
+            let squarePupilRadiiForEye: PupilRadii | undefined = undefined;
+            if (squarePupilRadius !== undefined) {
+                // Check if squarePupilRadius is an array of PupilRadii (one for each eye)
+                if (Array.isArray(squarePupilRadius) && (Array.isArray(squarePupilRadius[0]) || typeof squarePupilRadius[0] === 'number')) {
+                    // squarePupilRadius is [PupilRadii, PupilRadii, PupilRadii]
+                    squarePupilRadiiForEye = (squarePupilRadius as [PupilRadii, PupilRadii, PupilRadii])[i];
+                } else {
+                    // squarePupilRadius is a single PupilRadii to be used for all eyes
+                    squarePupilRadiiForEye = squarePupilRadius as PupilRadii;
+                }
+                // If it's a single number, convert to array
+                if (typeof squarePupilRadiiForEye === 'number') {
+                    squarePupilRadiiForEye = [squarePupilRadiiForEye, squarePupilRadiiForEye, squarePupilRadiiForEye, squarePupilRadiiForEye];
+                }
+            }
+
+            if (!eyeColor) { // if not specified, eye color is the same as foreground,
                 color = fgColor;
             } else {
                 if (Array.isArray(eyeColor)) { // if array, we pass the single color
@@ -446,7 +471,7 @@ export class QRCode extends React.Component<IProps, {}> {
                 }
             }
 
-            this.drawPositioningPattern(ctx, cellSize, offset, row, col, color, radii as CornerRadii);
+            this.drawPositioningPattern(ctx, cellSize, offset, row, col, color, radii as CornerRadii, squarePupilRadiiForEye);
         }
 
         if (logoImage) {

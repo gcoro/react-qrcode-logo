@@ -104,7 +104,7 @@ export class QRCode extends React.Component {
     /**
      * Draw a single positional pattern eye.
      */
-    drawPositioningPattern(ctx, cellSize, offset, row, col, color, radii = [0, 0, 0, 0]) {
+    drawPositioningPattern(ctx, cellSize, offset, row, col, color, radii = [0, 0, 0, 0], squarePupilRadii) {
         const lineWidth = Math.ceil(cellSize);
         let radiiOuter;
         let radiiInner;
@@ -131,11 +131,13 @@ export class QRCode extends React.Component {
         let size = cellSize * 7;
         // Outer box
         this.drawRoundedSquare(lineWidth, x, y, size, colorOuter, radiiOuter, false, ctx);
-        // Inner box
+        // Inner box/pupil
         size = cellSize * 3;
         y += cellSize * 2;
         x += cellSize * 2;
-        this.drawRoundedSquare(lineWidth, x, y, size, colorInner, radiiInner, true, ctx);
+        // Use squarePupilRadii if provided, otherwise fall back to radiiInner (original behavior)
+        const pupilRadii = squarePupilRadii !== undefined ? squarePupilRadii : radiiInner;
+        this.drawRoundedSquare(lineWidth, x, y, size, colorInner, pupilRadii, true, ctx);
     }
     ;
     /**
@@ -146,7 +148,7 @@ export class QRCode extends React.Component {
             col >= zone.col && col <= zone.col + 7));
     }
     /**
-     * Checks wheter the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
+     * Checks whether the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
      */
     removeCoordinateBehindLogo(removeQrCodeBehindLogo, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, offset, logoImage, logoPadding = 0, logoPaddingStyle = 'square') {
         if (!removeQrCodeBehindLogo || !logoImage) {
@@ -197,7 +199,7 @@ export class QRCode extends React.Component {
         this.update();
     }
     update() {
-        const { value, ecLevel, enableCORS, bgColor, fgColor, logoImage, logoOpacity, logoOnLoad, removeQrCodeBehindLogo, qrStyle, eyeRadius, eyeColor, logoPaddingStyle, logoPaddingRadius, } = this.props;
+        const { value, ecLevel, enableCORS, bgColor, fgColor, logoImage, logoOpacity, logoOnLoad, removeQrCodeBehindLogo, qrStyle, eyeRadius, eyeColor, squarePupilRadius, logoPaddingStyle, logoPaddingRadius, } = this.props;
         // just make sure that these params are passed as numbers
         const size = +this.props.size;
         const quietZone = +this.props.quietZone;
@@ -301,7 +303,24 @@ export class QRCode extends React.Component {
             if (typeof radii == 'number') {
                 radii = [radii, radii, radii, radii];
             }
-            if (!eyeColor) { // if not specified, eye color is the same as foreground, 
+            // Process squarePupilRadius similar to eyeRadius
+            let squarePupilRadiiForEye = undefined;
+            if (squarePupilRadius !== undefined) {
+                // Check if squarePupilRadius is an array of PupilRadii (one for each eye)
+                if (Array.isArray(squarePupilRadius) && (Array.isArray(squarePupilRadius[0]) || typeof squarePupilRadius[0] === 'number')) {
+                    // squarePupilRadius is [PupilRadii, PupilRadii, PupilRadii]
+                    squarePupilRadiiForEye = squarePupilRadius[i];
+                }
+                else {
+                    // squarePupilRadius is a single PupilRadii to be used for all eyes
+                    squarePupilRadiiForEye = squarePupilRadius;
+                }
+                // If it's a single number, convert to array
+                if (typeof squarePupilRadiiForEye === 'number') {
+                    squarePupilRadiiForEye = [squarePupilRadiiForEye, squarePupilRadiiForEye, squarePupilRadiiForEye, squarePupilRadiiForEye];
+                }
+            }
+            if (!eyeColor) { // if not specified, eye color is the same as foreground,
                 color = fgColor;
             }
             else {
@@ -312,7 +331,7 @@ export class QRCode extends React.Component {
                     color = eyeColor;
                 }
             }
-            this.drawPositioningPattern(ctx, cellSize, offset, row, col, color, radii);
+            this.drawPositioningPattern(ctx, cellSize, offset, row, col, color, radii, squarePupilRadiiForEye);
         }
         if (logoImage) {
             const image = new Image();
