@@ -5,5 +5,6 @@
     "module": "ESNext", /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
     "outDir": "./dist/esm", /* Redirect output structure to the directory. */
     "moduleResolution": "node", /* Tells the compiler how to look up and resolve imported modules */
-  }
+  },
+  "exclude": ["playground", "stories", ".storybook"]
 }

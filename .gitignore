@@ -62,3 +62,6 @@ typings/
 
 # automatically generated for any operations where npm modifies
 package-lock.json
+
+# Storybook
+storybook-static/
