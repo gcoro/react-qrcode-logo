@@ -163,7 +163,7 @@ var QRCode = /** @class */ (function (_super) {
     /**
      * Draw a single positional pattern eye.
      */
-    QRCode.prototype.drawPositioningPattern = function (ctx, cellSize, offset, row, col, color, radii, squarePupilRadii) {
+    QRCode.prototype.drawPositioningPattern = function (ctx, cellSize, offset, row, col, color, radii) {
         if (radii === void 0) { radii = [0, 0, 0, 0]; }
         var lineWidth = Math.ceil(cellSize);
         var radiiOuter;
@@ -191,13 +191,11 @@ var QRCode = /** @class */ (function (_super) {
         var size = cellSize * 7;
         // Outer box
         this.drawRoundedSquare(lineWidth, x, y, size, colorOuter, radiiOuter, false, ctx);
-        // Inner box/pupil
+        // Inner box
         size = cellSize * 3;
         y += cellSize * 2;
         x += cellSize * 2;
-        // Use squarePupilRadii if provided, otherwise fall back to radiiInner (original behavior)
-        var pupilRadii = squarePupilRadii !== undefined ? squarePupilRadii : radiiInner;
-        this.drawRoundedSquare(lineWidth, x, y, size, colorInner, pupilRadii, true, ctx);
+        this.drawRoundedSquare(lineWidth, x, y, size, colorInner, radiiInner, true, ctx);
     };
     ;
     /**
@@ -208,7 +206,7 @@ var QRCode = /** @class */ (function (_super) {
             col >= zone.col && col <= zone.col + 7); });
     };
     /**
-     * Checks whether the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
+     * Checks wheter the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
      */
     QRCode.prototype.removeCoordinateBehindLogo = function (removeQrCodeBehindLogo, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, offset, logoImage, logoPadding, logoPaddingStyle) {
         if (logoPadding === void 0) { logoPadding = 0; }
@@ -259,7 +257,7 @@ var QRCode = /** @class */ (function (_super) {
     };
     QRCode.prototype.update = function () {
         var _a;
-        var _b = this.props, value = _b.value, ecLevel = _b.ecLevel, enableCORS = _b.enableCORS, bgColor = _b.bgColor, fgColor = _b.fgColor, logoImage = _b.logoImage, logoOpacity = _b.logoOpacity, logoOnLoad = _b.logoOnLoad, removeQrCodeBehindLogo = _b.removeQrCodeBehindLogo, qrStyle = _b.qrStyle, eyeRadius = _b.eyeRadius, eyeColor = _b.eyeColor, squarePupilRadius = _b.squarePupilRadius, logoPaddingStyle = _b.logoPaddingStyle, logoPaddingRadius = _b.logoPaddingRadius;
+        var _b = this.props, value = _b.value, ecLevel = _b.ecLevel, enableCORS = _b.enableCORS, bgColor = _b.bgColor, fgColor = _b.fgColor, logoImage = _b.logoImage, logoOpacity = _b.logoOpacity, logoOnLoad = _b.logoOnLoad, removeQrCodeBehindLogo = _b.removeQrCodeBehindLogo, qrStyle = _b.qrStyle, eyeRadius = _b.eyeRadius, eyeColor = _b.eyeColor, logoPaddingStyle = _b.logoPaddingStyle, logoPaddingRadius = _b.logoPaddingRadius;
         // just make sure that these params are passed as numbers
         var size = +this.props.size;
         var quietZone = +this.props.quietZone;
@@ -363,24 +361,7 @@ var QRCode = /** @class */ (function (_super) {
             if (typeof radii == 'number') {
                 radii = [radii, radii, radii, radii];
             }
-            // Process squarePupilRadius similar to eyeRadius
-            var squarePupilRadiiForEye = undefined;
-            if (squarePupilRadius !== undefined) {
-                // Check if squarePupilRadius is an array of PupilRadii (one for each eye)
-                if (Array.isArray(squarePupilRadius) && (Array.isArray(squarePupilRadius[0]) || typeof squarePupilRadius[0] === 'number')) {
-                    // squarePupilRadius is [PupilRadii, PupilRadii, PupilRadii]
-                    squarePupilRadiiForEye = squarePupilRadius[i];
-                }
-                else {
-                    // squarePupilRadius is a single PupilRadii to be used for all eyes
-                    squarePupilRadiiForEye = squarePupilRadius;
-                }
-                // If it's a single number, convert to array
-                if (typeof squarePupilRadiiForEye === 'number') {
-                    squarePupilRadiiForEye = [squarePupilRadiiForEye, squarePupilRadiiForEye, squarePupilRadiiForEye, squarePupilRadiiForEye];
-                }
-            }
-            if (!eyeColor) { // if not specified, eye color is the same as foreground,
+            if (!eyeColor) { // if not specified, eye color is the same as foreground, 
                 color = fgColor;
             }
             else {
@@ -391,7 +372,7 @@ var QRCode = /** @class */ (function (_super) {
                     color = eyeColor;
                 }
             }
-            this.drawPositioningPattern(ctx, cellSize, offset, row, col, color, radii, squarePupilRadiiForEye);
+            this.drawPositioningPattern(ctx, cellSize, offset, row, col, color, radii);
         }
         if (logoImage) {
             var image_1 = new Image();

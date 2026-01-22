@@ -51,7 +51,6 @@ If you are using a React version >= 18, use react-qrcode-logo version >= 3.0.0
 | `qrStyle`                | `squares` &#124; `dots` &#124; `fluid`            | `squares`  | Style of the QR Code modules                                                                                                       |
 | `eyeRadius`              | `CornerRadii` &#124; `CornerRadii[]` |  | The corner radius for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeRadius_doc.md) |
 | `eyeColor`               | `EyeColor` &#124; `EyeColor[]`      |  | The color for the positional patterns (the three "eyes" around the QR code). [See more details here](res/eyeColor_doc.md)          |
-| `squarePupilRadius`      | `PupilRadii` &#124; `PupilRadii[]`  |  | The corner radius for the inner "pupil" of the eyes. By default, inherits from `eyeRadius`. [See more details here](res/squarePupilRadius_doc.md) |
 | `id`                     | `string`                            | `react-qrcode-logo` | Optional custom id for the QRCode canvas. You can use this prop if you have multiple QRCodes and need to differentiate them        |
 | `style`       | `React.CSSProperties` |  | CSS style properties that will be applied to the canvas component |
 

@@ -9,7 +9,6 @@ type InnerOuterRadii = {
     inner: number | [number, number, number, number];
     outer: number | [number, number, number, number];
 };
-type PupilRadii = number | [number, number, number, number];
 export interface IProps {
     value?: string;
     ecLevel?: 'L' | 'M' | 'Q' | 'H';
@@ -29,7 +28,6 @@ export interface IProps {
     logoPaddingRadius?: number | DOMPointInit | (number | DOMPointInit)[];
     eyeRadius?: CornerRadii | [CornerRadii, CornerRadii, CornerRadii];
     eyeColor?: EyeColor | [EyeColor, EyeColor, EyeColor];
-    squarePupilRadius?: PupilRadii | [PupilRadii, PupilRadii, PupilRadii];
     qrStyle?: 'squares' | 'dots' | 'fluid';
     style?: React.CSSProperties;
     id?: string;
@@ -52,7 +50,7 @@ export declare class QRCode extends React.Component<IProps, {}> {
      */
     private isInPositioninZone;
     /**
-     * Checks whether the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
+     * Checks wheter the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
      */
     private removeCoordinateBehindLogo;
     constructor(props: IProps);
