@@ -47,12 +47,8 @@ const meta: Meta<typeof QRCode> = {
       description: 'Logo opacity (0-1)',
     },
     eyeRadius: {
-      control: { type: 'range', min: 0, max: 50, step: 1 },
-      description: 'Corner radius for the positioning patterns (eyes)',
-    },
-    squarePupilRadius: {
-      control: { type: 'range', min: 0, max: 50, step: 1 },
-      description: 'Corner radius for pupils (undefined = inherit from eyeRadius)',
+      control: 'object',
+      description: 'Corner radius for the positioning patterns (eyes). Can be a number, array of numbers, or array of objects with outer/inner properties.',
     },
     quietZone: {
       control: { type: 'range', min: 0, max: 50, step: 5 },
@@ -132,43 +128,38 @@ export const RoundedEyes: Story = {
   },
 };
 
-// Default pupil behavior (inherits from eyeRadius)
-export const DefaultPupils: Story = {
+// Rounded outer with sharp inner pupils
+export const RoundedOuterSharpInner: Story = {
   args: {
     value: 'https://github.com/gcoro/react-qrcode-logo',
     size: 250,
-    eyeRadius: 10,
+    eyeRadius: [
+      { outer: [10, 10, 10, 10], inner: [0, 0, 0, 0] },
+      { outer: [10, 10, 10, 10], inner: [0, 0, 0, 0] },
+      { outer: [10, 10, 10, 10], inner: [0, 0, 0, 0] },
+    ],
     fgColor: '#3B82F6',
   },
-  name: 'Default Pupils (Inherits from eyeRadius)',
+  name: 'Rounded Outer, Sharp Inner',
 };
 
-// Pupils with independent sharp corners
-export const SharpPupils: Story = {
+// Sharp outer with rounded inner pupils
+export const SharpOuterRoundedInner: Story = {
   args: {
     value: 'https://github.com/gcoro/react-qrcode-logo',
     size: 250,
-    eyeRadius: 10,
-    squarePupilRadius: 0,
+    eyeRadius: [
+      { outer: [0, 0, 0, 0], inner: [10, 10, 10, 10] },
+      { outer: [0, 0, 0, 0], inner: [10, 10, 10, 10] },
+      { outer: [0, 0, 0, 0], inner: [10, 10, 10, 10] },
+    ],
     fgColor: '#3B82F6',
   },
-  name: 'Sharp Pupils (Independent Control)',
+  name: 'Sharp Outer, Rounded Inner',
 };
 
-// Pupils with independent rounded corners
-export const RoundedPupils: Story = {
-  args: {
-    value: 'https://github.com/gcoro/react-qrcode-logo',
-    size: 250,
-    eyeRadius: 10,
-    squarePupilRadius: 15,
-    fgColor: '#3B82F6',
-  },
-  name: 'Rounded Pupils (Independent Control)',
-};
-
-// With logo and square pupils
-export const LogoWithSquarePupils: Story = {
+// With logo and custom inner/outer radius
+export const LogoWithCustomEyeRadius: Story = {
   args: {
     value: 'https://github.com/gcoro/react-qrcode-logo',
     size: 300,
@@ -176,23 +167,11 @@ export const LogoWithSquarePupils: Story = {
     logoWidth: 70,
     logoHeight: 70,
     enableCORS: true,
-    eyeRadius: 12,
-    squarePupilRadius: 8,
-    removeQrCodeBehindLogo: true,
-  },
-};
-
-// With logo and sharp square pupils (zero radius)
-export const LogoWithSquarePupilsAndZeroRadius: Story = {
-  args: {
-    value: 'https://github.com/gcoro/react-qrcode-logo',
-    size: 300,
-    logoImage: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/200px-React-icon.svg.png',
-    logoWidth: 70,
-    logoHeight: 70,
-    enableCORS: true,
-    eyeRadius: 12,
-    squarePupilRadius: 0,
+    eyeRadius: [
+      { outer: [12, 12, 12, 12], inner: [8, 8, 8, 8] },
+      { outer: [12, 12, 12, 12], inner: [8, 8, 8, 8] },
+      { outer: [12, 12, 12, 12], inner: [8, 8, 8, 8] },
+    ],
     removeQrCodeBehindLogo: true,
   },
 };
@@ -208,8 +187,11 @@ export const ComplexExample: Story = {
     logoOpacity: 0.9,
     enableCORS: true,
     qrStyle: 'fluid',
-    eyeRadius: 15,
-    squarePupilRadius: 10,
+    eyeRadius: [
+      { outer: [15, 15, 15, 15], inner: [10, 10, 10, 10] },
+      { outer: [15, 15, 15, 15], inner: [10, 10, 10, 10] },
+      { outer: [15, 15, 15, 15], inner: [10, 10, 10, 10] },
+    ],
     fgColor: '#6366F1',
     bgColor: '#F3F4F6',
     quietZone: 20,
@@ -227,6 +209,10 @@ export const CustomEyeColors: Story = {
       { outer: '#00FF00', inner: '#FF00FF' },
       { outer: '#0000FF', inner: '#FFFF00' },
     ],
-    squarePupilRadius: 5,
+    eyeRadius: [
+      { outer: [5, 5, 5, 5], inner: [5, 5, 5, 5] },
+      { outer: [5, 5, 5, 5], inner: [5, 5, 5, 5] },
+      { outer: [5, 5, 5, 5], inner: [5, 5, 5, 5] },
+    ],
   },
 };
