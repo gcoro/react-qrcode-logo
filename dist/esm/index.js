@@ -146,7 +146,7 @@ export class QRCode extends React.Component {
             col >= zone.col && col <= zone.col + 7));
     }
     /**
-     * Checks wheter the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
+     * Checks whether the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
      */
     removeCoordinateBehindLogo(removeQrCodeBehindLogo, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, offset, logoImage, logoPadding = 0, logoPaddingStyle = 'square') {
         if (!removeQrCodeBehindLogo || !logoImage) {

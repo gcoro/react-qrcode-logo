@@ -206,7 +206,7 @@ var QRCode = /** @class */ (function (_super) {
             col >= zone.col && col <= zone.col + 7); });
     };
     /**
-     * Checks wheter the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
+     * Checks whether the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
      */
     QRCode.prototype.removeCoordinateBehindLogo = function (removeQrCodeBehindLogo, row, col, dWidthLogo, dHeightLogo, dxLogo, dyLogo, cellSize, offset, logoImage, logoPadding, logoPaddingStyle) {
         if (logoPadding === void 0) { logoPadding = 0; }

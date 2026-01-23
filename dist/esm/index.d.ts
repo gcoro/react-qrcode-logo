@@ -50,7 +50,7 @@ export declare class QRCode extends React.Component<IProps, {}> {
      */
     private isInPositioninZone;
     /**
-     * Checks wheter the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
+     * Checks whether the coordinate is behind the logo and needs to be removed. true if the coordinate is behind the logo and needs to be removed.
      */
     private removeCoordinateBehindLogo;
     constructor(props: IProps);

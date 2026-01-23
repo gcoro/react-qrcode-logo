@@ -7,7 +7,7 @@
   "types": "dist/esm/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -45,7 +45,7 @@
     "react-dom": "^18.0.0",
     "storybook": "^8.6.15",
     "typescript": "^5.4.5",
-    "vite": "^7.3.1"
+    "vite": "^6.4.1"
   },
   "dependencies": {
     "qrcode-generator": "^2.0.4"
